@@ -1,16 +1,16 @@
 
-import tensorflow as tf
-from tensorflow.python.keras.layers import Dense, Flatten, Conv2D, Dropout, MaxPooling2D
-from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
-from tensorflow.keras.layers import BatchNormalization, LeakyReLU
-from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.optimizers import Adam
+import numpy as np
 import pygame
+import tensorflow as tf
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D
+from tensorflow.keras.layers import LeakyReLU
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.optimizers import Adam
 
 
-def getShape(layer, input=False):
+def get_shape(layer, input_shape=False):
     one_dim_orientation = 'z'
-    if(input):
+    if input_shape:
         layer_shape = layer.input_shape
     else:
         layer_shape = layer.output_shape
@@ -31,12 +31,15 @@ def getShape(layer, input=False):
         else:
             raise ValueError(f"unsupported orientation: {one_dim_orientation}")
 
-    shape[2] = shape[2] * (1.005 ** (-shape[2]))
+    if shape[2] == 73728:
+        shape[2] = shape[2]/1000
+    else:
+        shape[2] = shape[2] / np.log(shape[2])
     # print(layer.name, layer.__class__.__name__, shape, "input_shape" if input else "output_shape")
     return shape
 
 
-def moveCamera(x_camera, y_camera, z_camera):
+def move_camera(x_camera, y_camera, z_camera):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -105,47 +108,47 @@ def get_model():
     return model
 
 
-def create_model(classCount, imgSize, channels):
+def create_model(class_count, img_size, channels):
 
-    modelLogits = Sequential()
+    model_logits = Sequential()
 
-    modelLogits.add(Conv2D(128, (5, 5), input_shape=(imgSize, imgSize, channels), name='layer_conv1'))
-    # modelLogits.add(LeakyReLU(alpha=0.01))
-    # modelLogits.add(BatchNormalization())
-    # modelLogits.add(Dropout(0.5))
+    model_logits.add(Conv2D(128, (5, 5), input_shape=(img_size, img_size, channels), name='layer_conv1'))
+    # model_logits.add(LeakyReLU(alpha=0.01))
+    # model_logits.add(BatchNormalization())
+    # model_logits.add(Dropout(0.5))
 
-    # modelLogits.add(Conv2D(196, (2, 2), name='layer_conv2'))
-    # modelLogits.add(LeakyReLU(alpha=0.01))
-    # modelLogits.add(Conv2D(196, (2, 2), name='layer_conv3'))
-    # modelLogits.add(LeakyReLU(alpha=0.01))
-    # modelLogits.add(Conv2D(196, (5, 5), name='layer_conv4'))
-    # modelLogits.add(LeakyReLU(alpha=0.01))
-    # modelLogits.add(MaxPooling2D(pool_size=(2, 2)))
-    # modelLogits.add(BatchNormalization())
-    # modelLogits.add(Dropout(0.5))
+    # model_logits.add(Conv2D(196, (2, 2), name='layer_conv2'))
+    # model_logits.add(LeakyReLU(alpha=0.01))
+    # model_logits.add(Conv2D(196, (2, 2), name='layer_conv3'))
+    # model_logits.add(LeakyReLU(alpha=0.01))
+    # model_logits.add(Conv2D(196, (5, 5), name='layer_conv4'))
+    # model_logits.add(LeakyReLU(alpha=0.01))
+    # model_logits.add(MaxPooling2D(pool_size=(2, 2)))
+    # model_logits.add(BatchNormalization())
+    # model_logits.add(Dropout(0.5))
 
-    # modelLogits.add(Conv2D(256, (2, 2), name='layer_conv5'))
-    # modelLogits.add(LeakyReLU(alpha=0.01))
-    # modelLogits.add(Conv2D(256, (2, 2), name='layer_conv6'))
-    # modelLogits.add(LeakyReLU(alpha=0.01))
-    # modelLogits.add(Conv2D(256, (2, 2), name='layer_conv7'))
-    # modelLogits.add(LeakyReLU(alpha=0.01))
-    # modelLogits.add(MaxPooling2D(pool_size=(2, 2)))
-    # modelLogits.add(BatchNormalization())
-    # modelLogits.add(Dropout(0.5))
+    # model_logits.add(Conv2D(256, (2, 2), name='layer_conv5'))
+    # model_logits.add(LeakyReLU(alpha=0.01))
+    # model_logits.add(Conv2D(256, (2, 2), name='layer_conv6'))
+    # model_logits.add(LeakyReLU(alpha=0.01))
+    # model_logits.add(Conv2D(256, (2, 2), name='layer_conv7'))
+    # model_logits.add(LeakyReLU(alpha=0.01))
+    # model_logits.add(MaxPooling2D(pool_size=(2, 2)))
+    # model_logits.add(BatchNormalization())
+    # model_logits.add(Dropout(0.5))
 
-    modelLogits.add(Flatten())
-    # modelLogits.add(LeakyReLU(alpha=0.0))
-    modelLogits.add(Dense(384))
-    modelLogits.add(LeakyReLU(alpha=0.0))
-    modelLogits.add(Dropout(0.5))
+    model_logits.add(Flatten())
+    # model_logits.add(LeakyReLU(alpha=0.0))
+    model_logits.add(Dense(384))
+    model_logits.add(LeakyReLU(alpha=0.0))
+    model_logits.add(Dropout(0.5))
 
-    modelLogits.add(Dense(classCount))
+    model_logits.add(Dense(class_count))
 
-    output = Activation('softmax')(modelLogits.output)
+    output = Activation('softmax')(model_logits.output)
 
-    model = tf.keras.Model(modelLogits.inputs, output)
+    model = tf.keras.Model(model_logits.inputs, output)
 
     opt = Adam(learning_rate=0.0005)
     model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
-    return model, modelLogits
+    return model, model_logits

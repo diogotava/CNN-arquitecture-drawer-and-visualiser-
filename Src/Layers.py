@@ -1,43 +1,59 @@
-from genericpath import exists
-from unittest import case
-from Src.DrawShapes import *
 import random
 
-from Src.Utils import getShape
+from Src.DrawShapes import *
+from Src.Utils import get_shape
 
 
-class layersDrawer:
+class LayersDrawer:
     layersColors = {"Conv2D": [1.0, 0.5, 0.0],
                     "Dense": [1.0, 0.0, 0.0]}
 
-    def drawLayer(self, layerType, *args):
+    def __init__(self):
+        self.m_x_position = 0
+        self.space_between_layers = 5
 
-        if(layerType == "Conv2D"):
-            layersDrawer.drawConv2DLayer(self, args[1], args[2])
-        elif(layerType == "Dense"):
-            inputShape = getShape(args[0], input=True)
-            layersDrawer.drawDense(self, args[1], inputShape, args[2])
+    def draw_layer(self, layer_type, *args):
+        shape = get_shape(args[0])
+
+        if layer_type == "Dense":
+            self.m_x_position = self.m_x_position + 5 + self.space_between_layers
         else:
-            if(layerType not in self.layersColors.keys()):
+            self.m_x_position = self.m_x_position + (shape[2]/2) + self.space_between_layers
+
+        if layer_type == "Conv2D":
+            LayersDrawer.draw_conv_2d_layer(self, shape, self.m_x_position)
+
+        elif layer_type == "Dense":
+            input_shape = get_shape(args[0], input_shape=True)
+            LayersDrawer.draw_dense(self, shape, input_shape, self.m_x_position)
+
+        else:
+            if layer_type not in self.layersColors.keys():
                 value1 = random.uniform(0.0, 1.0)
                 value2 = random.uniform(0.0, 1.0)
                 value3 = random.uniform(0.0, 1.0)
                 c = [value1, value2, value3]
-                while(c in self.layersColors.values()):
+
+                while c in self.layersColors.values():
                     value1 = random.uniform(0.0, 1.0)
                     value2 = random.uniform(0.0, 1.0)
                     value3 = random.uniform(0.0, 1.0)
                     c = [value1, value2, value3]
 
-                self.layersColors[layerType] = c
-            color = self.layersColors[layerType]
+                self.layersColors[layer_type] = c
+            color = self.layersColors[layer_type]
 
-            Cube(args[1], args[2], color)
+            cube(shape, self.m_x_position, color)
 
-    def drawConv2DLayer(self, shape, position):
+        if layer_type == "Dense":
+            self.m_x_position = self.m_x_position + 5
+        else:
+            self.m_x_position = self.m_x_position + (shape[2]/2)
+
+    def draw_conv_2d_layer(self, shape, position):
         color = self.layersColors["Conv2D"]
-        Cube(shape, position, color)
+        cube(shape, position, color)
 
-    def drawDense(self, outputShape, inputShape, position):
+    def draw_dense(self, output_shape, input_shape, position):
         color = self.layersColors["Dense"]
-        Pollygon(inputShape, outputShape, position, color)
+        polygon(input_shape, output_shape, position, color)

@@ -1,13 +1,10 @@
-
-import pygame
 # from Src.DrawShapes import Cube
-from Src.Layers import *
-from Src.Utils import *
-
-from pygame.locals import *
-
 from OpenGL.GL import *
 from OpenGL.GLU import *
+from pygame.locals import *
+
+from Src.Layers import *
+from Src.Utils import *
 
 
 def main():
@@ -25,8 +22,6 @@ def main():
     display = (1920, 1080)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
-    spaceBetweenLayers = 5
-
     glClearColor(1, 1, 1, 0.5)
     glClear(GL_COLOR_BUFFER_BIT)
 
@@ -34,15 +29,14 @@ def main():
 
     glTranslatef(0, 0, -5)
 
-    glRotatef(0, 0, 0, 0)
+    glRotatef(-20, 0, 1, 0)
 
     glEnable(GL_CULL_FACE)
     glEnable(GL_DEPTH_TEST)
     while True:
-        x_camera, y_camera, z_camera = moveCamera(x_camera, y_camera, z_camera)
+        x_camera, y_camera, z_camera = move_camera(x_camera, y_camera, z_camera)
         glTranslatef(x_camera, y_camera, z_camera)
 
-        mXPosition = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -50,26 +44,10 @@ def main():
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        layerDrawer = layersDrawer()
+        layer_drawer = LayersDrawer()
         for index, layer in enumerate(layers):
 
-            shape = getShape(layer)
-            if(layer.__class__.__name__ == "Dense"):
-                inputShape = getShape(layer, input=True)
-                if (index != 0):
-                    s = 10
-                    mXPosition = mXPosition + (s/2) + spaceBetweenLayers
-            else:
-                if (index != 0):
-                    mXPosition = mXPosition + (shape[2]/2) + spaceBetweenLayers
-
-            layerDrawer.drawLayer(layer.__class__.__name__, layer, shape, mXPosition)
-
-            if(layer.__class__.__name__ == "Dense"):
-                s = abs(shape[2] - inputShape[2])
-                mXPosition = mXPosition + (s/2)
-            else:
-                mXPosition = mXPosition + (shape[2]/2)
+            layer_drawer.draw_layer(layer.__class__.__name__, layer, index)
 
         pygame.display.flip()
         pygame.time.wait(10)
