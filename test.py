@@ -12,11 +12,9 @@ from OpenGL.GLU import *
 
 def main():
     model = get_model()
-    one_dim_orientation = 'z'
     layers = []
-    for i, layer in enumerate(model.layers):
-        layers.append(layer)
-        print(layer.name, type(layer), layer.output_shape)
+    for i, layer_to_save in enumerate(model.layers):
+        layers.append(layer_to_save)
 
     pygame.init()
     x_camera = 0
@@ -53,29 +51,25 @@ def main():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         layerDrawer = layersDrawer()
-        for index in range(len(layers)):
+        for index, layer in enumerate(layers):
 
-            if isinstance(layer.output_shape, tuple):
-                shape = layer.output_shape
-            elif isinstance(layer.output_shape, list) and len(
-                    layer.output_shape) == 1:  # drop dimension for non seq. models
-                shape = layer.output_shape[0]
+            shape = getShape(layer)
+            if(layer.__class__.__name__ == "Dense"):
+                inputShape = getShape(layer, input=True)
+                if (index != 0):
+                    s = 10
+                    mXPosition = mXPosition + (s/2) + spaceBetweenLayers
             else:
-                raise RuntimeError(f"not supported tensor shape {layer.output_shape}")
+                if (index != 0):
+                    mXPosition = mXPosition + (shape[2]/2) + spaceBetweenLayers
 
-            shape = shape[1:]
-            if len(shape) == 1:
-                if one_dim_orientation in ['x', 'y', 'z']:
-                    shape = (1, ) * "xyz".index(one_dim_orientation) + shape
-                else:
-                    raise ValueError(f"unsupported orientation: {one_dim_orientation}")
+            layerDrawer.drawLayer(layer.__class__.__name__, layer, shape, mXPosition)
 
-            if (index != 0):
-                mXPosition = mXPosition + (shape[2]/2) + spaceBetweenLayers
-
-            layerDrawer.drawLayer(layers[index].__class__.__name__, layers[index], shape, mXPosition)
-
-            mXPosition = mXPosition + (shape[2]/2)
+            if(layer.__class__.__name__ == "Dense"):
+                s = abs(shape[2] - inputShape[2])
+                mXPosition = mXPosition + (s/2)
+            else:
+                mXPosition = mXPosition + (shape[2]/2)
 
         pygame.display.flip()
         pygame.time.wait(10)

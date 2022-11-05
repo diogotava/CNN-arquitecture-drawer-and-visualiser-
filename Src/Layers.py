@@ -3,16 +3,20 @@ from unittest import case
 from Src.DrawShapes import *
 import random
 
+from Src.Utils import getShape
+
 
 class layersDrawer:
     layersColors = {"Conv2D": [1.0, 0.5, 0.0],
                     "Dense": [1.0, 0.0, 0.0]}
 
     def drawLayer(self, layerType, *args):
+
         if(layerType == "Conv2D"):
             layersDrawer.drawConv2DLayer(self, args[1], args[2])
         elif(layerType == "Dense"):
-            layersDrawer.drawDense(self, args[1], args[2])
+            inputShape = getShape(args[0], input=True)
+            layersDrawer.drawDense(self, args[1], inputShape, args[2])
         else:
             if(layerType not in self.layersColors.keys()):
                 value1 = random.uniform(0.0, 1.0)
@@ -34,6 +38,6 @@ class layersDrawer:
         color = self.layersColors["Conv2D"]
         Cube(shape, position, color)
 
-    def drawDense(self, shape, position):
+    def drawDense(self, outputShape, inputShape, position):
         color = self.layersColors["Dense"]
-        Cube(shape, position, color)
+        Pollygon(inputShape, outputShape, position, color)
