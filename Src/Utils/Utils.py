@@ -6,6 +6,13 @@ from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D
 from tensorflow.keras.layers import LeakyReLU
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
+from OpenGL.GL import *
+from OpenGL.GLU import *
+
+min_x = 5
+min_zy = 5
+max_zy = 200
+max_x = 400
 
 
 def get_shape(layer, input_shape=False):
@@ -31,64 +38,13 @@ def get_shape(layer, input_shape=False):
         else:
             raise ValueError(f"unsupported orientation: {one_dim_orientation}")
 
-    if shape[2] == 73728:
-        shape[2] = shape[2]/1000
-    else:
-        shape[2] = shape[2] / np.log(shape[2])
-    # print(layer.name, layer.__class__.__name__, shape, "input_shape" if input else "output_shape")
-    return shape
+    shape[2] = shape[2] / np.log(shape[2])
 
-
-def move_camera(x_camera, y_camera, z_camera):
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            quit()
-
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                quit()
-
-            if event.key == pygame.K_a:
-                x_camera = 0.8
-
-            elif event.key == pygame.K_d:
-                x_camera = -0.8
-
-            elif event.key == pygame.K_w:
-                z_camera = 0.8
-
-            elif event.key == pygame.K_s:
-                z_camera = -0.8
-
-            elif event.key == pygame.K_LSHIFT:
-                y_camera = -0.8
-
-            elif event.key == pygame.K_LCTRL:
-                y_camera = 0.8
-
-        elif event.type == pygame.KEYUP:
-
-            if event.key == pygame.K_a and x_camera > 0:
-                x_camera = 0
-
-            elif event.key == pygame.K_d and x_camera < 0:
-                x_camera = 0
-
-            elif event.key == pygame.K_w and z_camera > 0:
-                z_camera = 0
-
-            elif event.key == pygame.K_s and z_camera < 0:
-                z_camera = 0
-
-            elif event.key == pygame.K_LSHIFT and y_camera < 0:
-                y_camera = 0
-
-            elif event.key == pygame.K_LCTRL and y_camera > 0:
-                y_camera = 0
-
-    return x_camera, y_camera, z_camera
+    shape_return = shape.copy()
+    shape_return[0] = min(max(shape[2], min_x), max_x)
+    shape_return[1] = min(max(shape[1], min_zy), max_zy)
+    shape_return[2] = min(max(shape[0], min_zy), max_zy)
+    return shape_return
 
 
 def get_model():
