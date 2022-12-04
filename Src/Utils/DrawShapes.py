@@ -26,7 +26,7 @@ def polygon(dimensions_lower_x, dimensions_bigger_x, shift, color, value_x):
                 (-x / 2 + shift, dimensions_lower_x[y] / 2, dimensions_lower_x[z] / 2),
                 )
 
-    glColor4f(color[0], color[1], color[2], color[3])
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color)
     glBegin(GL_QUADS)
     glVertex3f(vertices[1][x_vert], vertices[1][y_vert], vertices[1][z_vert])
     glVertex3f(vertices[2][x_vert], vertices[2][y_vert], vertices[2][z_vert])
@@ -60,7 +60,7 @@ def polygon(dimensions_lower_x, dimensions_bigger_x, shift, color, value_x):
 
     glEnd()
 
-    glColor3f(0.0, 0.0, 0.0)
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, [0.0, 0.0, 0.0, 1.0])
     glLineWidth(5)
     glBegin(GL_LINES)
     for edge in edges:
@@ -90,7 +90,7 @@ def cube(dimensions_cube, shift, color):
                 (-value_x / 2 + shift, value_y / 2, value_z / 2),
                 )
 
-    glColor4f(color[0], color[1], color[2], color[3])
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color)
     glBegin(GL_QUADS)
     glVertex3f(vertices[1][x], vertices[1][y], vertices[1][z])
     glVertex3f(vertices[2][x], vertices[2][y], vertices[2][z])
@@ -124,7 +124,7 @@ def cube(dimensions_cube, shift, color):
 
     glEnd()
 
-    glColor3f(0.0, 0.0, 0.0)
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, [0.0, 0.0, 0.0, 1.0])
     glLineWidth(5)
     glBegin(GL_LINES)
     for edge in edges:

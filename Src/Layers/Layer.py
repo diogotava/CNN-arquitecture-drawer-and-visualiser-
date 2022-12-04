@@ -3,9 +3,15 @@ from Src.Utils.DrawShapes import *
 
 class Layer:
     def __init__(self, color, shape, x_position, layers, index):
-        previous_layer = layers[index-1]
+        if(index - 1 > 0):
+            previous_layer = layers[index-1]
+        else:
+            previous_layer = None
         layer = layers[index]
-        next_layer = layers[index+1]
+        if(index + 1 < len(layers)):
+            next_layer = layers[index+1]
+        else:
+            next_layer = None
 
         self.color = color
         self.shape = shape
@@ -19,4 +25,8 @@ class Layer:
 
     def draw(self):
         self.x_position = cube(self.shape, self.x_position, self.color)
+        return self.x_position
+
+    def draw_color(self, color_code):
+        self.x_position = cube(self.shape, self.x_position, color_code)
         return self.x_position

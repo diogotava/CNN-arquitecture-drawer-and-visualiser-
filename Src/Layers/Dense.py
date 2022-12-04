@@ -1,6 +1,6 @@
 from Src.Layers.Layer import Layer
 from Src.Utils.DrawShapes import *
-from Src.Utils.Utils import get_shape
+from Src.Utils.Model import get_shape
 
 
 class Dense(Layer):
@@ -11,4 +11,8 @@ class Dense(Layer):
 
     def draw(self):
         self.x_position = cube(self.shape, self.x_position, self.color)
+        return self.x_position
+
+    def draw_color(self, color_code):
+        self.x_position = cube(self.shape, self.x_position, color_code)
         return self.x_position
