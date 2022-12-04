@@ -30,13 +30,12 @@ def init():
 
 
 def main():
-    display = [1920, 1080]
+    global w, h
     print("USe left mouse button to explore the scene, the right button to zoom, and the middle button for picking\n")
     glutInit()
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA)
     glutInitWindowPosition(0, 0)
-    glutInitWindowSize(display[0], display[1])
-    gluPerspective(45, (display[0]/display[1]), 0.1, 15000.0)
+    glutInitWindowSize(h, w)
     glutCreateWindow("Picking SnowMen from CG @ DI")
     glLoadIdentity()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)

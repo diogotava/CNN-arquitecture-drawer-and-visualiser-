@@ -9,7 +9,7 @@ from Src.Utils.Values import *
 
 
 def changeSize(ww, hh):
-
+    global w, h, near, far
     ratio = 0.0
 
     w = ww
@@ -29,12 +29,12 @@ def changeSize(ww, hh):
     glViewport(0, 0, w, h)
 
     # Set the clipping volume
-    gluPerspective(45, ratio, 1, 1000)
+    gluPerspective(45, ratio, near, far)
     glMatrixMode(GL_MODELVIEW)
 
 
 def renderScene():
-    global camX, camY, camZ
+    global camX, camY, camZ, w, h
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
@@ -102,27 +102,27 @@ def processNormalKeys(key, x, y):
         quit(0)
     elif key == b'c':
         print("Camera : ", alpha, beta, r)
-    elif key == b'a':
+    elif key == b'm':
         mode = not mode
         print("Mode : ", mode)
-    elif key == b't':
-        # camX = camX + 0.8
-        lookX = lookX + 0.8
-    elif key == b'g':
-        # camX = camX - 0.8
-        lookX = lookX - 0.8
-    elif key == b'h':
-        # camY = camY + 0.8
-        lookY = lookY + 0.8
-    elif key == b'f':
-        # camY = camY - 0.8
-        lookY = lookY - 0.8
-    elif key == b'y':
-        # camZ = camZ + 0.8
-        lookZ = lookZ + 0.8
-    elif key == b'r':
-        # camZ = camZ - 0.8
-        lookZ = lookZ - 0.8
+    elif key == b'w':
+        # camX = camX + 5
+        lookX = lookX + 5
+    elif key == b's':
+        # camX = camX - 5
+        lookX = lookX - 5
+    elif key == b'd':
+        # camY = camY + 5
+        lookY = lookY + 5
+    elif key == b'a':
+        # camY = camY - 5
+        lookY = lookY - 5
+    elif key == b'e':
+        # camZ = camZ + 5
+        lookZ = lookZ + 5
+    elif key == b'q':
+        # camZ = camZ - 5
+        lookZ = lookZ - 5
     glutPostRedisplay()
 
 
@@ -160,7 +160,7 @@ def processMouseButtons(button, state, xx, yy):
 
 
 def processMouseMotion(xx,  yy):
-    global camX, camY, camZ, alpha, beta, r
+    global camX, camY, camZ, lookX, lookY, lookZ, alpha, beta, r
     deltaX = 0
     deltaY = 0
     alphaAux = 0
@@ -192,8 +192,8 @@ def processMouseMotion(xx,  yy):
         if rAux < 3:
             rAux = 3
 
-    camX = rAux * math.sin(alphaAux * 3.14 / 180.0) * math.cos(betaAux * 3.14 / 180.0)
-    camY = rAux * math.cos(alphaAux * 3.14 / 180.0) * math.cos(betaAux * 3.14 / 180.0)
-    camZ = rAux * math.sin(betaAux * 3.14 / 180.0)
+    camX = lookX + rAux * math.sin(alphaAux * 3.14 / 180.0) * math.cos(betaAux * 3.14 / 180.0)
+    camY = lookY + rAux * math.cos(alphaAux * 3.14 / 180.0) * math.cos(betaAux * 3.14 / 180.0)
+    camZ = lookZ + rAux * math.sin(betaAux * 3.14 / 180.0)
 
     glutPostRedisplay()

@@ -13,8 +13,10 @@ alpha = -228.0
 beta = 6.0
 r = 271.0
 
-w = 0
-h = 0
+w = 1080
+h = 1920
+near = 0.1
+far = 15000
 s = "\0" * 128
 timebase = 0
 frame = 0
