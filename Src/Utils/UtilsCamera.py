@@ -43,13 +43,13 @@ def renderScene():
               0.0, 0.0, 1.0)
 
     dir = [1.0, 1.0, 1.0, 1.0]
-    glLightfv(GL_LIGHT0, GL_POSITION, dir)
+    glLightfv(GL_LIGHT0, GL_AMBIENT, dir)
 
     # Draw layers
     layer_drawer = LayersDrawer()
     for index, layer in enumerate(layers):
         glPushMatrix()
-        layer_drawer.draw_layer(layer.__class__.__name__, layers, layer, index)
+        layer_drawer.draw_layer(layer.__class__.__name__, layer)
         glPopMatrix()
 
         # renderText()
@@ -80,7 +80,7 @@ def picking(x, y):
     layer_drawer = LayersDrawer()
     for index, layer in enumerate(layers):
         glPushMatrix()
-        layer_drawer.draw_layer_code(layer.__class__.__name__, (index+1), layers, layer, index)
+        layer_drawer.draw_layer_code(layer.__class__.__name__, (index), layer)
         glPopMatrix()
 
     glDepthFunc(GL_LESS)
@@ -129,7 +129,7 @@ def processNormalKeys(key, x, y):
 def processMouseButtons(button, state, xx, yy):
     global tracking, alpha, beta, r, startX, startY
 
-    print(xx, yy)
+    # print(xx, yy)
     if (state == GLUT_DOWN):
         startX = xx
         startY = yy
@@ -141,7 +141,7 @@ def processMouseButtons(button, state, xx, yy):
             tracking = 0
             picked = picking(xx, yy)
             if (picked):
-                print("Picked Snowman number ", picked)
+                print("Picked Layer number ", picked)
             else:
                 print("Nothing selected")
                 glutPostRedisplay()

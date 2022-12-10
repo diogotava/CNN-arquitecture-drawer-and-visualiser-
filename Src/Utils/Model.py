@@ -50,15 +50,15 @@ def get_shape(layer, input_shape=False):
 def get_model():
     model = load_model("model_GTSRB_train1_val1_02//cp-0057.ckpt")
 
-    model = tf.keras.applications.VGG16(
-        include_top=True,
-        weights="imagenet",
-        input_tensor=None,
-        input_shape=None,
-        pooling=None,
-        classes=1000,
-        classifier_activation="softmax",
-    )
+    # model = tf.keras.applications.VGG16(
+    #     include_top=True,
+    #     weights="imagenet",
+    #     input_tensor=None,
+    #     input_shape=None,
+    #     pooling=None,
+    #     classes=1000,
+    #     classifier_activation="softmax",
+    # )
 
     model.summary()
     # model, _ = create_model(10, 28, 3)

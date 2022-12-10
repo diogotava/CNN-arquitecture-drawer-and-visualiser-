@@ -16,30 +16,30 @@ class LayersDrawer:
         self.m_x_position = 0
         self.layers_drawn = []
 
-    def draw_layer(self, layer_type, layers, layer_model, index):
+    def draw_layer(self, layer_type, layer_model):
         shape = get_shape(layer_model)
         if layer_type == "Conv2D":
-            conv2D = Conv2D(shape, self.m_x_position, layers, index)
+            conv2D = Conv2D(shape, self.m_x_position, layer_model)
             self.m_x_position = conv2D.draw()
             self.layers_drawn.append(conv2D)
 
         elif layer_type == "Dense":
-            dense = Dense(shape, self.m_x_position, layers, index)
+            dense = Dense(shape, self.m_x_position, layer_model)
             self.m_x_position = dense.draw()
             self.layers_drawn.append(dense)
 
         elif layer_type == "Flatten":
-            flatten = Dense(shape, self.m_x_position, layers, index, [1.0, 0.0, 1.0, 0.7])
+            flatten = Dense(shape, self.m_x_position, layer_model, [1.0, 0.0, 1.0, 1.0])
             self.m_x_position = flatten.draw()
             self.layers_drawn.append(flatten)
 
         elif layer_type == "Dropout":
-            flatten = Dense(shape, self.m_x_position, layers, index, [0.0, 1.0, 1.0, 0.7])
+            flatten = Dense(shape, self.m_x_position, layer_model, [0.0, 1.0, 1.0, 1.0])
             self.m_x_position = flatten.draw()
             self.layers_drawn.append(flatten)
 
         elif layer_type == "InputLayer":
-            input = Input(shape, self.m_x_position, layers, index)
+            input = Input(shape, self.m_x_position, layer_model)
             self.m_x_position = input.draw()
             self.layers_drawn.append(input)
 
@@ -48,12 +48,12 @@ class LayersDrawer:
         elif layer_type in self.layersNotToDraw:
             return
         else:
-            color = [0.0, 0.0, 0.0, 0.7]
-            layer = Layer(color, shape, self.m_x_position, layers, index)
+            color = [0.0, 0.0, 0.0, 1.0]
+            layer = Layer(color, shape, self.m_x_position, layer_model)
             self.m_x_position = layer.draw()
             self.layers_drawn.append(layer)
 
-    def draw_layer_code(self, layer_type, code, layers, layer_model, index):
+    def draw_layer_code(self, layer_type, code, layer_model):
         global mode
         color_code = 0
         if (mode):
@@ -64,27 +64,27 @@ class LayersDrawer:
 
         shape = get_shape(layer_model)
         if layer_type == "Conv2D":
-            conv2D = Conv2D(shape, self.m_x_position, layers, index)
+            conv2D = Conv2D(shape, self.m_x_position, layer_model)
             self.m_x_position = conv2D.draw_color(color_layer)
             self.layers_drawn.append(conv2D)
 
         elif layer_type == "Dense":
-            dense = Dense(shape, self.m_x_position, layers, index)
+            dense = Dense(shape, self.m_x_position, layer_model)
             self.m_x_position = dense.draw_color(color_layer)
             self.layers_drawn.append(dense)
 
         elif layer_type == "Flatten":
-            flatten = Dense(shape, self.m_x_position, layers, index, [1.0, 0.0, 1.0, 0.7])
+            flatten = Dense(shape, self.m_x_position, layer_model)
             self.m_x_position = flatten.draw_color(color_layer)
             self.layers_drawn.append(flatten)
 
         elif layer_type == "Dropout":
-            flatten = Dense(shape, self.m_x_position, layers, index, [0.0, 1.0, 1.0, 0.7])
+            flatten = Dense(shape, self.m_x_position, layer_model)
             self.m_x_position = flatten.draw_color(color_layer)
             self.layers_drawn.append(flatten)
 
         elif layer_type == "InputLayer":
-            input = Input(shape, self.m_x_position, layers, index)
+            input = Input(shape, self.m_x_position, layer_model)
             self.m_x_position = input.draw_color(color_layer)
             self.layers_drawn.append(input)
 
@@ -93,7 +93,7 @@ class LayersDrawer:
         elif layer_type in self.layersNotToDraw:
             return
         else:
-            color = [0.0, 0.0, 0.0, 0.7]
-            layer = Layer(color, shape, self.m_x_position, layers, index)
+            color = [0.0, 0.0, 0.0, 1.0]
+            layer = Layer(color, shape, self.m_x_position, layer_model)
             self.m_x_position = layer.draw_color(color_layer)
             self.layers_drawn.append(layer)

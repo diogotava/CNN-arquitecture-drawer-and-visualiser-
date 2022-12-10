@@ -3,16 +3,18 @@ from Src.Utils.DrawShapes import *
 
 
 class Conv2D(Layer):
-    def __init__(self, shape, x_position, layers, index) -> None:
-        color = [1.0, 0.5, 0.0, 0.7]
+    def __init__(self, shape, x_position, layer) -> None:
+        color = [1.0, 0.5, 0.0, 1.0]
 
-        Layer.__init__(self, color, shape, x_position, layers, index)
+        Layer.__init__(self, color, shape, x_position, layer)
         pass
 
     def draw(self):
-        self.x_position = cube(self.shape, self.x_position, self.color)
-        return self.x_position
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, self.color)
+        self.center_position[0] = cube(self.shape, self.center_position[0])
+        return self.center_position[0]
 
     def draw_color(self, color_code):
-        self.x_position = cube(self.shape, self.x_position, color_code)
-        return self.x_position
+        glColor4f(color_code[0], color_code[1], color_code[2], color_code[3])
+        self.center_position[0] = cube(self.shape, self.center_position[0])
+        return self.center_position[0]
