@@ -30,3 +30,6 @@ blue = [0., 0.45, 0.8, 1.0]
 picked = 0
 
 mode = False
+
+layersNotToDraw = ["LeakyReLU"]
+layersNotToConsider = layersNotToDraw + ['Activation']

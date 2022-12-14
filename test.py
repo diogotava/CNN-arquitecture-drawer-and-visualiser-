@@ -11,9 +11,12 @@ from Src.Utils.UtilsCamera import *
 import math
 
 model = get_model()
+layer_drawer = LayersDrawer()
 layers = []
-for i, layer_to_save in enumerate(model.layers):
-    layers.append(layer_to_save)
+for layer_to_save in model.layers:
+    layer = layer_drawer.create_layer(layer_to_save.__class__.__name__, layer_to_save)
+    if layer != None:
+        layers.append(layer)
 
 
 def init():
@@ -36,7 +39,7 @@ def main():
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA)
     glutInitWindowPosition(0, 0)
     glutInitWindowSize(h, w)
-    glutCreateWindow("Picking SnowMen from CG @ DI")
+    glutCreateWindow("CNN Arquitecture Visualiser")
     glLoadIdentity()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 

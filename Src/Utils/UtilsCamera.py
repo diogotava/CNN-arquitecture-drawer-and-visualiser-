@@ -33,6 +33,35 @@ def changeSize(ww, hh):
     glMatrixMode(GL_MODELVIEW)
 
 
+def draw_layer(layer, x_position=None):
+    glPushMatrix()
+    if x_position != None:
+        # altera o valor de XPosition do layer para o novo valor x_position
+        layer.setXPosition(x_position)
+
+    # desenha o layer
+    xPosition = layer.draw()
+    glPopMatrix()
+
+    # desenha o layer seguinte ao atual
+    if type(layer.next_layer) == list:
+        for next_layer in layer.next_layer:
+            # vai buscar o layer correspondente ao next_layer
+            layer_to_draw = [e for e in layers if e.id == next_layer.name]
+            if len(layer_to_draw) > 1:
+                print("ERRRRRROOOOOOORRRRRR!!!!!!!")
+
+            # desenha o próximo layer
+            draw_layer(layer_to_draw[0], xPosition)
+    elif layer.next_layer != None:
+        # vai buscar o layer correspondente ao next_layer
+        layer_to_draw = [e for e in layers if e.id == layer.next_layer.name]
+        if len(layer_to_draw) > 1:
+            print("ERRRRRROOOOOOORRRRRR!!!!!!!")
+        # desenha o próximo layer
+        draw_layer(layer_to_draw[0], xPosition)
+
+
 def renderScene():
     global camX, camY, camZ, w, h
 
@@ -46,13 +75,10 @@ def renderScene():
     glLightfv(GL_LIGHT0, GL_AMBIENT, dir)
 
     # Draw layers
-    layer_drawer = LayersDrawer()
-    for index, layer in enumerate(layers):
-        glPushMatrix()
-        layer_drawer.draw_layer(layer.__class__.__name__, layer)
-        glPopMatrix()
+    layer = layers[0]
+    draw_layer(layer)
 
-        # renderText()
+    # renderText()
 
     if mode:
         picking(0, 0)
@@ -61,7 +87,7 @@ def renderScene():
 
 
 def picking(x, y):
-    global camX, camY, camZ, lookX, lookY, lookZ
+    global camX, camY, camZ, lookX, lookY, lookZ, mode
     res = []
     viewport = []
 
@@ -76,11 +102,16 @@ def picking(x, y):
               0.0, 0.0, 1.0)
     glDepthFunc(GL_LEQUAL)
 
-    # Draw SnowMen
-    layer_drawer = LayersDrawer()
+    # Draw layers
     for index, layer in enumerate(layers):
         glPushMatrix()
-        layer_drawer.draw_layer_code(layer.__class__.__name__, (index), layer)
+        color_code = 0
+        if (mode):
+            index = 100 + (index+1) * 25
+        color_code = (index+1) / 255.0
+
+        color_layer = [color_code, color_code, color_code, 1.0]
+        layer.draw_color(color_layer)
         glPopMatrix()
 
     glDepthFunc(GL_LESS)

@@ -60,7 +60,7 @@ def get_model():
     #     classifier_activation="softmax",
     # )
 
-    model.summary()
+    # model.summary()
     # model, _ = create_model(10, 28, 3)
     return model
 
