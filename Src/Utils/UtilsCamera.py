@@ -3,7 +3,6 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 from pygame.locals import *
 from Src.Layers.LayerDrawer import *
-from test import layers
 import math
 from Src.Utils.Values import *
 
@@ -33,33 +32,83 @@ def changeSize(ww, hh):
     glMatrixMode(GL_MODELVIEW)
 
 
-def draw_layer(layer, x_position=None):
-    glPushMatrix()
+def get_lateral_position_layers(layer, layers_lateral=None, x_position=None, y_position=None):
+    if y_position != None:
+        if len(layer.previous_layers) > 1:
+            y_position = 0
+        # altera o valor de yPosition do layer para o novo valor y_position
+        layer.setYPosition(y_position)
+
     if x_position != None:
         # altera o valor de XPosition do layer para o novo valor x_position
         layer.setXPosition(x_position)
 
+    if layers_lateral == None:
+        layers_lateral = []
+
+    # desenha o layer seguinte ao atual
+    if len(layer.next_layers) > 1:
+        for index, next_layer in enumerate(layer.next_layers):
+            # vai buscar o layer correspondente ao next_layer
+            layer_to_get_lateral = [e for e in layers if e.id == next_layer.name]
+            if len(layer_to_get_lateral) > 1:
+                print("ERROR!!")
+
+            n = len(layer.next_layers)/2
+            # desenha o próximo layer
+            if(index+1 <= n):
+                if(y_position != None):
+                    y_position = y_position-(index+1)*40
+                else:
+                    y_position = -(index+1)*40
+
+            else:
+                if(y_position != None):
+                    y_position = y_position + (index+1)*40
+                else:
+                    y_position = (index+1)*40
+
+            if(layer_to_get_lateral[0].id not in layers_lateral):
+                layers_lateral.append(layer_to_get_lateral[0].id)
+                x_position = layer.center_position[0] + layer.shape[0] / 2
+                get_lateral_position_layers(layer_to_get_lateral[0], layers_lateral, x_position, y_position)
+    elif len(layer.next_layers) == 1:
+        layer_to_get_lateral = [e for e in layers if e.id == layer.next_layers[0].name]
+        if len(layer_to_get_lateral) > 1:
+            print("ERROR!!")
+        if(layer_to_get_lateral[0].id not in layers_lateral):
+            layers_lateral.append(layer_to_get_lateral[0].id)
+            x_position = layer.center_position[0] + layer.shape[0] / 2
+            get_lateral_position_layers(layer_to_get_lateral[0], layers_lateral, x_position, y_position)
+    return
+
+
+def draw_layer(layer, layers_drawn):
+    glPushMatrix()
+
     # desenha o layer
-    xPosition = layer.draw()
+    layer.draw()
+    layers_drawn.append(layer.id)
     glPopMatrix()
 
     # desenha o layer seguinte ao atual
-    if type(layer.next_layer) == list:
-        for next_layer in layer.next_layer:
+    n = len(layer.next_layers)/2
+    if len(layer.next_layers) > 1:
+        for index, next_layer in enumerate(layer.next_layers):
             # vai buscar o layer correspondente ao next_layer
             layer_to_draw = [e for e in layers if e.id == next_layer.name]
             if len(layer_to_draw) > 1:
-                print("ERRRRRROOOOOOORRRRRR!!!!!!!")
+                print("ERROR!!")
 
             # desenha o próximo layer
-            draw_layer(layer_to_draw[0], xPosition)
-    elif layer.next_layer != None:
-        # vai buscar o layer correspondente ao next_layer
-        layer_to_draw = [e for e in layers if e.id == layer.next_layer.name]
+            if(layer_to_draw[0].id not in layers_drawn):
+                draw_layer(layer_to_draw[0], layers_drawn)
+    elif len(layer.next_layers) == 1:
+        layer_to_draw = [e for e in layers if e.id == layer.next_layers[0].name]
         if len(layer_to_draw) > 1:
-            print("ERRRRRROOOOOOORRRRRR!!!!!!!")
-        # desenha o próximo layer
-        draw_layer(layer_to_draw[0], xPosition)
+            print("ERROR!!")
+        if(layer_to_draw[0].id not in layers_drawn):
+            draw_layer(layer_to_draw[0], layers_drawn)
 
 
 def renderScene():
@@ -76,7 +125,8 @@ def renderScene():
 
     # Draw layers
     layer = layers[0]
-    draw_layer(layer)
+    layers_drawn = []
+    draw_layer(layer, layers_drawn)
 
     # renderText()
 
@@ -137,22 +187,22 @@ def processNormalKeys(key, x, y):
         mode = not mode
         print("Mode : ", mode)
     elif key == b'w':
-        # camX = camX + 5
+        camX = camX + 5
         lookX = lookX + 5
     elif key == b's':
-        # camX = camX - 5
+        camX = camX - 5
         lookX = lookX - 5
     elif key == b'd':
-        # camY = camY + 5
+        camY = camY + 5
         lookY = lookY + 5
     elif key == b'a':
-        # camY = camY - 5
+        camY = camY - 5
         lookY = lookY - 5
     elif key == b'e':
-        # camZ = camZ + 5
+        camZ = camZ + 5
         lookZ = lookZ + 5
     elif key == b'q':
-        # camZ = camZ - 5
+        camZ = camZ - 5
         lookZ = lookZ - 5
     glutPostRedisplay()
 

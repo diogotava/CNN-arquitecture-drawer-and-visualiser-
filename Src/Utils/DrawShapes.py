@@ -75,18 +75,18 @@ def cube(dimensions_cube, shift):
     y = 1
     z = 2
 
-    value_x = dimensions_cube[x]
-    value_y = dimensions_cube[y]
-    value_z = dimensions_cube[z]
+    value_x = dimensions_cube[x] / 2
+    value_y = dimensions_cube[y] / 2
+    value_z = dimensions_cube[z] / 2
 
-    vertices = ((value_x / 2 + shift, -value_y / 2, -value_z / 2),
-                (value_x / 2 + shift, value_y / 2, -value_z / 2),
-                (-value_x / 2 + shift, value_y / 2, -value_z / 2),
-                (-value_x / 2 + shift, -value_y / 2, -value_z / 2),
-                (value_x / 2 + shift, -value_y / 2, value_z / 2),
-                (value_x / 2 + shift, value_y / 2, value_z / 2),
-                (-value_x / 2 + shift, -value_y / 2, value_z / 2),
-                (-value_x / 2 + shift, value_y / 2, value_z / 2),
+    vertices = ((value_x + shift[x], -value_y + shift[y], -value_z + shift[z]),
+                (value_x + shift[x], value_y + shift[y], -value_z + shift[z]),
+                (-value_x + shift[x], value_y + shift[y], -value_z + shift[z]),
+                (-value_x + shift[x], -value_y + shift[y], -value_z + shift[z]),
+                (value_x + shift[x], -value_y + shift[y], value_z + shift[z]),
+                (value_x + shift[x], value_y + shift[y], value_z + shift[z]),
+                (-value_x + shift[x], -value_y + shift[y], value_z + shift[z]),
+                (-value_x + shift[x], value_y + shift[y], value_z + shift[z]),
                 )
 
     glBegin(GL_QUADS)

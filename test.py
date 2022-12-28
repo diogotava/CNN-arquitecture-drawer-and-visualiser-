@@ -7,16 +7,20 @@ from pygame.locals import *
 
 from Src.Layers.LayerDrawer import *
 from Src.Utils.Model import *
-from Src.Utils.UtilsCamera import *
+from Src.Utils.Values import *
+from Src.Utils.UtilsCamera import get_lateral_position_layers, renderScene, changeSize, processMouseButtons, processMouseMotion, processNormalKeys
 import math
 
 model = get_model()
+model.summary()
 layer_drawer = LayersDrawer()
-layers = []
+
 for layer_to_save in model.layers:
     layer = layer_drawer.create_layer(layer_to_save.__class__.__name__, layer_to_save)
     if layer != None:
         layers.append(layer)
+
+get_lateral_position_layers(layers[0])
 
 
 def init():

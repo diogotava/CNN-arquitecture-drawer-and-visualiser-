@@ -33,3 +33,4 @@ mode = False
 
 layersNotToDraw = ["LeakyReLU"]
 layersNotToConsider = layersNotToDraw + ['Activation']
+layers = []
