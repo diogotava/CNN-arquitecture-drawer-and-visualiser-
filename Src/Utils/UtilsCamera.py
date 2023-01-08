@@ -1,3 +1,7 @@
+from PyQt5.QtWidgets import *
+import PyQt5.QtCore as QtCore
+from PyQt5.QtGui import *
+from PyQt5.Qt import Qt
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
@@ -5,6 +9,7 @@ from pygame.locals import *
 from Src.Layers.LayerDrawer import *
 import math
 from Src.Utils.Values import *
+from Src.Utils.Model import get_shape
 
 
 def changeSize(ww, hh):
@@ -32,83 +37,35 @@ def changeSize(ww, hh):
     glMatrixMode(GL_MODELVIEW)
 
 
-def get_lateral_position_layers(layer, layers_lateral=None, x_position=None, y_position=None):
-    if y_position != None:
-        if len(layer.previous_layers) > 1:
-            y_position = 0
-        # altera o valor de yPosition do layer para o novo valor y_position
-        layer.setYPosition(y_position)
-
-    if x_position != None:
-        # altera o valor de XPosition do layer para o novo valor x_position
-        layer.setXPosition(x_position)
-
-    if layers_lateral == None:
-        layers_lateral = []
-
-    # desenha o layer seguinte ao atual
-    if len(layer.next_layers) > 1:
-        for index, next_layer in enumerate(layer.next_layers):
-            # vai buscar o layer correspondente ao next_layer
-            layer_to_get_lateral = [e for e in layers if e.id == next_layer.name]
-            if len(layer_to_get_lateral) > 1:
-                print("ERROR!!")
-
-            n = len(layer.next_layers)/2
-            # desenha o próximo layer
-            if(index+1 <= n):
-                if(y_position != None):
-                    y_position = y_position-(index+1)*40
-                else:
-                    y_position = -(index+1)*40
-
-            else:
-                if(y_position != None):
-                    y_position = y_position + (index+1)*40
-                else:
-                    y_position = (index+1)*40
-
-            if(layer_to_get_lateral[0].id not in layers_lateral):
-                layers_lateral.append(layer_to_get_lateral[0].id)
-                x_position = layer.center_position[0] + layer.shape[0] / 2
-                get_lateral_position_layers(layer_to_get_lateral[0], layers_lateral, x_position, y_position)
-    elif len(layer.next_layers) == 1:
-        layer_to_get_lateral = [e for e in layers if e.id == layer.next_layers[0].name]
-        if len(layer_to_get_lateral) > 1:
-            print("ERROR!!")
-        if(layer_to_get_lateral[0].id not in layers_lateral):
-            layers_lateral.append(layer_to_get_lateral[0].id)
-            x_position = layer.center_position[0] + layer.shape[0] / 2
-            get_lateral_position_layers(layer_to_get_lateral[0], layers_lateral, x_position, y_position)
-    return
-
-
 def draw_layer(layer, layers_drawn):
     glPushMatrix()
 
     # desenha o layer
     layer.draw()
-    layers_drawn.append(layer.id)
+    layers_drawn.append(layer.name)
     glPopMatrix()
 
     # desenha o layer seguinte ao atual
     n = len(layer.next_layers)/2
     if len(layer.next_layers) > 1:
         for index, next_layer in enumerate(layer.next_layers):
-            # vai buscar o layer correspondente ao next_layer
-            layer_to_draw = [e for e in layers if e.id == next_layer.name]
-            if len(layer_to_draw) > 1:
-                print("ERROR!!")
-
             # desenha o próximo layer
-            if(layer_to_draw[0].id not in layers_drawn):
-                draw_layer(layer_to_draw[0], layers_drawn)
+            if(next_layer.name not in layers_drawn):
+                draw_layer(next_layer, layers_drawn)
+
     elif len(layer.next_layers) == 1:
-        layer_to_draw = [e for e in layers if e.id == layer.next_layers[0].name]
-        if len(layer_to_draw) > 1:
-            print("ERROR!!")
-        if(layer_to_draw[0].id not in layers_drawn):
-            draw_layer(layer_to_draw[0], layers_drawn)
+        next_layer = layer.next_layers[0]
+        if(next_layer.name not in layers_drawn):
+            draw_layer(next_layer, layers_drawn)
+
+
+def renderText(parent, layer=None):
+    if layer == None:
+        text = f"<b>Nothing Selected!</b>"
+    else:
+        input_shape = get_shape(layer.original_model_layer, True)
+        text = f"<b>Layer</b>: '{layer.name}'<br><b>Input shape</b>: {input_shape[0]: .2f} X {input_shape[1]: .2f} X {input_shape[2]: .2f}<br><b>Output shape</b>: {layer.shape[0]: .2f} X {layer.shape[1]: .2f} X {layer.shape[2]: .2f}"
+    parent.labelWidget.setText(text)
 
 
 def renderScene():
@@ -128,12 +85,8 @@ def renderScene():
     layers_drawn = []
     draw_layer(layer, layers_drawn)
 
-    # renderText()
-
     if mode:
         picking(0, 0)
-
-    glutSwapBuffers()
 
 
 def picking(x, y):
@@ -156,8 +109,7 @@ def picking(x, y):
     for index, layer in enumerate(layers):
         glPushMatrix()
         color_code = 0
-        if (mode):
-            index = 100 + (index+1) * 25
+
         color_code = (index+1) / 255.0
 
         color_layer = [color_code, color_code, color_code, 1.0]
@@ -177,57 +129,56 @@ def picking(x, y):
 # MOUSE AND KEYBOARD
 # ----------------------------------------------------------
 
-def processNormalKeys(key, x, y):
+def processNormalKeys(key):
     global camX, camY, camZ, lookX, lookY, lookZ, mode, alpha, beta, r
-    if key == b'\x1b':
+    if key == Qt.Key_Escape:
         quit(0)
-    elif key == b'c':
+    elif key == Qt.Key_C:
         print("Camera : ", alpha, beta, r)
-    elif key == b'm':
+    elif key == Qt.Key_M:
         mode = not mode
         print("Mode : ", mode)
-    elif key == b'w':
+    elif key == Qt.Key_W:
         camX = camX + 5
         lookX = lookX + 5
-    elif key == b's':
+    elif key == Qt.Key_S:
         camX = camX - 5
         lookX = lookX - 5
-    elif key == b'd':
+    elif key == Qt.Key_D:
         camY = camY + 5
         lookY = lookY + 5
-    elif key == b'a':
+    elif key == Qt.Key_A:
         camY = camY - 5
         lookY = lookY - 5
-    elif key == b'e':
+    elif key == Qt.Key_E:
         camZ = camZ + 5
         lookZ = lookZ + 5
-    elif key == b'q':
+    elif key == Qt.Key_Q:
         camZ = camZ - 5
         lookZ = lookZ - 5
-    glutPostRedisplay()
 
 
-def processMouseButtons(button, state, xx, yy):
+def processMouseButtons(button, state, xx, yy, parent):
     global tracking, alpha, beta, r, startX, startY
 
     # print(xx, yy)
-    if (state == GLUT_DOWN):
+    if (state == True):
         startX = xx
         startY = yy
-        if (button == GLUT_LEFT_BUTTON):
+        if (button == QtCore.Qt.LeftButton):
             tracking = 1
-        elif (button == GLUT_RIGHT_BUTTON):
+        elif (button == QtCore.Qt.RightButton):
             tracking = 2
         else:  # Middle button
             tracking = 0
             picked = picking(xx, yy)
-            if (picked):
-                print("Picked Layer number ", picked)
+            if picked and picked != 255:
+                layer_to_render_text = [e for e in layers if e.id == picked]
+                renderText(parent, layer_to_render_text[0])
             else:
-                print("Nothing selected")
-                glutPostRedisplay()
+                renderText(parent)
 
-    elif state == GLUT_UP:
+    elif state == False:
         if tracking == 1:
             alpha += (xx - startX)
             beta += (yy - startY)
@@ -276,5 +227,3 @@ def processMouseMotion(xx,  yy):
     camX = lookX + rAux * math.sin(alphaAux * 3.14 / 180.0) * math.cos(betaAux * 3.14 / 180.0)
     camY = lookY + rAux * math.cos(alphaAux * 3.14 / 180.0) * math.cos(betaAux * 3.14 / 180.0)
     camZ = lookZ + rAux * math.sin(betaAux * 3.14 / 180.0)
-
-    glutPostRedisplay()

@@ -6,11 +6,20 @@ def getNextLayer(outbound_nodes):
     next_layers = []
     if len(outbound_nodes) != 0:
         for out_node in outbound_nodes:
-            layer = out_node.outbound_layer
-            if out_node.outbound_layer != None and layer.__class__.__name__ not in layersNotToConsider:
-                next_layers.append(layer)
+            layers = out_node.outbound_layer
+
+            if type(layers) == list:
+                for layer in layers:
+                    if layer.__class__.__name__ not in layersNotToConsider:
+                        next_layers.append(layer)
+                    else:
+                        next_layers_of_next = getNextLayer(layer.outbound_nodes)
+                        next_layers = next_layers + next_layers_of_next
             else:
-                next_layers = getNextLayer(out_node.outbound_layer.outbound_nodes)
+                if layers.__class__.__name__ not in layersNotToConsider:
+                    next_layers.append(layers)
+                else:
+                    next_layers = getNextLayer(layers.outbound_nodes)
 
     return next_layers
 
@@ -26,7 +35,7 @@ def getPrevLayer(inbound_nodes):
                         prev_layers.append(layer)
                     else:
                         prev_layers_of_prev = getPrevLayer(layer.inbound_nodes)
-                        prev_layers.append(prev_layers_of_prev)
+                        prev_layers = prev_layers + prev_layers_of_prev
             else:
                 if layers.__class__.__name__ not in layersNotToConsider:
                     prev_layers.append(layers)
@@ -37,15 +46,17 @@ def getPrevLayer(inbound_nodes):
 
 
 class Layer:
+    space_between_layers = 5
+    lateral_space_between_layers = 20
+
     def __init__(self, color, shape, layer):
         previous_layers = getPrevLayer(layer._inbound_nodes)
 
         next_layers = getNextLayer(layer._outbound_nodes)
         self.center_position = [0, 0, 0]
-        self.id = layer.name
+        self.name = layer.name
         self.color = color
         self.shape = shape
-        self.space_between_layers = 5
         self.original_model_layer = layer
         self.previous_layers = previous_layers
         self.next_layers = next_layers

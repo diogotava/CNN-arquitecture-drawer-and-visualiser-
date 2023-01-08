@@ -123,7 +123,7 @@ def cube(dimensions_cube, shift):
     glEnd()
 
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, [0.0, 0.0, 0.0, 1.0])
-    glLineWidth(5)
+    glLineWidth(2)
     glBegin(GL_LINES)
     for edge in edges:
         for vertex in edge:
