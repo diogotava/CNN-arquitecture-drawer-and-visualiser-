@@ -24,6 +24,7 @@ class OpenGLWidget(QOpenGLWidget):
         global camX, camY, camZ, alpha, betha, r
 
         glEnable(GL_DEPTH_TEST)
+        glEnable(GL_MULTISAMPLE)
         # glEnable(GL_CULL_FACE)
 
         glEnable(GL_LIGHTING)

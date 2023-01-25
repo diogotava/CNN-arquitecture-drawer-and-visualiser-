@@ -64,7 +64,7 @@ def renderText(parent, layer=None):
         text = f"<b>Nothing Selected!</b>"
     else:
         input_shape = get_shape(layer.original_model_layer, True)
-        text = f"<b>Layer</b>: '{layer.name}'<br><b>Input shape</b>: {input_shape[0]: .2f} X {input_shape[1]: .2f} X {input_shape[2]: .2f}<br><b>Output shape</b>: {layer.shape[0]: .2f} X {layer.shape[1]: .2f} X {layer.shape[2]: .2f}"
+        text = f"<b>Layer:</b> '{layer.name}'<br><b>Type: </b>{layer.__class__.__name__}<br><b>Input shape:</b> {input_shape[0]: .2f} X {input_shape[1]: .2f} X {input_shape[2]: .2f}<br><b>Output shape:</b> {layer.shape[0]: .2f} X {layer.shape[1]: .2f} X {layer.shape[2]: .2f}"
     parent.labelWidget.setText(text)
 
 

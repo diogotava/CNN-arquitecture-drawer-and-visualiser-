@@ -12,7 +12,10 @@ class MainWindow(QMainWindow):
         layout = QHBoxLayout()
 
         self.openglwidget = OpenGLWidget(self)
-        self.labelWidget = LabelWidget('')
+        # fmt = QSurfaceFormat()
+        # fmt.setSamples(8)
+        # self.openglwidget.setFormat(fmt)
+        self.labelWidget = LabelWidget(f"<b>Nothing Selected!</b>")
         self.labelWidget.setIndent(QtCore.Qt.AlignTop)
         layout.addWidget(self.labelWidget)
         layout.addWidget(self.openglwidget)

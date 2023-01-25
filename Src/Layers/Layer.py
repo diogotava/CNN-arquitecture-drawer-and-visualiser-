@@ -46,12 +46,12 @@ def getPrevLayer(inbound_nodes):
 
 
 class Layer:
-    space_between_layers = 5
-    lateral_space_between_layers = 20
 
     def __init__(self, color, shape, layer):
         previous_layers = getPrevLayer(layer._inbound_nodes)
 
+        self.lateral_space_between_layers = 10
+        self.space_between_layers = 5
         next_layers = getNextLayer(layer._outbound_nodes)
         self.center_position = [0, 0, 0]
         self.name = layer.name
