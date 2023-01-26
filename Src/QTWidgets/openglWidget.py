@@ -28,7 +28,9 @@ class OpenGLWidget(QOpenGLWidget):
         # glEnable(GL_CULL_FACE)
 
         glEnable(GL_LIGHTING)
-        glEnable(GL_LIGHT0)
+        ambient_light = [1., 1., 1., 1.0]
+        glLightfv(GL_LIGHT1, GL_AMBIENT, ambient_light)
+        glEnable(GL_LIGHT1)
 
         camX = r * math.sin(alpha * 3.14 / 180.0) * math.cos(beta * 3.14 / 180.0)
         camZ = r * math.cos(alpha * 3.14 / 180.0) * math.cos(beta * 3.14 / 180.0)

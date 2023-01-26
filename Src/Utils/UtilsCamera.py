@@ -77,9 +77,6 @@ def renderScene():
               lookX, lookY, lookZ,
               0.0, 0.0, 1.0)
 
-    dir = [1.0, 1.0, 1.0, 1.0]
-    glLightfv(GL_LIGHT0, GL_AMBIENT, dir)
-
     # Draw layers
     layer = layers[0]
     layers_drawn = []
