@@ -1,7 +1,7 @@
 import random
 
 from Src.Utils.DrawShapes import *
-from Src.Utils.Model import get_shape
+from Src.Utils.Model import get_shapes
 from Src.Layers.Conv2D import *
 from Src.Layers.Input import *
 from Src.Layers.Dense import *
@@ -14,7 +14,7 @@ class LayersDrawer:
         self.layers_to_draw = []
 
     def create_layer(self, layer_type, layer_model):
-        shape = get_shape(layer_model)
+        shape = get_shapes(layer_model)[0]
         layer = None
         if layer_type not in layersNotToDraw:
             if layer_type == "Conv2D":

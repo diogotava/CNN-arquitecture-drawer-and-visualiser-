@@ -4,12 +4,11 @@ from PyQt5.QtGui import *
 from PyQt5.Qt import Qt
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from OpenGL.GLUT import *
 from pygame.locals import *
 from Src.Layers.LayerDrawer import *
 import math
 from Src.Utils.Values import *
-from Src.Utils.Model import get_shape
+from Src.Utils.Model import get_shapes
 
 
 def changeSize(ww, hh):
@@ -60,11 +59,29 @@ def draw_layer(layer, layers_drawn):
 
 
 def renderText(parent, layer=None):
+    global selected_layer
     if layer == None:
+        selected_layer.selected = False
+        selected_layer = None
         text = f"<b>Nothing Selected!</b>"
     else:
-        input_shape = get_shape(layer.original_model_layer, True)
-        text = f"<b>Layer:</b> '{layer.name}'<br><b>Type: </b>{layer.__class__.__name__}<br><b>Input shape:</b> {input_shape[0]: .2f} X {input_shape[1]: .2f} X {input_shape[2]: .2f}<br><b>Output shape:</b> {layer.shape[0]: .2f} X {layer.shape[1]: .2f} X {layer.shape[2]: .2f}"
+        if selected_layer != None:
+            selected_layer.selected = False
+        selected_layer = layer
+        layer.selected = True
+        input_shape = get_shapes(layer.original_model_layer, True, True)
+        if(len(input_shape) > 1):
+            text = f"<b>Layer:</b> '{layer.name}'<br><b>Type: </b>{layer.__class__.__name__}<br><b>Input shape:</b>"
+            for index, shape in enumerate(input_shape):
+                if index > 0:
+                    text = text + "&nbsp;"*25 + f"({shape[0]: .2f} X {shape[1]: .2f} X {shape[2]: .2f})<br>"
+                else:
+                    text = text + f" ({shape[0]: .2f} X {shape[1]: .2f} X {shape[2]: .2f})<br>"
+
+            text = text + f"<b>Output shape:</b> ({layer.shape[0]: .2f} X {layer.shape[1]: .2f} X {layer.shape[2]: .2f})"
+        else:
+            shape = input_shape[0]
+            text = f"<b>Layer:</b> '{layer.name}'<br><b>Type: </b>{layer.__class__.__name__}<br><b>Input shape:</b> ({shape[0]: .2f} X {shape[1]: .2f} X {shape[2]: .2f})<br><b>Output shape:</b> ({layer.shape[0]: .2f} X {layer.shape[1]: .2f} X {layer.shape[2]: .2f})"
     parent.labelWidget.setText(text)
 
 
@@ -81,9 +98,6 @@ def renderScene():
     layer = layers[0]
     layers_drawn = []
     draw_layer(layer, layers_drawn)
-
-    if mode:
-        picking(0, 0)
 
 
 def picking(x, y):
@@ -110,7 +124,7 @@ def picking(x, y):
         color_code = (index+1) / 255.0
 
         color_layer = [color_code, color_code, color_code, 1.0]
-        layer.draw_color(color_layer)
+        layer.draw(color_layer)
         glPopMatrix()
 
     glDepthFunc(GL_LESS)
@@ -170,7 +184,7 @@ def processMouseButtons(button, state, xx, yy, parent):
             tracking = 0
             picked = picking(xx, yy)
             if picked and picked != 255:
-                layer_to_render_text = [e for e in layers if e.id == picked]
+                layer_to_render_text = [e for e in layers if e.id == picked-1]
                 renderText(parent, layer_to_render_text[0])
             else:
                 renderText(parent)

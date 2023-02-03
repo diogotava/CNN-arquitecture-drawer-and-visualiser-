@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from OpenGL.GL import *
-from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from Src.Layers.LayerDrawer import *
 from Src.Utils.Model import *
@@ -15,7 +14,7 @@ import math
 class OpenGLWidget(QOpenGLWidget):
     def __init__(self, parent=None):
         self.parent = parent
-        QOpenGLWidget.__init__(self, parent)
+        super().__init__(parent)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update)
         self.timer.start(0)
@@ -24,8 +23,7 @@ class OpenGLWidget(QOpenGLWidget):
         global camX, camY, camZ, alpha, betha, r
 
         glEnable(GL_DEPTH_TEST)
-        glEnable(GL_MULTISAMPLE)
-        # glEnable(GL_CULL_FACE)
+        glEnable(GL_CULL_FACE)
 
         glEnable(GL_LIGHTING)
         ambient_light = [1., 1., 1., 1.0]

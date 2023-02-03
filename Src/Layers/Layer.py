@@ -50,6 +50,7 @@ class Layer:
     def __init__(self, color, shape, layer):
         previous_layers = getPrevLayer(layer._inbound_nodes)
 
+        self.selected = False
         self.lateral_space_between_layers = 10
         self.space_between_layers = 5
         next_layers = getNextLayer(layer._outbound_nodes)
@@ -69,10 +70,16 @@ class Layer:
     def setYPosition(self, y_position):
         self.center_position[1] = y_position
 
-    def draw(self):
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, self.color)
-        cube(self.shape, self.center_position)
-
-    def draw_color(self, color_code):
-        glColor4f(color_code[0], color_code[1], color_code[2], color_code[3])
+    def draw(self, color_code=None):
+        if self.selected:
+            if color_code != None:
+                glColor4f(color_code[0], color_code[1], color_code[2], color_code[3])
+            else:
+                color = [1.0, 0.0, 0.0, 1.0]
+                glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color)
+        else:
+            if color_code != None:
+                glColor4f(color_code[0], color_code[1], color_code[2], color_code[3])
+            else:
+                glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, self.color)
         cube(self.shape, self.center_position)

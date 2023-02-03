@@ -34,3 +34,7 @@ mode = False
 layersNotToDraw = ["LeakyReLU"]
 layersNotToConsider = layersNotToDraw + ['Activation']
 layers = []
+
+space_between_layers_open_agregate = 20
+
+selected_layer = None

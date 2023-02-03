@@ -9,12 +9,11 @@ from Src.Utils.UtilsCamera import processNormalKeys
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
+
         layout = QHBoxLayout()
 
         self.openglwidget = OpenGLWidget(self)
-        # fmt = QSurfaceFormat()
-        # fmt.setSamples(8)
-        # self.openglwidget.setFormat(fmt)
+
         self.labelWidget = LabelWidget(f"<b>Nothing Selected!</b>")
         self.labelWidget.setIndent(QtCore.Qt.AlignTop)
         layout.addWidget(self.labelWidget)

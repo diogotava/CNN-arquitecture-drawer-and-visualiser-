@@ -15,8 +15,7 @@ max_zy = 200
 max_x = 400
 
 
-def get_shape(layer, input_shape=False):
-    one_dim_orientation = 'z'
+def get_shapes(layer, input_shape=False, correct_shape=False):
     if input_shape:
         layer_shape = layer.input_shape
     else:
@@ -24,14 +23,34 @@ def get_shape(layer, input_shape=False):
 
     if isinstance(layer_shape, tuple):
         shape = list(layer_shape)
+
+        shape = shape[1:]
+        if not correct_shape:
+            shape_return = [get_shape(shape)]
     elif isinstance(layer_shape, list) and len(layer_shape) == 1:  # drop dimension for non seq. models
         shape = layer_shape[0]
         if isinstance(shape, tuple):
             shape = list(shape)
-    else:
-        raise RuntimeError(f"not supported tensor shape {layer_shape}")
 
-    shape = shape[1:]
+        shape = shape[1:]
+        if not correct_shape:
+            shape_return = [get_shape(shape)]
+    else:
+        shape_return = []
+        for shape in layer_shape:
+            if isinstance(shape, tuple):
+                shape = list(shape)
+            shape = shape[1:]
+            if not correct_shape:
+                shape = get_shape(shape)
+            shape_return.append(shape)
+
+    return shape_return
+
+
+def get_shape(shape):
+    one_dim_orientation = 'z'
+
     if len(shape) == 1:
         if one_dim_orientation in ['x', 'y', 'z']:
             shape = list((1, ) * "xyz".index(one_dim_orientation) + tuple(shape))
