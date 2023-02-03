@@ -23,6 +23,7 @@ for layer in layers:
     get_prev_layers(layer)
 
 get_lateral_position_layers(layers[0])
+align_previous_layers(layers[0])
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -43,6 +43,30 @@ def get_max_width(layer):
     return max(max_layers.get(layer.name, 0), count)
 
 
+def align_previous_layers(layer, layers_viewed=None):
+    if layers_viewed == None:
+        layers_viewed = []
+
+    if(layer.name not in layers_viewed):
+        if len(layer.previous_layers) > 1:
+            max_x = 0
+            for prevLayer in layer.previous_layers:
+                if len(prevLayer.next_layers) == 1:
+                    x = prevLayer.center_position[0] + prevLayer.shape[0] / 2
+                    if(x > max_x):
+                        max_x = x
+            for prevLayer in layer.previous_layers:
+                if len(prevLayer.next_layers) == 1:
+                    x = prevLayer.center_position[0] + prevLayer.shape[0] / 2
+                    if(x != max_x):
+                        new_x = max_x - prevLayer.shape[0] / 2
+                        prevLayer.center_position[0] = new_x
+
+    layers_viewed.append(layer.name)
+    for next_layer in layer.next_layers:
+        align_previous_layers(next_layer, layers_viewed)
+
+
 def get_lateral_position_layers(layer, layers_lateral=None, x_position=None, y_position=None, nr_layers=0, space_between_layers=None):
     if y_position != None:
         if len(layer.previous_layers) > 1:
@@ -61,7 +85,7 @@ def get_lateral_position_layers(layer, layers_lateral=None, x_position=None, y_p
         layer.setXPosition(x_position)
 
     if layers_lateral == None:
-        layers_lateral = []
+        layers_lateral = [layer.name]
 
     # desenha o layer seguinte ao atual
     if len(layer.next_layers) > 1:
