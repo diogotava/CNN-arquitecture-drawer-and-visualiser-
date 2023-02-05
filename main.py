@@ -12,11 +12,10 @@ layer_drawer = LayersDrawer()
 index = 0
 for layer_to_save in model.layers:
     layer = layer_drawer.create_layer(layer_to_save.__class__.__name__, layer_to_save)
-    if layer != None:
+    if layer is not None:
         layer.id = index
         layers.append(layer)
         index += 1
-
 
 for layer in layers:
     get_next_layers(layer)

@@ -1,12 +1,9 @@
-import random
-
-from Src.Utils.DrawShapes import *
-from Src.Utils.Model import get_shapes
 from Src.Layers.Conv2D import *
-from Src.Layers.Input import *
 from Src.Layers.Dense import *
+from Src.Layers.Input import *
 from Src.Layers.Layer import *
-from Src.Utils.Values import mode, layersNotToDraw
+from Src.Utils.Model import get_shapes
+from Src.Utils.Values import layersNotToDraw
 
 
 class LayersDrawer:

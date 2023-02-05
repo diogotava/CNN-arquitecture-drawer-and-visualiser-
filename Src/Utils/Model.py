@@ -1,13 +1,11 @@
 
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.models import load_model
 from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D
 from tensorflow.keras.layers import LeakyReLU
 from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam
-from OpenGL.GL import *
-from OpenGL.GLU import *
 
 min_x = 5
 min_zy = 5

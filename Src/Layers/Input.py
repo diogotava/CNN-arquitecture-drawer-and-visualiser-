@@ -1,4 +1,3 @@
-from Src.Utils.DrawShapes import *
 from Src.Layers.Layer import Layer
 
 

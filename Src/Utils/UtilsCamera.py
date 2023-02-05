@@ -1,19 +1,16 @@
-from PyQt5.QtWidgets import *
-import PyQt5.QtCore as QtCore
-from PyQt5.QtGui import *
-from PyQt5.Qt import Qt
-from OpenGL.GL import *
-from OpenGL.GLU import *
-from pygame.locals import *
-from Src.Layers.LayerDrawer import *
 import math
-from Src.Utils.Values import *
+
+import PyQt5.QtCore as QtCore
+from OpenGL.GLU import *
+from PyQt5.Qt import Qt
+
+from Src.Layers.LayerDrawer import *
 from Src.Utils.Model import get_shapes
+from Src.Utils.Values import *
 
 
-def changeSize(ww, hh):
+def change_size(ww, hh):
     global w, h, near, far
-    ratio = 0.0
 
     w = ww
     h = hh
@@ -45,48 +42,49 @@ def draw_layer(layer, layers_drawn):
     glPopMatrix()
 
     # desenha o layer seguinte ao atual
-    n = len(layer.next_layers)/2
     if len(layer.next_layers) > 1:
         for index, next_layer in enumerate(layer.next_layers):
             # desenha o próximo layer
-            if(next_layer.name not in layers_drawn):
+            if next_layer.name not in layers_drawn:
                 draw_layer(next_layer, layers_drawn)
 
     elif len(layer.next_layers) == 1:
         next_layer = layer.next_layers[0]
-        if(next_layer.name not in layers_drawn):
+        if next_layer.name not in layers_drawn:
             draw_layer(next_layer, layers_drawn)
 
 
-def renderText(parent, layer=None):
+def render_text(parent, layer=None):
     global selected_layer
-    if layer == None:
-        if selected_layer != None:
+    if layer is None:
+        if selected_layer is not None:
             selected_layer.selected = False
         selected_layer = None
         text = f"<b>Nothing Selected!</b>"
     else:
-        if selected_layer != None:
+        if selected_layer is not None:
             selected_layer.selected = False
         selected_layer = layer
         layer.selected = True
         input_shape = get_shapes(layer.original_model_layer, True, True)
-        if(len(input_shape) > 1):
+        if len(input_shape) > 1:
             text = f"<b>Layer:</b> '{layer.name}'<br><b>Type: </b>{layer.__class__.__name__}<br><b>Input shape:</b>"
             for index, shape in enumerate(input_shape):
                 if index > 0:
-                    text = text + "&nbsp;"*25 + f"({shape[0]: .2f} X {shape[1]: .2f} X {shape[2]: .2f})<br>"
+                    text = text + "&nbsp;" * 25 + f"({shape[0]: .2f} X {shape[1]: .2f} X {shape[2]: .2f})<br>"
                 else:
                     text = text + f" ({shape[0]: .2f} X {shape[1]: .2f} X {shape[2]: .2f})<br>"
 
             text = text + f"<b>Output shape:</b> ({layer.shape[0]: .2f} X {layer.shape[1]: .2f} X {layer.shape[2]: .2f})"
         else:
             shape = input_shape[0]
-            text = f"<b>Layer:</b> '{layer.name}'<br><b>Type: </b>{layer.__class__.__name__}<br><b>Input shape:</b> ({shape[0]: .2f} X {shape[1]: .2f} X {shape[2]: .2f})<br><b>Output shape:</b> ({layer.shape[0]: .2f} X {layer.shape[1]: .2f} X {layer.shape[2]: .2f})"
+            text = f"<b>Layer:</b> '{layer.name}'<br><b>Type: </b>{layer.__class__.__name__}<br><b>Input shape:</b> " \
+                   f"({shape[0]: .2f} X {shape[1]: .2f} X {shape[2]: .2f})<br><b>Output shape:</b> ({layer.shape[0]: .2f} X " \
+                   f"{layer.shape[1]: .2f} X {layer.shape[2]: .2f}) "
     parent.labelWidget.setText(text)
 
 
-def renderScene():
+def render_scene():
     global camX, camY, camZ, w, h
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -103,8 +101,6 @@ def renderScene():
 
 def picking(x, y):
     global camX, camY, camZ, lookX, lookY, lookZ, mode
-    res = []
-    viewport = []
 
     glDisable(GL_LIGHTING)
 
@@ -120,9 +116,8 @@ def picking(x, y):
     # Draw layers
     for index, layer in enumerate(layers):
         glPushMatrix()
-        color_code = 0
 
-        color_code = (index+1) / 255.0
+        color_code = (index + 1) / 255.0
 
         color_layer = [color_code, color_code, color_code, 1.0]
         layer.draw(color_layer)
@@ -141,7 +136,7 @@ def picking(x, y):
 # MOUSE AND KEYBOARD
 # ----------------------------------------------------------
 
-def processNormalKeys(key):
+def process_normal_keys(key):
     global camX, camY, camZ, lookX, lookY, lookZ, mode, alpha, beta, r
     if key == Qt.Key_Escape:
         quit(0)
@@ -170,27 +165,27 @@ def processNormalKeys(key):
         lookZ = lookZ - 5
 
 
-def processMouseButtons(button, state, xx, yy, parent):
+def process_mouse_buttons(button, state, xx, yy, parent):
     global tracking, alpha, beta, r, startX, startY
 
     # print(xx, yy)
-    if (state == True):
+    if state:
         startX = xx
         startY = yy
-        if (button == QtCore.Qt.LeftButton):
+        if button == QtCore.Qt.LeftButton:
             tracking = 1
-        elif (button == QtCore.Qt.RightButton):
+        elif button == QtCore.Qt.RightButton:
             tracking = 2
         else:  # Middle button
             tracking = 0
-            picked = picking(xx, yy)
-            if picked and picked != 255:
-                layer_to_render_text = [e for e in layers if e.id == picked-1]
-                renderText(parent, layer_to_render_text[0])
+            index_layer_picked = picking(xx, yy)
+            if index_layer_picked and index_layer_picked != 255:
+                layer_to_render_text = [e for e in layers if e.id == index_layer_picked - 1]
+                render_text(parent, layer_to_render_text[0])
             else:
-                renderText(parent)
+                render_text(parent)
 
-    elif state == False:
+    elif not state:
         if tracking == 1:
             alpha += (xx - startX)
             beta += (yy - startY)
@@ -203,39 +198,37 @@ def processMouseButtons(button, state, xx, yy, parent):
         tracking = 0
 
 
-def processMouseMotion(xx,  yy):
+def process_mouse_motion(xx, yy):
     global camX, camY, camZ, lookX, lookY, lookZ, alpha, beta, r
-    deltaX = 0
-    deltaY = 0
-    alphaAux = 0
-    betaAux = 0
-    rAux = 0
+    alpha_aux = 0
+    beta_aux = 0
+    r_aux = 0
 
     if not tracking:
         return
 
-    deltaX = xx - startX
-    deltaY = yy - startY
+    delta_x = xx - startX
+    delta_y = yy - startY
 
     if tracking == 1:
-        alphaAux = alpha + deltaX
-        betaAux = beta + deltaY
+        alpha_aux = alpha + delta_x
+        beta_aux = beta + delta_y
 
-        if betaAux > 85.0:
-            betaAux = 85.0
-        elif betaAux < -85.0:
-            betaAux = -85.0
+        if beta_aux > 85.0:
+            beta_aux = 85.0
+        elif beta_aux < -85.0:
+            beta_aux = -85.0
 
-        rAux = r
+        r_aux = r
 
     elif tracking == 2:
 
-        alphaAux = alpha
-        betaAux = beta
-        rAux = r - deltaY
-        if rAux < 3:
-            rAux = 3
+        alpha_aux = alpha
+        beta_aux = beta
+        r_aux = r - delta_y
+        if r_aux < 3:
+            r_aux = 3
 
-    camX = lookX + rAux * math.sin(alphaAux * 3.14 / 180.0) * math.cos(betaAux * 3.14 / 180.0)
-    camY = lookY + rAux * math.cos(alphaAux * 3.14 / 180.0) * math.cos(betaAux * 3.14 / 180.0)
-    camZ = lookZ + rAux * math.sin(betaAux * 3.14 / 180.0)
+    camX = lookX + r_aux * math.sin(alpha_aux * 3.14 / 180.0) * math.cos(beta_aux * 3.14 / 180.0)
+    camY = lookY + r_aux * math.cos(alpha_aux * 3.14 / 180.0) * math.cos(beta_aux * 3.14 / 180.0)
+    camZ = lookZ + r_aux * math.sin(beta_aux * 3.14 / 180.0)

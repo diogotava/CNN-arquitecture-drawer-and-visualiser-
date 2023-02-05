@@ -1,9 +1,9 @@
-from PyQt5.QtWidgets import *
 from PyQt5 import QtCore
-from PyQt5.QtGui import *
-from Src.QTWidgets.openglWidget import OpenGLWidget
+from PyQt5.QtWidgets import *
+
 from Src.QTWidgets.labelWidget import LabelWidget
-from Src.Utils.UtilsCamera import processNormalKeys
+from Src.QTWidgets.openglWidget import OpenGLWidget
+from Src.Utils.UtilsCamera import process_normal_keys
 
 
 class MainWindow(QMainWindow):
@@ -26,4 +26,4 @@ class MainWindow(QMainWindow):
         self.setGeometry(0, 0, 1000, 1000)
 
     def keyPressEvent(self, event):
-        processNormalKeys(event.key())
+        process_normal_keys(event.key())

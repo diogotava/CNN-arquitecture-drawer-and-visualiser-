@@ -1,5 +1,4 @@
 from Src.Layers.Layer import Layer
-from Src.Utils.DrawShapes import *
 
 
 class Dense(Layer):
