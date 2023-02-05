@@ -73,13 +73,16 @@ class Layer:
     def draw(self, color_code=None):
         if self.selected:
             if color_code != None:
-                glColor4f(color_code[0], color_code[1], color_code[2], color_code[3])
+                color = color_code
+                code = True
             else:
-                color = [1.0, 0.0, 0.0, 1.0]
-                glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color)
+                color = [0.0, 0.0, 1.0, 1.0]
+                code = False
         else:
             if color_code != None:
-                glColor4f(color_code[0], color_code[1], color_code[2], color_code[3])
+                code = True
+                color = color_code
             else:
-                glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, self.color)
-        cube(self.shape, self.center_position)
+                color = self.color
+                code = False
+        cube(self.shape, self.center_position, color, code)

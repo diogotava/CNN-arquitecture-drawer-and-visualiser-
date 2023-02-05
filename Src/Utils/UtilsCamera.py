@@ -61,7 +61,8 @@ def draw_layer(layer, layers_drawn):
 def renderText(parent, layer=None):
     global selected_layer
     if layer == None:
-        selected_layer.selected = False
+        if selected_layer != None:
+            selected_layer.selected = False
         selected_layer = None
         text = f"<b>Nothing Selected!</b>"
     else:

@@ -27,6 +27,8 @@ def get_shapes(layer, input_shape=False, correct_shape=False):
         shape = shape[1:]
         if not correct_shape:
             shape_return = [get_shape(shape)]
+        else:
+            shape_return = [shape]
     elif isinstance(layer_shape, list) and len(layer_shape) == 1:  # drop dimension for non seq. models
         shape = layer_shape[0]
         if isinstance(shape, tuple):
@@ -35,6 +37,8 @@ def get_shapes(layer, input_shape=False, correct_shape=False):
         shape = shape[1:]
         if not correct_shape:
             shape_return = [get_shape(shape)]
+        else:
+            shape_return = [shape]
     else:
         shape_return = []
         for shape in layer_shape:
