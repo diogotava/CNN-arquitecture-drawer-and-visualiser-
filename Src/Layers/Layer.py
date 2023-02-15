@@ -62,6 +62,10 @@ class Layer:
         self.previous_layers = previous_layers
         self.next_layers = next_layers
         self.activation = None
+        try:
+            self.activation = layer.activation
+        except AttributeError:
+            self.activation = None
         pass
 
     def setXPosition(self, x_position):

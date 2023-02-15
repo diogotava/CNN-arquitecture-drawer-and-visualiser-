@@ -68,8 +68,8 @@ def get_shape(shape):
     return shape_return
 
 
-def get_model():
-    model = load_model("model_GTSRB_train1_val1_02//cp-0057.ckpt")
+def get_model(model_file):
+    model = load_model(model_file)
 
     # model = tf.keras.applications.VGG16(
     #     include_top=True,

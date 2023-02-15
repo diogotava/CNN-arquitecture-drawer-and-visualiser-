@@ -33,7 +33,7 @@ def change_size(ww, hh):
     glMatrixMode(GL_MODELVIEW)
 
 
-def draw_layer(layer, layers_drawn):
+def draw_layer(layer, layers, layers_drawn):
     glPushMatrix()
 
     # desenha o layer
@@ -42,16 +42,11 @@ def draw_layer(layer, layers_drawn):
     glPopMatrix()
 
     # desenha o layer seguinte ao atual
-    if len(layer.next_layers) > 1:
-        for index, next_layer in enumerate(layer.next_layers):
-            # desenha o próximo layer
-            if next_layer.name not in layers_drawn:
-                draw_layer(next_layer, layers_drawn)
-
-    elif len(layer.next_layers) == 1:
-        next_layer = layer.next_layers[0]
+    for n_layer in layer.next_layers:
+        next_layer = [e for e in layers if e.id == n_layer][0]
+        # desenha o próximo layer
         if next_layer.name not in layers_drawn:
-            draw_layer(next_layer, layers_drawn)
+            draw_layer(next_layer, layers, layers_drawn)
 
 
 def render_text(parent, layer=None):
@@ -84,7 +79,7 @@ def render_text(parent, layer=None):
     parent.labelWidget.setText(text)
 
 
-def render_scene():
+def render_scene(layers):
     global camX, camY, camZ, w, h
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -96,10 +91,10 @@ def render_scene():
     # Draw layers
     layer = layers[0]
     layers_drawn = []
-    draw_layer(layer, layers_drawn)
+    draw_layer(layer, layers, layers_drawn)
 
 
-def picking(x, y):
+def picking(x, y, layers):
     global camX, camY, camZ, lookX, lookY, lookZ, mode
 
     glDisable(GL_LIGHTING)
@@ -165,7 +160,7 @@ def process_normal_keys(key):
         lookZ = lookZ - 5
 
 
-def process_mouse_buttons(button, state, xx, yy, parent):
+def process_mouse_buttons(layers, button, state, xx, yy, parent):
     global tracking, alpha, beta, r, startX, startY
 
     # print(xx, yy)
@@ -178,7 +173,7 @@ def process_mouse_buttons(button, state, xx, yy, parent):
             tracking = 2
         else:  # Middle button
             tracking = 0
-            index_layer_picked = picking(xx, yy)
+            index_layer_picked = picking(xx, yy, layers)
             if index_layer_picked and index_layer_picked != 255:
                 layer_to_render_text = [e for e in layers if e.id == index_layer_picked - 1]
                 render_text(parent, layer_to_render_text[0])

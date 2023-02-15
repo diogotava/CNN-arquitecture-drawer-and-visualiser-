@@ -1,5 +1,9 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from OpenGL.GL import *
+from OpenGL.GLU import *
+from Src.Layers.LayerDrawer import *
 from Src.Utils.Model import *
 from Src.Utils.Values import *
 from Src.Utils.Utils import *
@@ -8,7 +12,8 @@ import math
 
 
 class OpenGLWidget(QOpenGLWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, layers=None):
+        self.layers = layers
         self.parent = parent
         super().__init__(parent)
         self.timer = QTimer(self)
@@ -39,18 +44,18 @@ class OpenGLWidget(QOpenGLWidget):
         glClear(GL_COLOR_BUFFER_BIT)
 
     def paintGL(self):
-        render_scene()
+        render_scene(self.layers)
 
     def resizeGL(self, w: int, h: int) -> None:
         change_size(w, h)
 
     def mousePressEvent(self, event):
         self.makeCurrent()
-        process_mouse_buttons(event.button(), True, event.x(), event.y(), self.parent)
+        process_mouse_buttons(self.layers, event.button(), True, event.x(), event.y(), self.parent)
         self.doneCurrent()
 
     def mouseReleaseEvent(self, event):
-        process_mouse_buttons(event.button(), False, event.x(), event.y(), self.parent)
+        process_mouse_buttons(self.layers, event.button(), False, event.x(), event.y(), self.parent)
 
     def mouseMoveEvent(self, event):
         process_mouse_motion(event.x(), event.y())
