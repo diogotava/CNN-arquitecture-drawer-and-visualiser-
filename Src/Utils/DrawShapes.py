@@ -72,7 +72,7 @@ edges = ((0, 1), (0, 3), (0, 4),
 
 def cube(dimensions_cube, shift, color, code=False):
     if code:
-        glColor4f(color[0], color[1], color[2], color[3])
+        glColor3f(color[0], color[1], color[2])
     else:
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color)
 

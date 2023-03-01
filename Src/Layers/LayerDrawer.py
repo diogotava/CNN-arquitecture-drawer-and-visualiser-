@@ -23,11 +23,11 @@ class LayersDrawer:
                 self.layers_to_draw.append(layer)
 
             elif layer_type == "Flatten":
-                layer = Dense(shape, layer_model, [1.0, 0.0, 1.0, 1.0])
+                layer = Dense(shape, layer_model, [255.0, 0.0, 255.0])
                 self.layers_to_draw.append(layer)
 
             elif layer_type == "Dropout":
-                layer = Dense(shape, layer_model, [0.0, 1.0, 1.0, 1.0])
+                layer = Dense(shape, layer_model, [0.0, 255.0, 255.0])
                 self.layers_to_draw.append(layer)
 
             elif layer_type == "InputLayer":
@@ -37,7 +37,7 @@ class LayersDrawer:
             elif layer_type == "Activation":
                 self.layers_to_draw[-1].activation = layer_model
             else:
-                color = [0.5, 0.5, 0.5, 1.0]
+                color = [128, 128, 128]
                 layer = Layer(color, shape, layer_model)
                 self.layers_to_draw.append(layer)
 

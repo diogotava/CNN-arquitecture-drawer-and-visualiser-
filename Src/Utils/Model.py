@@ -63,8 +63,8 @@ def get_shape(shape):
 
     shape_return = shape.copy()
     shape_return[0] = min(max(shape[2], min_x), max_x)
-    shape_return[1] = min(max(shape[1], min_zy), max_zy)
-    shape_return[2] = min(max(shape[0], min_zy), max_zy)
+    shape_return[1] = min(max(shape[0], min_zy), max_zy)
+    shape_return[2] = min(max(shape[1], min_zy), max_zy)
     return shape_return
 
 

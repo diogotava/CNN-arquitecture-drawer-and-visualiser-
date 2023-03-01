@@ -72,7 +72,7 @@ class Layer:
         self.center_position[0] = x_position + (self.shape[0]/2) + self.space_between_layers
 
     def setYPosition(self, y_position):
-        self.center_position[1] = y_position
+        self.center_position[2] = y_position
 
     def draw(self, color_code=None):
         if self.selected:
@@ -80,7 +80,7 @@ class Layer:
                 color = color_code
                 code = True
             else:
-                color = [0.0, 0.0, 1.0, 1.0]
+                color = [0.0, 0.0, 255.0]
                 code = False
         else:
             if color_code != None:
