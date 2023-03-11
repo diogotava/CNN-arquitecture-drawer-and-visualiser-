@@ -2,31 +2,75 @@
 <html lang="">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Neural network visualizer</title>
-  <style>
-    body {
-      padding: 0;
-      margin: 0;
-      background-color: #1b1b1b;
-    }
-  </style>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural network visualizer</title>
+    <style>
+        body {
+            background-color: #000000;
+        }
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.dom.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
-  <script src="sketch.js"></script>
-  <script src="utils.js"></script>
-  <script src="utils_picking.js"></script>
-  <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+        div {
+            color: #ffffff;
+            float: left;
+            height: 90%;
+            padding: 0 5px;
+        }
+
+        #column1 {
+            padding: 10px 0;
+            height: 96vh;
+            width: 33.5vh;
+            background-color: #000000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #paragraphs {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        p {
+            font-size: large;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="sketch.js"></script>
+    <script src="utils.js"></script>
+    <script src="utils_picking.js"></script>
+    <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
 
 </head>
 
 <body>
-  <main>
-  </main>
+    <div id="column2">
+    </div>
+    <div id="column1">
+        <label for="in_file">Model file:</label>
+        <input type="file" id="in_file" name="in_file" accept=".ckpt" webkitdirectory directory><br><br>
+
+        <button id="model_button">Upload model</button>
+
+        <div id="paragraphs">
+            <h2 id="nothing_selected_h2">Nothing Selected!</h2>
+            <h2 id="selected_h2" hidden><b>Selected layer:</b> </h2>
+            <p id="type" hidden><b>Type: </b></p>
+            <p id="input_shape" hidden><b>Input shape: </b></p>
+            <p id="output_shape" hidden><b>Output shape: </b></p>
+        </div>
+    </div>
 </body>
 
 </html>

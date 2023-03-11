@@ -1,5 +1,6 @@
 from Src.Utils.DrawShapes import *
 from Src.Utils.Values import layersNotToConsider
+from Src.Utils.Model import get_shapes
 
 
 def get_next_layer(outbound_nodes):
@@ -62,6 +63,9 @@ class Layer:
         self.previous_layers = previous_layers
         self.next_layers = next_layers
         self.activation = None
+        self.type = layer.__class__.__name__
+        self.input_shape = get_shapes(layer, True, True)
+        self.output_shape = get_shapes(layer, False, True)
         try:
             self.activation = layer.activation
         except AttributeError:

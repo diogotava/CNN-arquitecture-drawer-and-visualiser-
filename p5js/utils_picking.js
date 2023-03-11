@@ -2,17 +2,19 @@
  * mPage is a global variable that holds a (hidden) WEBGL canvas for color-based object picking.
  */
 var mPage;
-
+var canvas;
 /**
  * mCreateCanvas is a 3D object picking version of createCanvas().
  *
  * Its parameters are identical to those for createCanvas().
  */
 function mCreateCanvas(windowWidth, windowHeight, WEBGL) {
-    createCanvas(windowWidth, windowHeight, WEBGL);
+    canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     pixelDensity(1);
+    canvas.parent('column2');
     mPage = createGraphics(width, height, WEBGL);
     mPage.pixelDensity(1);
+    mPage.parent('column2');
 }
 
 /**
@@ -33,43 +35,12 @@ function getLayerId() {
  * mBox creates a box primitive with an associated ID number.
  */
 function mBox(id, shapeX, shapeY, shapeZ) {
+    strokeWeight(2);
     box(shapeX, shapeY, shapeZ);
 
     mPage.fill((id >> 16) & 0xFF, (id >> 8) & 0xF, id & 0xFF);
     mPage.noStroke();
     mPage.box(shapeX, shapeY, shapeZ);
-}
-
-/**
- * mCylinder creates a cylinder primitive with an associated ID number.
- * 
- * @param {Number} ID first parameter assigns an ID number to the object.
- * Following parameters are passed through to cylinder().
- */
-function mCylinder() {
-    var passon = [...arguments].slice(1);
-    var c = arguments[0];
-    cylinder(...passon);
-    mPage.fill((c >> 16) & 0xFF, (c >> 8) & 0xF, c & 0xFF);
-    mPage.cylinder(...passon);
-}
-
-/**
- * mCone creates a cone primitive with an associated ID number.
- * 
- * @param {Number} ID first parameter assigns an ID number to the object.
- * Following parameters are passed through to cone().
- */
-function mCone() {
-    var passon = [...arguments].slice(1);
-    var c = arguments[0];
-    //mPage.rotateX(PI); // This line was in an early version, seemingly to compensate for
-    // a bug whereby the cone would invert. However, it doesn't seem
-    // necessary now, but is left here as a comment in case there is
-    // an issue still remaining.
-    cone(...passon);
-    mPage.fill((c >> 16) & 0xFF, (c >> 8) & 0xF, c & 0xFF);
-    mPage.cone(...passon);
 }
 
 /**
@@ -161,7 +132,7 @@ function mTexture() {
 /**
  * mOrbitcontrol defines the orbitControl command 
  */
-function mOrbitControl() {
-    orbitControl(1, 1, 0.1);
-    mPage.orbitControl(1, 1, 0.1);
+function mOrbitControl(sensitivityX = 1, sensitivityY = 1, sensitivityZ = 0.01) {
+    orbitControl(sensitivityX, sensitivityY, sensitivityZ);
+    mPage.orbitControl(sensitivityX, sensitivityY, sensitivityZ);
 }
