@@ -59,9 +59,10 @@
     </div>
     <div id="column1">
         <label for="in_file">Model file:</label>
-        <input type="file" id="in_file" name="in_file" accept=".ckpt" webkitdirectory directory><br><br>
-
-        <button id="model_button">Upload model</button>
+        <form id="upload-form">
+            <input type="file" id="model-file" name="model-file">
+            <button type="submit">Upload</button>
+        </form>
 
         <div id="paragraphs">
             <h2 id="nothing_selected_h2">Nothing Selected!</h2>

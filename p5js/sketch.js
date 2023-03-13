@@ -9,14 +9,12 @@ var layers = [];
 var uploadButton;
 var inputModelFile;
 
+
 // Call python code to get the layer information of the model
-$.post("http://127.0.0.1:5000/rep_bot",
-    { js_input: "model_GTSRB_train1_val1_02//cp-0057.ckpt" },
-    function (data) { layers = JSON.parse(data); }
-)
 fetch('./default_values.json')
     .then((response) => response.json())
     .then((json) => values = json);
+
 
 function setup() {
     let w = parseInt(windowWidth * 0.81, 10);
@@ -24,9 +22,32 @@ function setup() {
     mCreateCanvas(w, h, WEBGL);
     mPerspective(PI / 3, width / height, 0.01, 150000);
     smooth();
-    uploadButton = select('#model_button');
-    uploadButton.mousePressed(getModelData);
+    // uploadButton = select('#model_button');
+    // uploadButton.mousePressed(getModelData);
     inputModelFile = select('#in_file');
+
+    document.getElementById("upload-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const fileInput = document.getElementById("model-file");
+        const file = fileInput.files[0];
+
+        const formData = new FormData();
+        formData.append("model-file", file);
+
+        fetch("http://127.0.0.1:5000/process", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => response.json())  // parse response as JSON
+            .then(data => {
+                // handle the JSON response here
+                layers = data;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    });
 }
 
 function draw() {
@@ -50,7 +71,18 @@ function draw() {
 }
 
 function getModelData() {
-    console.log(inputModelFile.value());
+    inputModelFile = document.getElementById('in_file');
+    console.log(inputModelFile.files[0]);
+    const formData = new FormData();
+    formData.append("js_input", inputModelFile.files[0]);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://127.0.0.1:5000/process_model");
+    xhr.send(formData);
+    // $.post("http://127.0.0.1:5000/rep_bot",
+    //     { js_input: inputModelFile.files[0] },
+    //     function (data) { layers = JSON.parse(data); }
+    // )
 }
 
 function windowResized() {

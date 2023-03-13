@@ -1,6 +1,7 @@
 from Src.QTWidgets.mainWindow import MainWindow
 from PyQt5.QtWidgets import QApplication
 import sys
+from tensorflow.keras.applications.inception_v3 import InceptionV3
 from Src.Layers.LayerDrawer import *
 from Src.Utils.Model import *
 from Src.Utils.Values import *
@@ -26,8 +27,10 @@ get_lateral_position_layers(layers[0], layers)
 align_previous_layers(layers[0], layers)
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    app.setStyle("fusion")
-    w = MainWindow(None, layers)
-    w.show()
-    sys.exit(app.exec_())
+    # app = QApplication(sys.argv)
+    # app.setStyle("fusion")
+    # w = MainWindow(None, layers)
+    # w.show()
+    # sys.exit(app.exec_())
+    model = InceptionV3()
+    model.save('inception_v3.h5')
