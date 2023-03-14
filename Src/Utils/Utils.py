@@ -74,10 +74,9 @@ def align_previous_layers(layer, layers, layers_viewed=None):
         align_previous_layers(next_layer, layers, layers_viewed)
 
 
-def get_lateral_position_layers(layer, layers, layers_lateral=None, x_position=None, y_position=None, nr_layers=0, space_between_layers=None):
+def get_lateral_position_layers(layer, layers, layers_lateral=None, x_position=None, y_position=None, space_between_layers=None):
     if y_position is not None:
         if len(layer.previous_layers) > 1:
-            nr_layers = 0
             y_position = 0
         # altera o valor de yPosition do layer para o novo valor y_position
         layer.setYPosition(y_position)
@@ -96,7 +95,6 @@ def get_lateral_position_layers(layer, layers, layers_lateral=None, x_position=N
 
     # desenha o layer seguinte ao atual
     if len(layer.next_layers) > 1:
-        nr_layers += 1
         n = len(layer.next_layers) / 2
         for index, n_layer in enumerate(layer.next_layers):
             next_layer = [e for e in layers if e.id == n_layer][0]
@@ -117,7 +115,7 @@ def get_lateral_position_layers(layer, layers, layers_lateral=None, x_position=N
             if next_layer.name not in layers_lateral:
                 layers_lateral.append(next_layer.name)
                 x_position = layer.center_position[0] + layer.shape[0] / 2
-                nr_layers = get_lateral_position_layers(next_layer, layers, layers_lateral, x_position, y_position, nr_layers, 10)
+                get_lateral_position_layers(next_layer, layers, layers_lateral, x_position, y_position, 10)
 
     elif len(layer.next_layers) == 1:
         n_layer = layer.next_layers[0]
@@ -125,6 +123,4 @@ def get_lateral_position_layers(layer, layers, layers_lateral=None, x_position=N
         if next_layer.name not in layers_lateral:
             layers_lateral.append(next_layer.name)
             x_position = layer.center_position[0] + layer.shape[0] / 2
-            nr_layers = get_lateral_position_layers(next_layer, layers,  layers_lateral, x_position, y_position, nr_layers)
-
-    return nr_layers
+            get_lateral_position_layers(next_layer, layers,  layers_lateral, x_position, y_position)

@@ -89,4 +89,5 @@ function windowResized() {
     let w = parseInt(windowWidth * 0.81, 10);
     let h = parseInt(windowHeight * 0.98, 10);
     resizeCanvas(w, h);
+    mPerspective(PI / 3, width / height, 0.01, 150000);
 }

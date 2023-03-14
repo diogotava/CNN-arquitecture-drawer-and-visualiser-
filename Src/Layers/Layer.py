@@ -49,19 +49,17 @@ def get_prev_layer(inbound_nodes):
 class Layer:
 
     def __init__(self, color, shape, layer):
-        previous_layers = get_prev_layer(layer._inbound_nodes)
 
         self.selected = False
         self.lateral_space_between_layers = 10
         self.space_between_layers = 5
-        next_layers = get_next_layer(layer._outbound_nodes)
         self.center_position = [0, 0, 0]
         self.name = layer.name
         self.color = color
         self.shape = shape
         self.original_model_layer = layer
-        self.previous_layers = previous_layers
-        self.next_layers = next_layers
+        self.previous_layers = []
+        self.next_layers = []
         self.activation = None
         self.type = layer.__class__.__name__
         self.input_shape = get_shapes(layer, True, True)
