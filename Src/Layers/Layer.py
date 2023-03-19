@@ -51,7 +51,7 @@ class Layer:
     def __init__(self, color, shape, layer):
 
         self.selected = False
-        self.lateral_space_between_layers = 10
+        self.lateral_space_between_layers = 100
         self.space_between_layers = 5
         self.center_position = [0, 0, 0]
         self.name = layer.name
@@ -64,6 +64,9 @@ class Layer:
         self.type = layer.__class__.__name__
         self.input_shape = get_shapes(layer, True, True)
         self.output_shape = get_shapes(layer, False, True)
+        self.computed_position = False
+
+        self.previous_y_position = 0
         try:
             self.activation = layer.activation
         except AttributeError:
@@ -75,6 +78,9 @@ class Layer:
 
     def setYPosition(self, y_position):
         self.center_position[2] = y_position
+
+    def getYPosition(self):
+        return self.center_position[2]
 
     def draw(self, color_code=None):
         if self.selected:

@@ -35,7 +35,7 @@ function getLayerId() {
  * mBox creates a box primitive with an associated ID number.
  */
 function mBox(id, shapeX, shapeY, shapeZ) {
-    strokeWeight(2);
+    strokeWeight(3);
     box(shapeX, shapeY, shapeZ);
 
     mPage.fill((id >> 16) & 0xFF, (id >> 8) & 0xF, id & 0xFF);

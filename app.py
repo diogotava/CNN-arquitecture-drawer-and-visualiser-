@@ -77,18 +77,15 @@ def process_file():
 
             layer.previous_layers = previous_layers
 
-    # for layer in layers:
-    #     get_next_layers(layer, layers)
-    #     get_prev_layers(layer, layers)
-
-    get_lateral_position_layers(layers[0], layers)
-    align_previous_layers(layers[0], layers)
+    process_node(layers)
 
     layer_json = []
     for layer in layers:
         l_json = vars(layer)
         del l_json['original_model_layer']
         del l_json['activation']
+        del l_json['previous_y_position']
+        del l_json['computed_position']
         layer_json.append(l_json)
     print('Sent!')
     response = json.dumps(layer_json)
