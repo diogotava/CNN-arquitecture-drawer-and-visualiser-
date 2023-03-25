@@ -36,7 +36,7 @@ function draw_layer(layer, index, array) {
             pop();
         } else if (next_layer.previous_layers.length > 1) {
             push();
-            let positionX = (next_layer.center_position[0] - next_layer.shape[0] / 2) - (layer.center_position[0] + layer.shape[0] / 2);
+            let positionX = (next_layer.center_position[0] - next_layer.shape[0] / 2) - (layer.center_position[0] + layer.shape[0] / 2) + ((next_layer.center_position[0] - next_layer.space_between_layers - next_layer.shape[0] / 2) - (layer.center_position[0] + layer.shape[0] / 2));
             let positionY = (next_layer.center_position[2]) - (layer.center_position[2]);
             translate((layer.shape[0] / 2) + (positionX / 4), 0, 0);
             push();

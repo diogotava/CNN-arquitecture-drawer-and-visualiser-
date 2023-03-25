@@ -51,7 +51,7 @@ class Layer:
     def __init__(self, color, shape, layer):
 
         self.selected = False
-        self.lateral_space_between_layers = 100
+        self.lateral_space_between_layers = 10
         self.space_between_layers = 5
         self.center_position = [0, 0, 0]
         self.name = layer.name

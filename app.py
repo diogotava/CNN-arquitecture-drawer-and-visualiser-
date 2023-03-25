@@ -77,7 +77,8 @@ def process_file():
 
             layer.previous_layers = previous_layers
 
-    process_node(layers)
+    get_lateral_position_layers(layers[0], layers)
+    align_previous_layers(layers[0], layers)
 
     layer_json = []
     for layer in layers:
