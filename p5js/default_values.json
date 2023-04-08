@@ -31,6 +31,16 @@
             255,
             0
         ],
+        "BatchNormalization": [
+            255,
+            128,
+            0
+        ],
+        "Concatenate": [
+            128,
+            255,
+            255
+        ],
         "Default": [
             128,
             128,

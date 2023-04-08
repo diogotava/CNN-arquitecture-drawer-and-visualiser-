@@ -124,6 +124,8 @@ function keyPressed() {
             selectedLayer = -1;
         }
         selectedText();
+    } else if (keyIsDown(80)) {
+        saveCanvas('myCanvas', 'jpg');
     }
 }
 
@@ -133,6 +135,7 @@ function selectedText() {
     var type_p = select('#type');
     var input_shape = select('#input_shape');
     var output_shape = select('#output_shape');
+    var activation = select('#activation');
 
     if (selectedLayer == -1) {
         nothing_selected_h2.elt.hidden = false;
@@ -148,9 +151,15 @@ function selectedText() {
         type_p.elt.hidden = false;
         input_shape.elt.hidden = false;
         output_shape.elt.hidden = false;
+        activation.elt.hidden = false;
         selected_h2.html("Selected layer: " + selected_layer.name);
         type_p.html("<b>Type:</b> " + selected_layer.type);
         input_shape.html("<b>Input shape:</b> " + selected_layer.input_shape[0][0] + ' X ' + selected_layer.input_shape[0][1] + ' X ' + selected_layer.input_shape[0][2]);
         output_shape.html("<b>Output shape:</b> " + selected_layer.output_shape[0][0] + ' X ' + selected_layer.output_shape[0][1] + ' X ' + selected_layer.output_shape[0][2]);
+        if (selected_layer.activation != null) {
+            activation.html("<b>Activation:</b> " + selected_layer.activation);
+        } else {
+            activation.html("<b>Activation:</b> none");
+        }
     }
 }

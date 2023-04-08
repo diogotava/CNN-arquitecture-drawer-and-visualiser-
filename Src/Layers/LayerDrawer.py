@@ -5,6 +5,8 @@ from Src.Layers.Layer import *
 from Src.Utils.Model import get_shapes
 from Src.Utils.Values import layersNotToDraw
 
+activation_layers = ['ReLU', 'Softmax', 'LeakyReLU', 'PReLU', 'ELU', 'ThresholdedReLU']
+
 
 class LayersDrawer:
     def __init__(self):
@@ -23,22 +25,24 @@ class LayersDrawer:
                 self.layers_to_draw.append(layer)
 
             elif layer_type == "Flatten":
-                layer = Dense(shape, layer_model, [255.0, 0.0, 255.0])
+                layer = Dense(shape, layer_model)
                 self.layers_to_draw.append(layer)
 
             elif layer_type == "Dropout":
-                layer = Dense(shape, layer_model, [0.0, 255.0, 255.0])
+                layer = Dense(shape, layer_model)
                 self.layers_to_draw.append(layer)
 
             elif layer_type == "InputLayer":
                 layer = Input(shape, layer_model)
                 self.layers_to_draw.append(layer)
 
-            elif layer_type == "Activation":
-                self.layers_to_draw[-1].activation = layer_model
+            elif layer_type == 'Activation':
+                self.layers_to_draw[-1].activation = layer_model.get_config()['activation']
+
+            elif layer_type in activation_layers:
+                self.layers_to_draw[-1].activation = layer_type
             else:
-                color = [128, 128, 128]
-                layer = Layer(color, shape, layer_model)
+                layer = Layer(shape, layer_model)
                 self.layers_to_draw.append(layer)
 
         return layer

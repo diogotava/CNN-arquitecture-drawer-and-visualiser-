@@ -84,7 +84,6 @@ def process_file():
     for layer in layers:
         l_json = vars(layer)
         del l_json['original_model_layer']
-        del l_json['activation']
         del l_json['previous_y_position']
         del l_json['computed_position']
         layer_json.append(l_json)

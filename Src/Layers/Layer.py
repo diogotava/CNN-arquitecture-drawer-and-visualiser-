@@ -48,14 +48,13 @@ def get_prev_layer(inbound_nodes):
 
 class Layer:
 
-    def __init__(self, color, shape, layer):
+    def __init__(self, shape, layer):
 
         self.selected = False
         self.lateral_space_between_layers = 10
         self.space_between_layers = 5
         self.center_position = [0, 0, 0]
         self.name = layer.name
-        self.color = color
         self.shape = shape
         self.original_model_layer = layer
         self.previous_layers = []
@@ -68,7 +67,7 @@ class Layer:
 
         self.previous_y_position = 0
         try:
-            self.activation = layer.activation
+            self.activation = layer.activation.__name__
         except AttributeError:
             self.activation = None
         pass
