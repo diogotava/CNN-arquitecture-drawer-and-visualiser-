@@ -35,12 +35,13 @@ function getLayerId() {
  * mBox creates a box primitive with an associated ID number.
  */
 function mBox(id, shapeX, shapeY, shapeZ) {
-    strokeWeight(3);
+    strokeWeight(2);
     box(shapeX, shapeY, shapeZ);
 
     mPage.fill((id >> 16) & 0xFF, (id >> 8) & 0xF, id & 0xFF);
     mPage.noStroke();
     mPage.box(shapeX, shapeY, shapeZ);
+    strokeWeight(1);
 }
 
 /**

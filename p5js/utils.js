@@ -52,13 +52,13 @@ function draw_layer(layer, index, array) {
             fill(0);
             cylinder(values.mArrowWidth, positionY);
             pop();
-            translate((positionX / 4) - 0.5, 0, positionY / 2);
+            translate(next_layer.space_between_layers / 4, 0, positionY / 2);
             push();
             rotateZ(90);
             fill(0);
-            cylinder(values.mArrowWidth, positionX / 2 - 1);
+            cylinder(values.mArrowWidth, next_layer.space_between_layers / 2);
             pop();
-            translate((positionX / 4) - values.mArrowHeight / 2 + 0.5, 0, 0);
+            translate((next_layer.space_between_layers / 4) - values.mArrowHeight / 2 + 0.1, 0, 0);
             rotateZ(-90);
             fill(0);
             cone(0.5, values.mArrowHeight);
@@ -124,8 +124,6 @@ function keyPressed() {
             selectedLayer = -1;
         }
         selectedText();
-    } else if (keyIsDown(80)) {
-        saveCanvas('myCanvas', 'jpg');
     }
 }
 
