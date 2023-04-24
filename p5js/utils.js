@@ -1,4 +1,4 @@
-var selectedLayer = -1;
+var selectedLayerID = -1;
 
 function draw_layer(layer, index, array) {
     mPush();
@@ -17,6 +17,11 @@ function draw_layer(layer, index, array) {
 
     mBox(layer.id + 1, layer.shape[0], layer.shape[1], layer.shape[2]);
 
+    draw_arrow(layer, array);
+    mPop();
+}
+
+function draw_arrow(layer, array) {
     if (layer.next_layers.length == 1) {
         let next_layer = array[layer.next_layers[0]];
         if (next_layer.previous_layers.length <= 1) {
@@ -106,22 +111,20 @@ function draw_layer(layer, index, array) {
         }
         pop();
     }
-    mPop();
 }
-
 
 function keyPressed() {
     if (keyIsDown(67)) { // C
         var id = getLayerId();
         if (id != -1) {
-            if (selectedLayer != -1)
-                layers[selectedLayer].selected = false;
+            if (selectedLayerID != -1)
+                layers[selectedLayerID].selected = false;
             layers[id].selected = true;
-            selectedLayer = id;
+            selectedLayerID = id;
         } else {
-            if (selectedLayer != -1)
-                layers[selectedLayer].selected = false;
-            selectedLayer = -1;
+            if (selectedLayerID != -1)
+                layers[selectedLayerID].selected = false;
+            selectedLayerID = -1;
         }
         selectedText();
     }
@@ -135,14 +138,14 @@ function selectedText() {
     var output_shape = select('#output_shape');
     var activation = select('#activation');
 
-    if (selectedLayer == -1) {
+    if (selectedLayerID == -1) {
         nothing_selected_h2.elt.hidden = false;
         selected_h2.elt.hidden = true;
         type_p.elt.hidden = true;
         input_shape.elt.hidden = true;
         output_shape.elt.hidden = true;
     } else {
-        var selected_layer = layers[selectedLayer];
+        var selected_layer = layers[selectedLayerID];
         nothing_selected_h2.elt.hidden = true;
 
         selected_h2.elt.hidden = false;
@@ -150,7 +153,8 @@ function selectedText() {
         input_shape.elt.hidden = false;
         output_shape.elt.hidden = false;
         activation.elt.hidden = false;
-        selected_h2.html("Selected layer: " + selected_layer.name);
+        // TODO: remove id
+        selected_h2.html("Selected layer: " + selected_layer.id.toString() + " " + selected_layer.name);
         type_p.html("<b>Type:</b> " + selected_layer.type);
         input_shape.html("<b>Input shape:</b> " + selected_layer.input_shape[0][0] + ' X ' + selected_layer.input_shape[0][1] + ' X ' + selected_layer.input_shape[0][2]);
         output_shape.html("<b>Output shape:</b> " + selected_layer.output_shape[0][0] + ' X ' + selected_layer.output_shape[0][1] + ' X ' + selected_layer.output_shape[0][2]);

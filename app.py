@@ -11,6 +11,9 @@ from Src.Utils.Utils import *
 from Src.Layers.Layer import *
 
 import json
+import os
+import shutil
+import zipfile
 
 app = Flask(__name__)
 CORS(app)
@@ -19,9 +22,22 @@ CORS(app)
 @app.route('/process', methods=['POST'])
 def process_file():
     file = request.files["model-file"]
-    file.save("model.h5")
-
-    model = get_model("model.h5")
+    file.save(file.filename)
+    if ".zip" in file.filename:
+        with zipfile.ZipFile(file.filename) as zip_file:
+            model_name = zip_file.filelist[0].filename
+            directory = False
+            zip_file.extractall()
+            if "/" == model_name[-1]:
+                directory = True
+                model_name = model_name[:-1]
+            model = get_model(model_name)
+            if directory:
+                shutil.rmtree(model_name)
+            else:
+                os.remove(model_name)
+    else:
+        model = get_model(file.filename)
 
     layers = []
 
@@ -88,6 +104,7 @@ def process_file():
         del l_json['computed_position']
         layer_json.append(l_json)
     print('Sent!')
+    os.remove(file.filename)
     response = json.dumps(layer_json)
     return response
 
