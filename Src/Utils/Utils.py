@@ -115,6 +115,12 @@ def align_previous_layers(layer, layers, layers_viewed=None):
 
 
 def get_lateral_position_layers(layer, layers, layers_lateral=None, x_position=None, y_position=None, space_between_layers=None):
+    index_y = 2
+    index_x = 0
+    if layers_lateral is None and len(layer.previous_layers) >= 1:
+        for index, p_layer in enumerate(layer.previous_layers):
+            get_lateral_position_layers(layers[p_layer], layers)
+
     if y_position is not None:
         if len(layer.previous_layers) > 1:
             y_position = layer.previous_y_position
@@ -145,22 +151,22 @@ def get_lateral_position_layers(layer, layers, layers_lateral=None, x_position=N
             # desenha o próximo layer
             if index + 1 <= n:
                 if y_position is not None:
-                    y_pos = y_position - negative_n * max_width * (layer.lateral_space_between_layers + layer.shape[1])
+                    y_pos = y_position - negative_n * max_width * (layer.lateral_space_between_layers + layer.shape[index_y])
                 else:
-                    y_pos = -negative_n * max_width * (layer.lateral_space_between_layers + layer.shape[1])
+                    y_pos = -negative_n * max_width * (layer.lateral_space_between_layers + layer.shape[index_y])
 
                 negative_n += 1
 
             else:
                 if y_position is not None:
-                    y_pos = y_position + positive_n * max_width * (layer.lateral_space_between_layers + layer.shape[1])
+                    y_pos = y_position + positive_n * max_width * (layer.lateral_space_between_layers + layer.shape[index_y])
                 else:
-                    y_pos = positive_n * max_width * (layer.lateral_space_between_layers + layer.shape[1])
+                    y_pos = positive_n * max_width * (layer.lateral_space_between_layers + layer.shape[index_y])
 
                 positive_n += 1
             if next_layer.name not in layers_lateral:
                 layers_lateral.append(next_layer.name)
-                x_position = layer.center_position[0] + layer.shape[0] / 2
+                x_position = layer.center_position[index_x] + layer.shape[index_x] / 2
                 get_lateral_position_layers(next_layer, layers, layers_lateral, x_position, y_pos, 10)
 
     elif len(layer.next_layers) == 1:
@@ -169,5 +175,5 @@ def get_lateral_position_layers(layer, layers, layers_lateral=None, x_position=N
         next_layer.previous_y_position = layer.previous_y_position
         if next_layer.name not in layers_lateral:
             layers_lateral.append(next_layer.name)
-            x_position = layer.center_position[0] + layer.shape[0] / 2
+            x_position = layer.center_position[index_x] + layer.shape[index_x] / 2
             get_lateral_position_layers(next_layer, layers,  layers_lateral, x_position, y_position)

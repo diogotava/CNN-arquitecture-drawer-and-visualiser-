@@ -14,6 +14,13 @@ max_x = 400
 
 
 def get_shapes(layer, input_shape=False, correct_shape=False):
+    inverted = False
+    try:
+        if(layer.data_format == "channels_last"):
+            inverted = True
+    except:
+        inverted = False
+
     if input_shape:
         layer_shape = layer.input_shape
     else:
@@ -22,9 +29,15 @@ def get_shapes(layer, input_shape=False, correct_shape=False):
     if isinstance(layer_shape, tuple):
         shape = list(layer_shape)
 
-        shape = shape[1:]
+        if layer.__class__.__name__ == "Embedding" or layer.__class__.__name__ == "GRU":
+            shape = [shape[-1]]
+        else:
+            shape = shape[1:]
+
+        if((layer.__class__.__name__ == "InputLayer" or layer.__class__.__name__ == "BatchNormalization" or layer.__class__.__name__ == "Concatenate") and len(shape) == 3):
+            inverted = True
         if not correct_shape:
-            shape_return = [get_shape(shape)]
+            shape_return = [get_shape(shape, inverted)]
         else:
             shape_return = [shape]
     elif isinstance(layer_shape, list) and len(layer_shape) == 1:  # drop dimension for non seq. models
@@ -33,8 +46,10 @@ def get_shapes(layer, input_shape=False, correct_shape=False):
             shape = list(shape)
 
         shape = shape[1:]
+        if((layer.__class__.__name__ == "InputLayer" or layer.__class__.__name__ == "BatchNormalization" or layer.__class__.__name__ == "Concatenate") and len(shape) == 3):
+            inverted = True
         if not correct_shape:
-            shape_return = [get_shape(shape)]
+            shape_return = [get_shape(shape, inverted)]
         else:
             shape_return = [shape]
     else:
@@ -43,28 +58,43 @@ def get_shapes(layer, input_shape=False, correct_shape=False):
             if isinstance(shape, tuple):
                 shape = list(shape)
             shape = shape[1:]
+            if((layer.__class__.__name__ == "InputLayer" or layer.__class__.__name__ == "BatchNormalization" or layer.__class__.__name__ == "Concatenate") and len(shape) == 3):
+                inverted = True
             if not correct_shape:
-                shape = get_shape(shape)
+                shape = get_shape(shape, inverted)
             shape_return.append(shape)
 
     return shape_return
 
 
-def get_shape(shape):
+def get_shape(shape, inverted):
     one_dim_orientation = 'z'
 
+    if shape == [None]:
+        return [min_x, min_zy, min_zy]
     if len(shape) == 1:
         if one_dim_orientation in ['x', 'y', 'z']:
             shape = list((1, ) * "xyz".index(one_dim_orientation) + tuple(shape))
         else:
             raise ValueError(f"unsupported orientation: {one_dim_orientation}")
 
-    shape[2] = shape[2] / np.log(shape[2])
+    index_x = 0
+    index_y = 1
+    index_z = 2
+
+    if inverted:
+        index_x = 2
+        index_y = 0
+        index_z = 1
+
+    if shape[index_x] >= min_x*2:
+        shape[index_x] = shape[index_x] / np.log(shape[index_x])
 
     shape_return = shape.copy()
-    shape_return[0] = min(max(shape[2], min_x), max_x)
-    shape_return[1] = min(max(shape[0], min_zy), max_zy)
-    shape_return[2] = min(max(shape[1], min_zy), max_zy)
+    shape_return[0] = min(max(shape[index_x], min_x), max_x)
+    shape_return[1] = min(max(shape[index_z], min_zy), max_zy)
+    shape_return[2] = min(max(shape[index_y], min_zy), max_zy)
+
     return shape_return
 
 
@@ -72,49 +102,3 @@ def get_model(model_file):
     model = load_model(model_file)
 
     return model
-
-
-def create_model(class_count, img_size, channels):
-
-    model_logits = Sequential()
-
-    model_logits.add(Conv2D(128, (5, 5), input_shape=(img_size, img_size, channels), name='layer_conv1'))
-    # model_logits.add(LeakyReLU(alpha=0.01))
-    # model_logits.add(BatchNormalization())
-    # model_logits.add(Dropout(0.5))
-
-    # model_logits.add(Conv2D(196, (2, 2), name='layer_conv2'))
-    # model_logits.add(LeakyReLU(alpha=0.01))
-    # model_logits.add(Conv2D(196, (2, 2), name='layer_conv3'))
-    # model_logits.add(LeakyReLU(alpha=0.01))
-    # model_logits.add(Conv2D(196, (5, 5), name='layer_conv4'))
-    # model_logits.add(LeakyReLU(alpha=0.01))
-    # model_logits.add(MaxPooling2D(pool_size=(2, 2)))
-    # model_logits.add(BatchNormalization())
-    # model_logits.add(Dropout(0.5))
-
-    # model_logits.add(Conv2D(256, (2, 2), name='layer_conv5'))
-    # model_logits.add(LeakyReLU(alpha=0.01))
-    # model_logits.add(Conv2D(256, (2, 2), name='layer_conv6'))
-    # model_logits.add(LeakyReLU(alpha=0.01))
-    # model_logits.add(Conv2D(256, (2, 2), name='layer_conv7'))
-    # model_logits.add(LeakyReLU(alpha=0.01))
-    # model_logits.add(MaxPooling2D(pool_size=(2, 2)))
-    # model_logits.add(BatchNormalization())
-    # model_logits.add(Dropout(0.5))
-
-    model_logits.add(Flatten())
-    # model_logits.add(LeakyReLU(alpha=0.0))
-    model_logits.add(Dense(384))
-    model_logits.add(LeakyReLU(alpha=0.0))
-    model_logits.add(Dropout(0.5))
-
-    model_logits.add(Dense(class_count))
-
-    output = Activation('softmax')(model_logits.output)
-
-    model = tf.keras.Model(model_logits.inputs, output)
-
-    opt = Adam(learning_rate=0.0005)
-    model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
-    return model, model_logits
