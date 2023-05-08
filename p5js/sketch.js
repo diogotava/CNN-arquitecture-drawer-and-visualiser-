@@ -21,6 +21,7 @@ function setup() {
     let h = parseInt(windowHeight * 0.98, 10);
     mCreateCanvas(w, h, WEBGL);
     mPerspective(PI / 3, width / height, 0.01, 150000);
+    // mOrtho(-w / 2, w / 2, -h / 2, h / 2, 0.01, 150000);
     smooth();
     // uploadButton = select('#model_button');
     // uploadButton.mousePressed(getModelData);
@@ -38,8 +39,7 @@ function setup() {
         fetch("http://127.0.0.1:5000/process", {
             method: "POST",
             body: formData
-        })
-            .then(response => response.json())  // parse response as JSON
+        }).then(response => response.json())  // parse response as JSON
             .then(data => {
                 // handle the JSON response here
                 layers = data;
@@ -47,6 +47,9 @@ function setup() {
             .catch(error => {
                 console.error(error);
             });
+        fetch('./default_values.json')
+            .then((response) => response.json())
+            .then((json) => values = json);
     });
 }
 
