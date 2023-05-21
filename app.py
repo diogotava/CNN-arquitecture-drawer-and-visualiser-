@@ -1,9 +1,6 @@
 from flask import Flask, request, render_template_string, jsonify
 from flask_cors import CORS
 
-
-from Src.QTWidgets.mainWindow import MainWindow
-from PyQt5.QtWidgets import QApplication
 import sys
 from Src.Layers.LayerDrawer import *
 from Src.Utils.Model import *
@@ -93,7 +90,7 @@ def process_file():
 
             layer.previous_layers = previous_layers
 
-    get_lateral_position_layers(layers[0], layers)
+    # get_lateral_position_layers(layers[0], layers)
     # align_previous_layers(layers[0], layers)
 
     layer_json = []

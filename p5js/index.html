@@ -42,12 +42,14 @@
         }
     </style>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+    <script src="lib/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.dom.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
+    <script src="lib/addons/p5.sound.min.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="sketch.js"></script>
+    <script src="default_values.js"></script>
+    <script src="Objects/Layer.js"></script>
     <script src="utils.js"></script>
     <script src="utils_picking.js"></script>
     <script src="drawingArrows.js"></script>
@@ -60,7 +62,7 @@
     <div id="column2">
     </div>
     <div id="column1">
-        <label for="in_file">Model file:</label>
+        <label for="inFile">Model file:</label>
         <form id="upload-form">
             <input type="file" id="model-file" name="model-file">
             <button type="submit">Upload</button>

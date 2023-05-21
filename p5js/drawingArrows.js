@@ -1,497 +1,258 @@
-function draw_arrow(layer, array) {
-    noStroke();
-    if (layer.type == "LSTM" || layer.type == "GRU" || layer.type == "SimpleRNN" || layer.type == "TimaDistributed" || layer.type == "Bidirectional"
-        || layer.type == "ConvLSTM1D" || layer.type == "ConvLSTM2D" || layer.type == "ConvLSTM3D" || layer.type == "BaseRNN") {
-        color = [...values.colors[layer.type]];
-        color[1] = 150
-        push();
+function drawArrow(layer, height) {
+    translate((layer.shape[0] / 2) + (height / 2) - 0.5, 0, 0);
 
-        translate((layer.shape[0] / 2 + (layer.space_between_layers - 0.5) / 4), 0, 0);
-        push();
-        angleMode(DEGREES);
-        rotateZ(90);
-        fill(color);
-        cylinder(values.mArrowWidth, (layer.space_between_layers - 0.5) / 2);
-        pop();
+    push();
+    angleMode(DEGREES);
+    rotateZ(90);
+    fill(0);
+    cylinder(dynamicValues.mArrowWidth, height);
+    pop();
 
-        translate((layer.space_between_layers - 0.5) / 4, 0, (layer.shape[2] / 2 + 2) / 2);
+    translate((height / 2) - dynamicValues.mArrowHeight / 2 + 0.4, 0, 0);
+
+    rotateZ(-90);
+    fill(0);
+    cone(0.5, dynamicValues.mArrowHeight);
+    pop();
+}
+
+function drawFirstPartOfArrowMultiple(layer, xPosition) {
+    translate((layer.shape[0] / 2) + (xPosition / 4), 0, 0);
+
+    push();
+    angleMode(DEGREES);
+    rotateZ(90);
+    fill(0);
+    cylinder(dynamicValues.mArrowWidth, xPosition / 2);
+    pop();
+}
+
+function drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, xPosition, yPosition) {
+    drawFirstPartOfArrowMultiple(layer, xPosition);
+
+    translate((xPosition / 4), 0, yPosition / 2);
+
+    push();
+    rotateZ(90);
+    rotateX(90);
+    fill(0);
+    cylinder(dynamicValues.mArrowWidth, yPosition);
+    pop();
+
+    translate(nextLayer.spaceBetweenLayers / 4, 0, yPosition / 2);
+
+    push();
+    rotateZ(90);
+    fill(0);
+    cylinder(dynamicValues.mArrowWidth, nextLayer.spaceBetweenLayers / 2);
+    pop();
+    translate((nextLayer.spaceBetweenLayers / 4) - dynamicValues.mArrowHeight / 2 + 0.1, 0, 0);
+    rotateZ(-90);
+    fill(0);
+    cone(0.5, dynamicValues.mArrowHeight);
+    pop();
+}
+
+function drawArrowMultipleNextLayers(layer, xPosition) {
+    drawFirstPartOfArrowMultiple(layer, xPosition);
+
+    for (let nextLayerIndex of layer.nextLayers) {
+        push();
+        let nextLayer = layers[nextLayerIndex];
+
+        let nextLayerYPosition = (nextLayer.centerPosition[2]) - (layer.centerPosition[2]);
+        let nextLayerXPosition = (nextLayer.centerPosition[0] - nextLayer.shape[0] / 2) - (layer.centerPosition[0] + layer.shape[0] / 2);
+
+        translate((nextLayerXPosition / 4), 0, nextLayerYPosition / 2);
 
         push();
         rotateZ(90);
         rotateX(90);
-        fill(color);
-        cylinder(values.mArrowWidth, layer.shape[2] / 2 + 2);
+        fill(0);
+        cylinder(dynamicValues.mArrowWidth, nextLayerYPosition);
         pop();
 
-        translate(-((layer.space_between_layers - 0.5) + layer.shape[0]) / 2, 0, (layer.shape[2] / 2 + 2) / 2);
+        translate((nextLayerXPosition / 4) - 0.5, 0, nextLayerYPosition / 2);
 
         push();
-        rotateZ(90);
-        fill(color);
-        cylinder(values.mArrowWidth, (layer.space_between_layers - 0.5) + layer.shape[0]);
-        pop();
-
-        translate(-((layer.space_between_layers - 0.5) + layer.shape[0]) / 2, 0, -(layer.shape[2] / 2 + 2) / 2);
-
-        push();
-        rotateZ(90);
-        rotateX(90);
-        fill(color);
-        cylinder(values.mArrowWidth, layer.shape[2] / 2 + 2);
-        pop();
-
-        translate((layer.space_between_layers - 0.5) / 4 - 0.25, 0, -(layer.shape[2] / 2 + 2) / 2);
-
-        push();
-        angleMode(DEGREES);
-        rotateZ(90);
-        fill(color);
-        cylinder(values.mArrowWidth, (layer.space_between_layers - 0.5) / 2 - 0.5);
-        pop();
-
-        translate(((layer.space_between_layers + 0.5) / 4) - values.mArrowHeight / 2 - 0.1, 0, 0);
-
-        rotateZ(-90);
-        fill(color);
-        cone(0.5, values.mArrowHeight);
-        pop();
-    }
-    if (layer.next_layers.length == 1) {
-        let next_layer = array[layer.next_layers[0]];
-        if (next_layer.previous_layers.length <= 1) {
-            push();
-            let positionX = (next_layer.center_position[0] - next_layer.shape[0] / 2) - (layer.center_position[0] + layer.shape[0] / 2);
-
-            translate((layer.shape[0] / 2) + (positionX / 2) - 0.5, 0, 0);
-
-            push();
-            angleMode(DEGREES);
-            rotateZ(90);
-            fill(0);
-            cylinder(values.mArrowWidth, positionX);
-            pop();
-
-            translate((positionX / 2) - values.mArrowHeight / 2 + 0.4, 0, 0);
-
-            rotateZ(-90);
-            fill(0);
-            cone(0.5, values.mArrowHeight);
-            pop();
-        } else if (next_layer.previous_layers.length > 1) {
-            push();
-            let positionX = (next_layer.center_position[0] - next_layer.shape[0] / 2) - (layer.center_position[0] + layer.shape[0] / 2) + ((next_layer.center_position[0] - next_layer.space_between_layers - next_layer.shape[0] / 2) - (layer.center_position[0] + layer.shape[0] / 2));
-            let positionY = (next_layer.center_position[2]) - (layer.center_position[2]);
-
-            translate((layer.shape[0] / 2) + (positionX / 4), 0, 0);
-
-            push();
-            angleMode(DEGREES);
-            rotateZ(90);
-            fill(0);
-            cylinder(values.mArrowWidth, positionX / 2);
-            pop();
-
-            translate((positionX / 4), 0, positionY / 2);
-
-            push();
-            rotateZ(90);
-            rotateX(90);
-            fill(0);
-            cylinder(values.mArrowWidth, positionY);
-            pop();
-
-            translate(next_layer.space_between_layers / 4, 0, positionY / 2);
-
-            push();
-            rotateZ(90);
-            fill(0);
-            cylinder(values.mArrowWidth, next_layer.space_between_layers / 2);
-            pop();
-            translate((next_layer.space_between_layers / 4) - values.mArrowHeight / 2 + 0.1, 0, 0);
-            rotateZ(-90);
-            fill(0);
-            cone(0.5, values.mArrowHeight);
-            pop();
-        }
-    } else if (layer.next_layers.length > 1) {
-        push();
-        let positionX = (array[layer.next_layers[0]].center_position[0] - array[layer.next_layers[0]].shape[0] / 2) - (layer.center_position[0] + layer.shape[0] / 2);
-
-        translate((layer.shape[0] / 2) + (positionX / 4), 0, 0);
-
-        push();
-        angleMode(DEGREES);
         rotateZ(90);
         fill(0);
-        cylinder(values.mArrowWidth, positionX / 2);
+        if (nextLayerXPosition > nextLayer.spaceBetweenLayers)
+            cylinder(dynamicValues.mArrowWidth, nextLayerXPosition - nextLayer.spaceBetweenLayers / 2);
+        else
+            cylinder(dynamicValues.mArrowWidth, nextLayerXPosition / 2 - 1);
         pop();
-
-        for (let n_layer of layer.next_layers) {
-            push();
-            let next_layer = array[n_layer];
-
-            let positionY = (next_layer.center_position[2]) - (layer.center_position[2]);
-            let positionX = (next_layer.center_position[0] - next_layer.shape[0] / 2) - (layer.center_position[0] + layer.shape[0] / 2);
-
-            translate((positionX / 4), 0, positionY / 2);
-
-            push();
-            rotateZ(90);
-            rotateX(90);
+        if (nextLayerXPosition <= nextLayer.spaceBetweenLayers) {
+            translate((nextLayerXPosition / 4) - dynamicValues.mArrowHeight / 2 + 0.5, 0, 0);
+            rotateZ(-90);
             fill(0);
-            cylinder(values.mArrowWidth, positionY);
-            pop();
-
-            translate((positionX / 4) - 0.5, 0, positionY / 2);
-
-            push();
-            rotateZ(90);
-            fill(0);
-            if (positionX > next_layer.space_between_layers)
-                cylinder(values.mArrowWidth, positionX - next_layer.space_between_layers / 2);
-            else
-                cylinder(values.mArrowWidth, positionX / 2 - 1);
-            pop();
-            if (positionX <= next_layer.space_between_layers) {
-                translate((positionX / 4) - values.mArrowHeight / 2 + 0.5, 0, 0);
-                rotateZ(-90);
-                fill(0);
-                cone(0.5, values.mArrowHeight);
-            }
-            pop();
+            cone(0.5, dynamicValues.mArrowHeight);
         }
         pop();
+    }
+    pop();
+}
+
+function drawArrowForArrow(layer, array) {
+    noStroke();
+    smooth();
+
+    drawArrowRecursiveLayer(layer);
+
+    if (layer.nextLayers.length === 1) {
+        let nextLayer = array[layer.nextLayers[0]];
+        if (nextLayer.prevLayers.length <= 1) {
+            push();
+            let height = (nextLayer.centerPosition[0] - nextLayer.shape[0] / 2) - (layer.centerPosition[0] + layer.shape[0] / 2);
+            drawArrow(layer, height);
+
+        } else if (nextLayer.prevLayers.length > 1) {
+            push();
+            let positionX = (nextLayer.centerPosition[0] - nextLayer.shape[0] / 2) - (layer.centerPosition[0] + layer.shape[0] / 2) +
+                ((nextLayer.centerPosition[0] - nextLayer.spaceBetweenLayers - nextLayer.shape[0] / 2) -
+                    (layer.centerPosition[0] + layer.shape[0] / 2));
+            let positionY = (nextLayer.centerPosition[2]) - (layer.centerPosition[2]);
+
+            drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, positionX, positionY);
+        }
+    } else if (layer.nextLayers.length > 1) {
+        push();
+        smooth();
+        let positionX = (array[layer.nextLayers[0]].centerPosition[0] - array[layer.nextLayers[0]].shape[0] / 2) - (layer.centerPosition[0] + layer.shape[0] / 2);
+        drawArrowMultipleNextLayers(layer, positionX);
+
     }
 }
 
-function draw_beggining_block_arrow(layer, array, difference_between_layers, next_layers) {
+function drawBeginningBlockArrow(layer, array, differenceBetweenLayers, nextLayerIndex) {
     noStroke();
-    if (layer.type == "LSTM" || layer.type == "GRU" || layer.type == "SimpleRNN" || layer.type == "TimaDistributed" || layer.type == "Bidirectional"
-        || layer.type == "ConvLSTM1D" || layer.type == "ConvLSTM2D" || layer.type == "ConvLSTM3D" || layer.type == "BaseRNN") {
-        color = [...values.colors[layer.type]];
-        color[1] = 150
-        push();
+    smooth();
 
-        translate((layer.shape[0] / 2 + (layer.space_between_layers - 0.5) / 4), 0, 0);
-        push();
-        angleMode(DEGREES);
-        rotateZ(90);
-        fill(color);
-        cylinder(values.mArrowWidth, (layer.space_between_layers - 0.5) / 2);
-        pop();
+    drawArrowRecursiveLayer(layer);
 
-        translate((layer.space_between_layers - 0.5) / 4, 0, (layer.shape[2] / 2 + 2) / 2);
 
-        push();
-        rotateZ(90);
-        rotateX(90);
-        fill(color);
-        cylinder(values.mArrowWidth, layer.shape[2] / 2 + 2);
-        pop();
+    let nextLayer = array[nextLayerIndex];
+    push();
+    let height = (nextLayer.centerPosition[0] - differenceBetweenLayers - nextLayer.shape[0] / 2) - (layer.centerPosition[0] + layer.shape[0] / 2);
 
-        translate(-((layer.space_between_layers - 0.5) + layer.shape[0]) / 2, 0, (layer.shape[2] / 2 + 2) / 2);
+    drawArrow(layer, height);
+}
 
-        push();
-        rotateZ(90);
-        fill(color);
-        cylinder(values.mArrowWidth, (layer.space_between_layers - 0.5) + layer.shape[0]);
-        pop();
+function drawEndBlockArrow(layer, array, differenceBetweenLayers, nextLayers) {
+    noStroke();
 
-        translate(-((layer.space_between_layers - 0.5) + layer.shape[0]) / 2, 0, -(layer.shape[2] / 2 + 2) / 2);
+    drawArrowRecursiveLayer(layer);
 
-        push();
-        rotateZ(90);
-        rotateX(90);
-        fill(color);
-        cylinder(values.mArrowWidth, layer.shape[2] / 2 + 2);
-        pop();
-
-        translate((layer.space_between_layers - 0.5) / 4 - 0.25, 0, -(layer.shape[2] / 2 + 2) / 2);
-
-        push();
-        angleMode(DEGREES);
-        rotateZ(90);
-        fill(color);
-        cylinder(values.mArrowWidth, (layer.space_between_layers - 0.5) / 2 - 0.5);
-        pop();
-
-        translate(((layer.space_between_layers + 0.5) / 4) - values.mArrowHeight / 2 - 0.1, 0, 0);
-
-        rotateZ(-90);
-        fill(color);
-        cone(0.5, values.mArrowHeight);
-        pop();
-    }
-    if (next_layers.length == 1) {
-        let next_layer = array[next_layers[0]];
-        if (next_layer.previous_layers.length <= 1) {
+    if (nextLayers.length === 1) {
+        let nextLayer = array[nextLayers[0]];
+        if (nextLayer.prevLayers.length <= 1) {
             push();
-            let positionX = (next_layer.center_position[0] - difference_between_layers - next_layer.shape[0] / 2) - (layer.center_position[0] + layer.shape[0] / 2);
+            let height = (nextLayer.centerPosition[0] - differenceBetweenLayers - nextLayer.shape[0] / 2) - (layer.centerPosition[0] - differenceBetweenLayers + layer.shape[0] / 2);
 
-            translate((layer.shape[0] / 2) + (positionX / 2) - 0.5, 0, 0);
-
+            drawArrow(layer, height);
+        } else if (nextLayer.prevLayers.length > 1) {
             push();
-            angleMode(DEGREES);
-            rotateZ(90);
-            fill(0);
-            cylinder(values.mArrowWidth, positionX);
-            pop();
+            let positionX = (nextLayer.centerPosition[0] - differenceBetweenLayers - nextLayer.shape[0] / 2) -
+                (layer.centerPosition[0] - differenceBetweenLayers + layer.shape[0] / 2) +
+                ((nextLayer.centerPosition[0] - differenceBetweenLayers - nextLayer.spaceBetweenLayers - nextLayer.shape[0] / 2) -
+                    (layer.centerPosition[0] - differenceBetweenLayers + layer.shape[0] / 2));
+            let positionY = (nextLayer.centerPosition[2]) - (layer.centerPosition[2]);
 
-            translate((positionX / 2) - values.mArrowHeight / 2 + 0.4, 0, 0);
-
-            rotateZ(-90);
-            fill(0);
-            cone(0.5, values.mArrowHeight);
-            pop();
-        } else if (next_layer.previous_layers.length > 1) {
-            push();
-            let positionX = (next_layer.center_position[0] - difference_between_layers - next_layer.shape[0] / 2) - (layer.center_position[0] + layer.shape[0] / 2) + ((next_layer.center_position[0] - difference_between_layers - next_layer.space_between_layers - next_layer.shape[0] / 2) - (layer.center_position[0] + layer.shape[0] / 2));
-            let positionY = (next_layer.center_position[2]) - (layer.center_position[2]);
-
-            translate((layer.shape[0] / 2) + (positionX / 4), 0, 0);
-
-            push();
-            angleMode(DEGREES);
-            rotateZ(90);
-            fill(0);
-            cylinder(values.mArrowWidth, positionX / 2);
-            pop();
-
-            translate((positionX / 4), 0, positionY / 2);
-
-            push();
-            rotateZ(90);
-            rotateX(90);
-            fill(0);
-            cylinder(values.mArrowWidth, positionY);
-            pop();
-
-            translate(next_layer.space_between_layers / 4, 0, positionY / 2);
-
-            push();
-            rotateZ(90);
-            fill(0);
-            cylinder(values.mArrowWidth, next_layer.space_between_layers / 2);
-            pop();
-            translate((next_layer.space_between_layers / 4) - values.mArrowHeight / 2 + 0.1, 0, 0);
-            rotateZ(-90);
-            fill(0);
-            cone(0.5, values.mArrowHeight);
-            pop();
+            drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, positionX, positionY);
         }
-    } else if (next_layers.length > 1) {
+    } else if (nextLayers.length > 1) {
         push();
-        let positionX = (array[next_layers[0]].center_position[0] - difference_between_layers - array[next_layers[0]].shape[0] / 2) - (layer.center_position[0] + layer.shape[0] / 2);
+        let positionX = (array[nextLayers[0]].centerPosition[0] - differenceBetweenLayers - array[nextLayers[0]].shape[0] / 2) - (layer.centerPosition[0] - differenceBetweenLayers + layer.shape[0] / 2);
 
-        translate((layer.shape[0] / 2) + (positionX / 4), 0, 0);
-
-        push();
-        angleMode(DEGREES);
-        rotateZ(90);
-        fill(0);
-        cylinder(values.mArrowWidth, positionX / 2);
-        pop();
-
-        for (let n_layer of next_layers) {
-            push();
-            let next_layer = array[n_layer];
-
-            let positionY = (next_layer.center_position[2]) - (layer.center_position[2]);
-            let positionX = (next_layer.center_position[0] - difference_between_layers - next_layer.shape[0] / 2) - (layer.center_position[0] + layer.shape[0] / 2);
-
-            translate((positionX / 4), 0, positionY / 2);
-
-            push();
-            rotateZ(90);
-            rotateX(90);
-            fill(0);
-            cylinder(values.mArrowWidth, positionY);
-            pop();
-
-            translate((positionX / 4) - 0.5, 0, positionY / 2);
-
-            push();
-            rotateZ(90);
-            fill(0);
-            if (positionX > next_layer.space_between_layers)
-                cylinder(values.mArrowWidth, positionX / 2 - 1);
-            else
-                cylinder(values.mArrowWidth, positionX / 2);
-            pop();
-
-            translate((positionX / 4) - values.mArrowHeight / 2 + 0.5, 0, 0);
-            rotateZ(-90);
-            fill(0);
-            cone(0.5, values.mArrowHeight);
-
-            pop();
-        }
-        pop();
+        drawArrowMultipleNextLayers(layer, positionX);
     }
 }
 
-function draw_arrow_after_block(layer, array, center_position, center_position_difference) {
+function drawArrowAfterBlock(layer, array, centerPosition, centerPositionDifference) {
     noStroke();
-    if (layer.type == "LSTM" || layer.type == "GRU" || layer.type == "SimpleRNN" || layer.type == "TimaDistributed" || layer.type == "Bidirectional"
-        || layer.type == "ConvLSTM1D" || layer.type == "ConvLSTM2D" || layer.type == "ConvLSTM3D" || layer.type == "BaseRNN") {
-        color = [...values.colors[layer.type]];
-        color[1] = 150
-        push();
 
-        translate((layer.shape[0] / 2 + (layer.space_between_layers - 0.5) / 4), 0, 0);
-        push();
-        angleMode(DEGREES);
-        rotateZ(90);
-        fill(color);
-        cylinder(values.mArrowWidth, (layer.space_between_layers - 0.5) / 2);
-        pop();
+    drawArrowRecursiveLayer(layer);
 
-        translate((layer.space_between_layers - 0.5) / 4, 0, (layer.shape[2] / 2 + 2) / 2);
-
-        push();
-        rotateZ(90);
-        rotateX(90);
-        fill(color);
-        cylinder(values.mArrowWidth, layer.shape[2] / 2 + 2);
-        pop();
-
-        translate(-((layer.space_between_layers - 0.5) + layer.shape[0]) / 2, 0, (layer.shape[2] / 2 + 2) / 2);
-
-        push();
-        rotateZ(90);
-        fill(color);
-        cylinder(values.mArrowWidth, (layer.space_between_layers - 0.5) + layer.shape[0]);
-        pop();
-
-        translate(-((layer.space_between_layers - 0.5) + layer.shape[0]) / 2, 0, -(layer.shape[2] / 2 + 2) / 2);
-
-        push();
-        rotateZ(90);
-        rotateX(90);
-        fill(color);
-        cylinder(values.mArrowWidth, layer.shape[2] / 2 + 2);
-        pop();
-
-        translate((layer.space_between_layers - 0.5) / 4 - 0.25, 0, -(layer.shape[2] / 2 + 2) / 2);
-
-        push();
-        angleMode(DEGREES);
-        rotateZ(90);
-        fill(color);
-        cylinder(values.mArrowWidth, (layer.space_between_layers - 0.5) / 2 - 0.5);
-        pop();
-
-        translate(((layer.space_between_layers + 0.5) / 4) - values.mArrowHeight / 2 - 0.1, 0, 0);
-
-        rotateZ(-90);
-        fill(color);
-        cone(0.5, values.mArrowHeight);
-        pop();
-    }
-    if (layer.next_layers.length == 1) {
-        let next_layer = array[layer.next_layers[0]];
-        if (next_layer.previous_layers.length <= 1) {
+    if (layer.nextLayers.length === 1) {
+        let nextLayer = array[layer.nextLayers[0]];
+        if (nextLayer.prevLayers.length <= 1) {
             push();
-            let positionX = (next_layer.center_position[0] - center_position_difference - next_layer.shape[0] / 2) - (center_position[0] + layer.shape[0] / 2);
+            let height = (nextLayer.centerPosition[0] - centerPositionDifference - nextLayer.shape[0] / 2) - (centerPosition[0] + layer.shape[0] / 2);
 
-            translate((layer.shape[0] / 2) + (positionX / 2) - 0.5, 0, 0);
-
+            drawArrow(layer, height);
+        } else if (nextLayer.prevLayers.length > 1) {
             push();
-            angleMode(DEGREES);
-            rotateZ(90);
-            fill(0);
-            cylinder(values.mArrowWidth, positionX);
-            pop();
+            let positionX = (nextLayer.centerPosition[0] - centerPositionDifference - nextLayer.shape[0] / 2) -
+                (centerPosition[0] + layer.shape[0] / 2) + ((nextLayer.centerPosition[0] - centerPositionDifference -
+                    nextLayer.spaceBetweenLayers - nextLayer.shape[0] / 2) - (centerPosition[0] + layer.shape[0] / 2));
+            let positionY = (nextLayer.centerPosition[2]) - (centerPosition[2]);
 
-            translate((positionX / 2) - values.mArrowHeight / 2 + 0.4, 0, 0);
-
-            rotateZ(-90);
-            fill(0);
-            cone(0.5, values.mArrowHeight);
-            pop();
-        } else if (next_layer.previous_layers.length > 1) {
-            push();
-            let positionX = (next_layer.center_position[0] - center_position_difference - next_layer.shape[0] / 2) - (center_position[0] + layer.shape[0] / 2) + ((next_layer.center_position[0] - center_position_difference - next_layer.space_between_layers - next_layer.shape[0] / 2) - (center_position[0] + layer.shape[0] / 2));
-            let positionY = (next_layer.center_position[2]) - (center_position[2]);
-
-            translate((layer.shape[0] / 2) + (positionX / 4), 0, 0);
-
-            push();
-            angleMode(DEGREES);
-            rotateZ(90);
-            fill(0);
-            cylinder(values.mArrowWidth, positionX / 2);
-            pop();
-
-            translate((positionX / 4), 0, positionY / 2);
-
-            push();
-            rotateZ(90);
-            rotateX(90);
-            fill(0);
-            cylinder(values.mArrowWidth, positionY);
-            pop();
-
-            translate(next_layer.space_between_layers / 4, 0, positionY / 2);
-
-            push();
-            rotateZ(90);
-            fill(0);
-            cylinder(values.mArrowWidth, next_layer.space_between_layers / 2);
-            pop();
-            translate((next_layer.space_between_layers / 4) - values.mArrowHeight / 2 + 0.1, 0, 0);
-            rotateZ(-90);
-            fill(0);
-            cone(0.5, values.mArrowHeight);
-            pop();
+            drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, positionX, positionY);
         }
-    } else if (layer.next_layers.length > 1) {
+    } else if (layer.nextLayers.length > 1) {
         push();
-        let positionX = (array[layer.next_layers[0]].center_position[0] - center_position_difference - array[layer.next_layers[0]].shape[0] / 2) - (center_position[0] + layer.shape[0] / 2);
+        let positionX = (array[layer.nextLayers[0]].centerPosition[0] - centerPositionDifference - array[layer.nextLayers[0]].shape[0] / 2) - (centerPosition[0] + layer.shape[0] / 2);
 
-        translate((layer.shape[0] / 2) + (positionX / 4), 0, 0);
-
-        push();
-        angleMode(DEGREES);
-        rotateZ(90);
-        fill(0);
-        cylinder(values.mArrowWidth, positionX / 2);
-        pop();
-
-        for (let n_layer of layer.next_layers) {
-            push();
-            let next_layer = array[n_layer];
-
-            let positionY = (next_layer.center_position[2]) - (center_position[2]);
-            let positionX = (next_layer.center_position[0] - center_position_difference - next_layer.shape[0] / 2) - (center_position[0] + layer.shape[0] / 2);
-
-            translate((positionX / 4), 0, positionY / 2);
-
-            push();
-            rotateZ(90);
-            rotateX(90);
-            fill(0);
-            cylinder(values.mArrowWidth, positionY);
-            pop();
-
-            translate((positionX / 4) - 0.5, 0, positionY / 2);
-
-            push();
-            rotateZ(90);
-            fill(0);
-            if (positionX > next_layer.space_between_layers)
-                cylinder(values.mArrowWidth, positionX - next_layer.space_between_layers / 2);
-            else
-                cylinder(values.mArrowWidth, positionX / 2 - 1);
-            pop();
-            if (positionX <= next_layer.space_between_layers) {
-                translate((positionX / 4) - values.mArrowHeight / 2 + 0.5, 0, 0);
-                rotateZ(-90);
-                fill(0);
-                cone(0.5, values.mArrowHeight);
-            }
-            pop();
-        }
-        pop();
+        drawArrowMultipleNextLayers(layer, positionX);
     }
+}
+
+function drawArrowRecursiveLayer(layer) {
+    if (layer.type !== "LSTM" || layer.type !== "GRU" || layer.type !== "SimpleRNN" || layer.type !== "TimeDistributed" || layer.type !== "Bidirectional"
+        || layer.type !== "ConvLSTM1D" || layer.type !== "ConvLSTM2D" || layer.type !== "ConvLSTM3D" || layer.type !== "BaseRNN") {
+        return;
+    }
+    color = [...dynamicValues.colors[layer.type]];
+    color[1] = 150
+    push();
+
+    translate((layer.shape[0] / 2 + (layer.spaceBetweenLayers - 0.5) / 4), 0, 1);
+    push();
+    angleMode(DEGREES);
+    rotateZ(90);
+    fill(color);
+    cylinder(dynamicValues.mArrowWidth, (layer.spaceBetweenLayers - 0.5) / 2);
+    pop();
+
+    translate((layer.spaceBetweenLayers - 0.5) / 4, 0, (layer.shape[2] / 2 + 1) / 2);
+
+    push();
+    rotateZ(90);
+    rotateX(90);
+    fill(color);
+    cylinder(dynamicValues.mArrowWidth, layer.shape[2] / 2 + 1);
+    pop();
+
+    translate(-((layer.spaceBetweenLayers - 0.5) + layer.shape[0]) / 2, 0, (layer.shape[2] / 2 + 1) / 2);
+
+    push();
+    rotateZ(90);
+    fill(color);
+    cylinder(dynamicValues.mArrowWidth, (layer.spaceBetweenLayers - 0.5) + layer.shape[0]);
+    pop();
+
+    translate(-((layer.spaceBetweenLayers - 0.5) + layer.shape[0]) / 2, 0, -(layer.shape[2] / 2 + 1) / 2);
+
+    push();
+    rotateZ(90);
+    rotateX(90);
+    fill(color);
+    cylinder(dynamicValues.mArrowWidth, layer.shape[2] / 2 + 1);
+    pop();
+
+    translate((layer.spaceBetweenLayers - 0.5) / 4 - 0.25, 0, -(layer.shape[2] / 2 + 1) / 2);
+
+    push();
+    angleMode(DEGREES);
+    rotateZ(90);
+    fill(color);
+    cylinder(dynamicValues.mArrowWidth, (layer.spaceBetweenLayers - 0.5) / 2 - 0.5);
+    pop();
+
+    translate(((layer.spaceBetweenLayers + 0.5) / 4) - dynamicValues.mArrowHeight / 2 - 0.1, 0, 0);
+
+    rotateZ(-90);
+    fill(color);
+    cone(0.5, dynamicValues.mArrowHeight);
+    pop();
 }

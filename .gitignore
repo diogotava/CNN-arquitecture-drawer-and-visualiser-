@@ -216,3 +216,6 @@ model_GTSRB_train1_val1_02/cp-0057.ckpt/keras_metadata.pb
 model_GTSRB_train1_val1_02/cp-0057.ckpt/saved_model.pb
 model_GTSRB_train1_val1_02/cp-0057.ckpt/variables/variables.data-00000-of-00001
 model_GTSRB_train1_val1_02/cp-0057.ckpt/variables/variables.index
+
+.vscode
+Models

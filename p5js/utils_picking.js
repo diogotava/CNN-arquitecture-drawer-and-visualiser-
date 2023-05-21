@@ -1,8 +1,9 @@
 /**
  * mPage is a global variable that holds a (hidden) WEBGL canvas for color-based object picking.
  */
-var mPage;
-var canvas;
+let mPage;
+let canvas;
+
 /**
  * mCreateCanvas is a 3D object picking version of createCanvas().
  *
@@ -23,10 +24,10 @@ function mCreateCanvas(windowWidth, windowHeight, WEBGL) {
  * @return {Number} the ID number of the layer at muse position.
  */
 function getLayerId() {
-    var gl = mPage.elt.getContext('webgl');
-    var pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+    let gl = mPage.elt.getContext('webgl');
+    let pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
     gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-    var index = 4 * ((gl.drawingBufferHeight - mouseY) * gl.drawingBufferWidth + mouseX);
+    let index = 4 * ((gl.drawingBufferHeight - mouseY) * gl.drawingBufferWidth + mouseX);
 
     return (pixels[index] << 16 | pixels[index + 1] << 8 | pixels[index + 2]) - 1;
 }
@@ -35,6 +36,7 @@ function getLayerId() {
  * mBox creates a box primitive with an associated ID number.
  */
 function mBox(id, shapeX, shapeY, shapeZ) {
+    smooth();
     strokeWeight(2);
     box(shapeX, shapeY, shapeZ);
 
@@ -45,13 +47,21 @@ function mBox(id, shapeX, shapeY, shapeZ) {
 }
 
 /**
- * mTranslate performs the translate function to both visible and hidden 3D models.
+ * mTranslate performs the translation function to both visible and hidden 3D models.
  *
  * All parameters are the same as for translate().
  */
 function mTranslate() {
     translate(...[...arguments]);
     mPage.translate(...[...arguments]);
+}
+
+function mResizeCanvas() {
+    let w = parseInt(windowWidth * 0.81, 10);
+    let h = parseInt(windowHeight * 0.98, 10);
+    resizeCanvas(w, h);
+    mPage.resizeCanvas(w, h);
+    mPerspective(PI / 3, width / height, 0.01, 150000);
 }
 
 /**

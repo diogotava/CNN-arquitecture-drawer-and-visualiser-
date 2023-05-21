@@ -1,4 +1,3 @@
-
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D
@@ -16,7 +15,7 @@ max_x = 400
 def get_shapes(layer, input_shape=False, correct_shape=False):
     inverted = False
     try:
-        if(layer.data_format == "channels_last"):
+        if layer.data_format == "channels_last":
             inverted = True
     except:
         inverted = False
@@ -34,19 +33,19 @@ def get_shapes(layer, input_shape=False, correct_shape=False):
         else:
             shape = shape[1:]
 
-        if((layer.__class__.__name__ == "InputLayer" or layer.__class__.__name__ == "BatchNormalization" or layer.__class__.__name__ == "Concatenate") and len(shape) == 3):
+        if ( layer.__class__.__name__ == "InputLayer" or layer.__class__.__name__ == "BatchNormalization" or layer.__class__.__name__ == "Concatenate" or layer.__class__.__name__ == "Add" ) and len(shape) == 3:
             inverted = True
         if not correct_shape:
             shape_return = [get_shape(shape, inverted)]
         else:
             shape_return = [shape]
-    elif isinstance(layer_shape, list) and len(layer_shape) == 1:  # drop dimension for non seq. models
+    elif ( isinstance(layer_shape, list) and len(layer_shape) == 1 ):  # drop dimension for non seq. models
         shape = layer_shape[0]
         if isinstance(shape, tuple):
             shape = list(shape)
 
         shape = shape[1:]
-        if((layer.__class__.__name__ == "InputLayer" or layer.__class__.__name__ == "BatchNormalization" or layer.__class__.__name__ == "Concatenate") and len(shape) == 3):
+        if ( layer.__class__.__name__ == "InputLayer" or layer.__class__.__name__ == "BatchNormalization" or layer.__class__.__name__ == "Concatenate" or layer.__class__.__name__ == "Add" ) and len(shape) == 3:
             inverted = True
         if not correct_shape:
             shape_return = [get_shape(shape, inverted)]
@@ -58,7 +57,7 @@ def get_shapes(layer, input_shape=False, correct_shape=False):
             if isinstance(shape, tuple):
                 shape = list(shape)
             shape = shape[1:]
-            if((layer.__class__.__name__ == "InputLayer" or layer.__class__.__name__ == "BatchNormalization" or layer.__class__.__name__ == "Concatenate") and len(shape) == 3):
+            if ( layer.__class__.__name__ == "InputLayer" or layer.__class__.__name__ == "BatchNormalization" or layer.__class__.__name__ == "Concatenate" or layer.__class__.__name__ == "Add" ) and len(shape) == 3:
                 inverted = True
             if not correct_shape:
                 shape = get_shape(shape, inverted)
