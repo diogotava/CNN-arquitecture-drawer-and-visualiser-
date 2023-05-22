@@ -1,7 +1,3 @@
-from Src.Utils.Values import *
-import math
-
-
 def get_layers(layer, layers, prev=False):
     layers_to_fill = []
     if prev:
@@ -10,7 +6,7 @@ def get_layers(layer, layers, prev=False):
         layers_of_layer = layer.next_layers
 
     for layer_of_layer in layers_of_layer:
-        # vai buscar o layer correspondente ao next_layer
+        # gets the correspondent layer to the next_layer
         layer_to_fill = [e for e in layers if e.name == layer_of_layer.name]
         if len(layer_to_fill) > 1:
             print("ERROR!!")
@@ -48,24 +44,6 @@ def get_max_width(layer, layers):
     return max(max_layers.get(layer.name, 0), count)
 
 
-def align_position(layer, layers):
-    if len(layer.previous_layers) > 1:
-        max_x = 0
-        for p_Layer in layer.previous_layers:
-            prevLayer = layers[p_Layer]
-            if len(prevLayer.next_layers) == 1:
-                x = prevLayer.center_position[0] + prevLayer.shape[0] / 2
-                if x > max_x:
-                    max_x = x
-        for p_Layer in layer.previous_layers:
-            prevLayer = layers[p_Layer]
-            if len(prevLayer.next_layers) == 1:
-                x = prevLayer.center_position[0] + prevLayer.shape[0] / 2
-                if x != max_x:
-                    new_x = max_x - prevLayer.shape[0] / 2
-                    prevLayer.center_position[0] = new_x
-
-
 def compute_position(layer, x_position, y_position):
     if y_position is not None:
         if len(layer.previous_layers) > 1:
@@ -88,25 +66,25 @@ def align_previous_layers(layer, layers, layers_viewed=None):
         if len(layer.previous_layers) > 1:
             max_x = 0
             for p_Layer in layer.previous_layers:
-                prevLayer = layers[p_Layer]
-                if len(prevLayer.next_layers) == 1:
-                    x = prevLayer.center_position[0] + prevLayer.shape[0] / 2
+                prev_layer = layers[p_Layer]
+                if len(prev_layer.next_layers) == 1:
+                    x = prev_layer.center_position[0] + prev_layer.shape[0] / 2
                     if x > max_x:
                         max_x = x
             if max_x < (layer.center_position[0] - layer.shape[0] / 2 - layer.space_between_layers):
                 max_x = (layer.center_position[0] - layer.shape[0] / 2 - layer.space_between_layers)
             for p_Layer in layer.previous_layers:
-                prevLayer = layers[p_Layer]
-                nextPreiousLayers = layers[prevLayer.previous_layers[0]].next_layers
-                if len(prevLayer.next_layers) == 1 and len(nextPreiousLayers) == 1:
-                    x = prevLayer.center_position[0] + prevLayer.shape[0] / 2
+                prev_layer = layers[p_Layer]
+                next_previous_layers = layers[prev_layer.previous_layers[0]].next_layers
+                if len(prev_layer.next_layers) == 1 and len(next_previous_layers) == 1:
+                    x = prev_layer.center_position[0] + prev_layer.shape[0] / 2
                     if x != max_x:
-                        new_x = max_x - prevLayer.shape[0] / 2
-                        prevLayer.center_position[0] = new_x
-                        if prevLayer.name in layers_viewed:
-                            layers_viewed.remove(prevLayer.name)
-                        if len(prevLayer.previous_layers) > 1:
-                            align_previous_layers(prevLayer, layers, layers_viewed)
+                        new_x = max_x - prev_layer.shape[0] / 2
+                        prev_layer.center_position[0] = new_x
+                        if prev_layer.name in layers_viewed:
+                            layers_viewed.remove(prev_layer.name)
+                        if len(prev_layer.previous_layers) > 1:
+                            align_previous_layers(prev_layer, layers, layers_viewed)
 
         layers_viewed.append(layer.name)
         for n_layer in layer.next_layers:
@@ -139,7 +117,7 @@ def get_lateral_position_layers(layer, layers, layers_lateral=None, x_position=N
     if layers_lateral is None:
         layers_lateral = [layer.name]
 
-    # desenha o layer seguinte ao atual
+    # computes the position for the next layer
     if len(layer.next_layers) > 1:
         n = len(layer.next_layers) / 2
         negative_n = 1
@@ -148,7 +126,7 @@ def get_lateral_position_layers(layer, layers, layers_lateral=None, x_position=N
             next_layer = layers[n_layer]
             next_layer.previous_y_position = layer.getYPosition()
             max_width = get_max_width(next_layer, layers)
-            # desenha o próximo layer
+            # compute the position of the next layer
             if index + 1 <= n:
                 if y_position is not None:
                     y_pos = y_position - negative_n * max_width * (layer.lateral_space_between_layers + layer.shape[index_y])

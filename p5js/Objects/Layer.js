@@ -15,6 +15,7 @@ class Layer {
         this.outputShape = layer.output_shape;
         this.previousYPosition = 0;
         this.activation = layer.activation;
+        this.shouldBeDrawn = true;
     }
 
     setXPosition(xPosition) {

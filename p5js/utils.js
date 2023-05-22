@@ -24,7 +24,7 @@ function keyPressed() {
             if (bPressed) {
                 let allPrevLayers = getAllPreviousLayers(layers[id], layers)
                 let allNextLayers = getAllNextLayers(layers[block[0]], layers)
-                if (block[0] in allPrevLayers && id in allNextLayers || id < block[0]) {
+                if (allPrevLayers.includes(block[0]) && allNextLayers.includes(id) && id > block[0]) {
                     block[1] = id;
                     dynamicValues.blocks.push(block);
                     alert('End of block selected!');
@@ -164,30 +164,42 @@ function getLateralPositionLayersEndBlock(layer, layers, endBlockLayer, layersAl
     layersAlreadyComputedLateralPosition.push(layer.name);
     if (layer.id === endBlockLayer.id) {
         getLateralPositionLayers(layer, layers, layersAlreadyComputedLateralPosition, xPosition, yPosition);
-    }
-    if (layer.nextLayers.length > 1) {
-        for (const nextLayerIndex of layer.nextLayers) {
+    } else {
+        layer.shouldBeDrawn = false;
+        if (layer.nextLayers.length > 1) {
+            for (const nextLayerIndex of layer.nextLayers) {
+                let nextLayer = layers[nextLayerIndex];
+                nextLayer.previousYPosition = layer.centerPosition[2];
+                getLateralPositionLayersEndBlock(nextLayer, layers, endBlockLayer, layersAlreadyComputedLateralPosition, xPosition, yPosition);
+            }
+        } else if (layer.nextLayers.length === 1) {
+            let nextLayerIndex = layer.nextLayers[0];
             let nextLayer = layers[nextLayerIndex];
-            nextLayer.previousYPosition = layer.centerPosition[2];
+            nextLayer.previousYPosition = layer.previousYPosition;
+
             getLateralPositionLayersEndBlock(nextLayer, layers, endBlockLayer, layersAlreadyComputedLateralPosition, xPosition, yPosition);
         }
-    } else if (layer.nextLayers.length === 1) {
-        let nextLayerIndex = layer.nextLayers[0];
-        let nextLayer = layers[nextLayerIndex];
-        nextLayer.previousYPosition = layer.previousYPosition;
-
-        getLateralPositionLayersEndBlock(nextLayer, layers, endBlockLayer, layersAlreadyComputedLateralPosition, xPosition, yPosition);
     }
 }
 
-// TODO: Fix position of blocks
+// TODO: When multiple blocks are selected the position is wrong
 function getLateralPositionLayers(layer, layers, layersAlreadyComputedLateralPosition = null, xPosition = null, yPosition = null, spaceBetweenLayers = null) {
+    let isBeginningBlock = false;
+    let isEndBlock = false;
     let endBlockLayer;
+    let beginningBlockLayer;
     let indexY = 2;
     let indexX = 0;
-
+    layer.shouldBeDrawn = true;
     if (dynamicValues.blocks.some((block) => block[0] === layer.id)) {
+        isBeginningBlock = true;
         endBlockLayer = layers[dynamicValues.blocks[dynamicValues.blocks.findIndex(list => list[0] === layer.id)][1]];
+        layer.nextLayersBackup = layer.nextLayers;
+    }
+    if (dynamicValues.blocks.some((block) => block[1] === layer.id)) {
+        isEndBlock = true;
+        beginningBlockLayer = layers[dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block[1] === layer.id)][0]];
+        layer.previousLayersBackup = layer.prevLayers;
     }
     if (layersAlreadyComputedLateralPosition === null && layer.prevLayers.length >= 1) {
         for (let prevLayerIndex of layer.prevLayers) {
@@ -225,6 +237,7 @@ function getLateralPositionLayers(layer, layers, layersAlreadyComputedLateralPos
             let nextLayer = layers[nextLayerIndex];
             nextLayer.previouYPosition = layer.getYPosition();
             if (endBlockLayer !== undefined) {
+                xPosition = layer.centerPosition[indexX] + layer.shape[indexX] / 2;
                 getLateralPositionLayersEndBlock(nextLayer, layers, endBlockLayer, layersAlreadyComputedLateralPosition, xPosition, yPosition, 10);
             } else {
                 let maxWidth = getMaxWidth(nextLayer, layers);
@@ -266,4 +279,9 @@ function getLateralPositionLayers(layer, layers, layersAlreadyComputedLateralPos
             }
         }
     }
+
+    if (isBeginningBlock)
+        layer.nextLayers = [endBlockLayer.id];
+    if (isEndBlock)
+        layer.prevLayers = [beginningBlockLayer.id];
 }

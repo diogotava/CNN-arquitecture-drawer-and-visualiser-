@@ -124,50 +124,6 @@ function drawArrowForArrow(layer, array) {
     }
 }
 
-function drawBeginningBlockArrow(layer, array, differenceBetweenLayers, nextLayerIndex) {
-    noStroke();
-    smooth();
-
-    drawArrowRecursiveLayer(layer);
-
-
-    let nextLayer = array[nextLayerIndex];
-    push();
-    let height = (nextLayer.centerPosition[0] - differenceBetweenLayers - nextLayer.shape[0] / 2) - (layer.centerPosition[0] + layer.shape[0] / 2);
-
-    drawArrow(layer, height);
-}
-
-function drawEndBlockArrow(layer, array, differenceBetweenLayers, nextLayers) {
-    noStroke();
-
-    drawArrowRecursiveLayer(layer);
-
-    if (nextLayers.length === 1) {
-        let nextLayer = array[nextLayers[0]];
-        if (nextLayer.prevLayers.length <= 1) {
-            push();
-            let height = (nextLayer.centerPosition[0] - differenceBetweenLayers - nextLayer.shape[0] / 2) - (layer.centerPosition[0] - differenceBetweenLayers + layer.shape[0] / 2);
-
-            drawArrow(layer, height);
-        } else if (nextLayer.prevLayers.length > 1) {
-            push();
-            let positionX = (nextLayer.centerPosition[0] - differenceBetweenLayers - nextLayer.shape[0] / 2) -
-                (layer.centerPosition[0] - differenceBetweenLayers + layer.shape[0] / 2) +
-                ((nextLayer.centerPosition[0] - differenceBetweenLayers - nextLayer.spaceBetweenLayers - nextLayer.shape[0] / 2) -
-                    (layer.centerPosition[0] - differenceBetweenLayers + layer.shape[0] / 2));
-            let positionY = (nextLayer.centerPosition[2]) - (layer.centerPosition[2]);
-
-            drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, positionX, positionY);
-        }
-    } else if (nextLayers.length > 1) {
-        push();
-        let positionX = (array[nextLayers[0]].centerPosition[0] - differenceBetweenLayers - array[nextLayers[0]].shape[0] / 2) - (layer.centerPosition[0] - differenceBetweenLayers + layer.shape[0] / 2);
-
-        drawArrowMultipleNextLayers(layer, positionX);
-    }
-}
-
 function drawArrowAfterBlock(layer, array, centerPosition, centerPositionDifference) {
     noStroke();
 
