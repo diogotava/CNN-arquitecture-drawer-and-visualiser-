@@ -182,7 +182,6 @@ function getLateralPositionLayersEndBlock(layer, layers, endBlockLayer, layersAl
     }
 }
 
-// TODO: When multiple blocks are selected the position is wrong
 function getLateralPositionLayers(layer, layers, layersAlreadyComputedLateralPosition = null, xPosition = null, yPosition = null, spaceBetweenLayers = null) {
     let isBeginningBlock = false;
     let isEndBlock = false;
@@ -195,11 +194,14 @@ function getLateralPositionLayers(layer, layers, layersAlreadyComputedLateralPos
         isBeginningBlock = true;
         endBlockLayer = layers[dynamicValues.blocks[dynamicValues.blocks.findIndex(list => list[0] === layer.id)][1]];
         layer.nextLayersBackup = layer.nextLayers;
+        // layer.nextLayers = [endBlockLayer.id];
     }
     if (dynamicValues.blocks.some((block) => block[1] === layer.id)) {
         isEndBlock = true;
         beginningBlockLayer = layers[dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block[1] === layer.id)][0]];
         layer.previousLayersBackup = layer.prevLayers;
+        yPosition = beginningBlockLayer.centerPosition[2];
+        // layer.prevLayers = [beginningBlockLayer.id];
     }
     if (layersAlreadyComputedLateralPosition === null && layer.prevLayers.length >= 1) {
         for (let prevLayerIndex of layer.prevLayers) {
@@ -270,6 +272,7 @@ function getLateralPositionLayers(layer, layers, layersAlreadyComputedLateralPos
         let nextLayer = layers[nextLayerIndex];
         nextLayer.previouYPosition = layer.previouYPosition;
         if (endBlockLayer !== undefined) {
+            xPosition = layer.centerPosition[indexX] + layer.shape[indexX] / 2;
             getLateralPositionLayersEndBlock(nextLayer, layers, endBlockLayer, layersAlreadyComputedLateralPosition, xPosition, yPosition);
         } else {
             if (!layersAlreadyComputedLateralPosition.includes(nextLayer.name)) {

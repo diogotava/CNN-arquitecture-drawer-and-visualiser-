@@ -1,4 +1,5 @@
 let layers = [];
+let layers_backup = [];
 let layersChanged = false;
 let inputModelFile;
 
@@ -33,6 +34,7 @@ function setup() {
                     let layer = new Layer(jsonLayer)
                     layers.push(layer)
                 }
+                layers_backup = [...layers];
                 layersChanged = true;
             })
             .catch(error => {
@@ -57,10 +59,12 @@ function draw() {
     mResetMatrix();
 
     if (layers.length > 0) {
-        if (layersChanged)
+        if (layersChanged) {
+            layers = [...layers_backup];
             getLateralPositionLayers(layers[0], layers)
+            layersChanged = false;
+        }
         layers.forEach(drawLayer);
-        layersChanged = false;
     }
 }
 
