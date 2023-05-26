@@ -182,6 +182,8 @@ function getLateralPositionLayersEndBlock(layer, layers, endBlockLayer, layersAl
     }
 }
 
+// TODO: If beggin layer of block has several branches and end block is a layer of one of that branches it crashes and
+//  if we select the first element of one branch and the end layer of all branches the reposition is wrong
 function getLateralPositionLayers(layer, layers, layersAlreadyComputedLateralPosition = null, xPosition = null, yPosition = null, spaceBetweenLayers = null) {
     let isBeginningBlock = false;
     let isEndBlock = false;
@@ -201,6 +203,7 @@ function getLateralPositionLayers(layer, layers, layersAlreadyComputedLateralPos
         beginningBlockLayer = layers[dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block[1] === layer.id)][0]];
         layer.previousLayersBackup = layer.prevLayers;
         yPosition = beginningBlockLayer.centerPosition[2];
+        xPosition = xPosition + dynamicValues.defaultSpaceBetweenLayers + dynamicValues.minX
         // layer.prevLayers = [beginningBlockLayer.id];
     }
     if (layersAlreadyComputedLateralPosition === null && layer.prevLayers.length >= 1) {
@@ -220,8 +223,10 @@ function getLateralPositionLayers(layer, layers, layersAlreadyComputedLateralPos
         if (spaceBetweenLayers !== null) {
             layer.spaceBetweenLayers = spaceBetweenLayers;
         }
-        if (layer.prevLayers.length > 1) {
+        if (isEndBlock && layer.prevLayers.length > 1 || isEndBlock && layer.prevLayers.length > 1) {
             layer.spaceBetweenLayers = 10;
+        } else if (isEndBlock) {
+            layer.spaceBetweenLayers = 5;
         }
         layer.setXPosition(xPosition);
     }

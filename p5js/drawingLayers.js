@@ -1,15 +1,11 @@
 function drawLayer(layer, i, array) {
-    let afterBlockDifference = 0;
-
     if (layer.shouldBeDrawn)
-        drawNormalLayer(layer, array, afterBlockDifference);
+        drawNormalLayer(layer, array);
 }
 
-function drawNormalLayer(layer, array, afterBlockDifference) {
+function drawNormalLayer(layer, array) {
     let centerPosition = [...layer.centerPosition]
-    if (afterBlockDifference !== 0) {
-        centerPosition[0] -= afterBlockDifference;
-    }
+
     mPush();
     mTranslate(centerPosition[0], centerPosition[1], centerPosition[2]);
     let color;
@@ -31,7 +27,13 @@ function drawNormalLayer(layer, array, afterBlockDifference) {
     }
     mBox(layer.id + 1, layer.shape[0], layer.shape[1], layer.shape[2]);
 
-    if (afterBlockDifference !== 0) {
+    if (dynamicValues.blocks.some((block) => block[0] === layer.id)) {
+        let afterBlockDifference = layer.shape[0] / 2 + dynamicValues.defaultSpaceBetweenLayers + dynamicValues.minX / 2;
+        mPush();
+        mTranslate(afterBlockDifference, 0, 0);
+        mTexture(0, 0, 0);
+        mBox(0, dynamicValues.minX, dynamicValues.minZY, dynamicValues.minZY);
+        mPop();
         drawArrowAfterBlock(layer, array, centerPosition, afterBlockDifference);
     } else
         drawArrowForArrow(layer, array);

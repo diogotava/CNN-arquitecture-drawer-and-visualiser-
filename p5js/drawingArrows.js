@@ -1,5 +1,5 @@
-function drawArrow(layer, height) {
-    translate((layer.shape[0] / 2) + (height / 2) - 0.5, 0, 0);
+function drawArrow(halfShape, height) {
+    translate(halfShape + (height / 2) - 0.5, 0, 0);
 
     push();
     angleMode(DEGREES);
@@ -13,7 +13,6 @@ function drawArrow(layer, height) {
     rotateZ(-90);
     fill(0);
     cone(0.5, dynamicValues.mArrowHeight);
-    pop();
 }
 
 function drawFirstPartOfArrowMultiple(layer, xPosition) {
@@ -50,7 +49,6 @@ function drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, xPosition,
     rotateZ(-90);
     fill(0);
     cone(0.5, dynamicValues.mArrowHeight);
-    pop();
 }
 
 function drawArrowMultipleNextLayers(layer, xPosition) {
@@ -104,8 +102,9 @@ function drawArrowForArrow(layer, array) {
         if (nextLayer.prevLayers.length <= 1) {
             push();
             let height = (nextLayer.centerPosition[0] - nextLayer.shape[0] / 2) - (layer.centerPosition[0] + layer.shape[0] / 2);
-            drawArrow(layer, height);
-
+            let halfShape = layer.shape[0] / 2;
+            drawArrow(halfShape, height);
+            pop();
         } else if (nextLayer.prevLayers.length > 1) {
             push();
             let positionX = (nextLayer.centerPosition[0] - nextLayer.shape[0] / 2) - (layer.centerPosition[0] + layer.shape[0] / 2) +
@@ -114,6 +113,7 @@ function drawArrowForArrow(layer, array) {
             let positionY = (nextLayer.centerPosition[2]) - (layer.centerPosition[2]);
 
             drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, positionX, positionY);
+            pop();
         }
     } else if (layer.nextLayers.length > 1) {
         push();
@@ -129,27 +129,28 @@ function drawArrowAfterBlock(layer, array, centerPosition, centerPositionDiffere
 
     drawArrowRecursiveLayer(layer);
 
-    if (layer.nextLayers.length === 1) {
-        let nextLayer = array[layer.nextLayers[0]];
-        if (nextLayer.prevLayers.length <= 1) {
-            push();
-            let height = (nextLayer.centerPosition[0] - centerPositionDifference - nextLayer.shape[0] / 2) - (centerPosition[0] + layer.shape[0] / 2);
-
-            drawArrow(layer, height);
-        } else if (nextLayer.prevLayers.length > 1) {
-            push();
-            let positionX = (nextLayer.centerPosition[0] - centerPositionDifference - nextLayer.shape[0] / 2) -
-                (centerPosition[0] + layer.shape[0] / 2) + ((nextLayer.centerPosition[0] - centerPositionDifference -
-                    nextLayer.spaceBetweenLayers - nextLayer.shape[0] / 2) - (centerPosition[0] + layer.shape[0] / 2));
-            let positionY = (nextLayer.centerPosition[2]) - (centerPosition[2]);
-
-            drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, positionX, positionY);
-        }
-    } else if (layer.nextLayers.length > 1) {
+    let nextLayer = array[layer.nextLayers[0]];
+    if (nextLayer.prevLayers.length <= 1) {
         push();
-        let positionX = (array[layer.nextLayers[0]].centerPosition[0] - centerPositionDifference - array[layer.nextLayers[0]].shape[0] / 2) - (centerPosition[0] + layer.shape[0] / 2);
+        let height = (layer.centerPosition[0] + centerPositionDifference - dynamicValues.minX / 2) - (centerPosition[0] + layer.shape[0] / 2);
+        let halfShape = layer.shape[0] / 2;
+        drawArrow(halfShape, height);
+        pop();
+        push();
+        translate(centerPositionDifference, 0, 0);
+        height = (nextLayer.centerPosition[0] - nextLayer.shape[0] / 2) - (layer.centerPosition[0] + centerPositionDifference + dynamicValues.minX / 2);
+        halfShape = dynamicValues.minX / 2;
+        drawArrow(halfShape, height);
+        pop();
+    } else if (nextLayer.prevLayers.length > 1) {
+        push();
+        let positionX = (nextLayer.centerPosition[0] - centerPositionDifference - nextLayer.shape[0] / 2) -
+            (centerPosition[0] + layer.shape[0] / 2) + ((nextLayer.centerPosition[0] - centerPositionDifference -
+                nextLayer.spaceBetweenLayers - nextLayer.shape[0] / 2) - (centerPosition[0] + layer.shape[0] / 2));
+        let positionY = (nextLayer.centerPosition[2]) - (centerPosition[2]);
 
-        drawArrowMultipleNextLayers(layer, positionX);
+        drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, positionX, positionY);
+        pop();
     }
 }
 
