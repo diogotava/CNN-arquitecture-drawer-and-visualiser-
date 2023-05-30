@@ -18,6 +18,7 @@ CORS(app)
 
 @app.route('/process', methods=['POST'])
 def process_file():
+
     file = request.files["model-file"]
     file.save(file.filename)
     if ".zip" in file.filename:
@@ -38,13 +39,13 @@ def process_file():
 
     layers = []
 
-    layer_drawer = LayersDrawer()
     index = 0
+    prev_layer = None
     for layer_to_save in model.layers:
         l = [e for e in layers if e.name == layer_to_save.name]
 
         if len(l) == 0:
-            layer = layer_drawer.create_layer(layer_to_save.__class__.__name__, layer_to_save)
+            layer = create_layer(layer_to_save.__class__.__name__, layer_to_save, prev_layer)
             if layer is not None:
                 layer.id = index
                 layers.append(layer)
@@ -53,15 +54,16 @@ def process_file():
             layer = l[0]
 
         if layer is not None:
+            prev_layer = layer
             next_layers = []
-            nextLayers = get_next_layer(layer_to_save._outbound_nodes)
-            for layer_of_layer in nextLayers:
+            model_next_layers = get_next_layer(layer_to_save._outbound_nodes)
+            for layer_of_layer in model_next_layers:
                 # vai buscar o layer correspondente ao next_layer
                 layer_to_fill = [e for e in layers if e.name == layer_of_layer.name]
                 if len(layer_to_fill) > 1:
                     print("ERROR!!")
                 elif len(layer_to_fill) == 0:
-                    next_layer = layer_drawer.create_layer(layer_of_layer.__class__.__name__, layer_of_layer)
+                    next_layer = create_layer(layer_of_layer.__class__.__name__, layer_of_layer, prev_layer)
                     if next_layer is not None:
                         next_layer.id = index
                         layers.append(next_layer)
@@ -72,14 +74,14 @@ def process_file():
             layer.next_layers = next_layers
 
             previous_layers = []
-            previousLayers = get_prev_layer(layer_to_save._inbound_nodes)
-            for layer_of_layer in previousLayers:
+            model_previous_layers = get_prev_layer(layer_to_save._inbound_nodes)
+            for layer_of_layer in model_previous_layers:
                 # vai buscar o layer correspondente ao next_layer
                 layer_to_fill = [e for e in layers if e.name == layer_of_layer.name]
                 if len(layer_to_fill) > 1:
                     print("ERROR!!")
                 elif len(layer_to_fill) == 0:
-                    previous_layer = layer_drawer.create_layer(layer_of_layer.__class__.__name__, layer_of_layer)
+                    previous_layer = create_layer(layer_of_layer.__class__.__name__, layer_of_layer, prev_layer)
                     if previous_layer is not None:
                         previous_layer.id = index
                         layers.append(previous_layer)

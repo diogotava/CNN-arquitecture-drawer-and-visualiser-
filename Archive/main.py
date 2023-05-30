@@ -22,7 +22,7 @@ def main():
         l = [e for e in layers if e.name == layer_to_save.name]
 
         if len(l) == 0:
-            layer = layer_drawer.create_layer(layer_to_save.__class__.__name__, layer_to_save)
+            layer = create_layer(layer_to_save.__class__.__name__, layer_to_save)
             if layer is not None:
                 layer.id = index
                 layers.append(layer)
@@ -39,7 +39,7 @@ def main():
                 if len(layer_to_fill) > 1:
                     print("ERROR!!")
                 elif len(layer_to_fill) == 0:
-                    next_layer = layer_drawer.create_layer(layer_of_layer.__class__.__name__, layer_of_layer)
+                    next_layer = create_layer(layer_of_layer.__class__.__name__, layer_of_layer)
                     if next_layer is not None:
                         next_layer.id = index
                         layers.append(next_layer)
@@ -57,7 +57,7 @@ def main():
                 if len(layer_to_fill) > 1:
                     print("ERROR!!")
                 elif len(layer_to_fill) == 0:
-                    previous_layer = layer_drawer.create_layer(layer_of_layer.__class__.__name__, layer_of_layer)
+                    previous_layer = create_layer(layer_of_layer.__class__.__name__, layer_of_layer)
                     if previous_layer is not None:
                         previous_layer.id = index
                         layers.append(previous_layer)

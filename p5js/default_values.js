@@ -9,104 +9,41 @@ function resetDynamicValues() {
         "lookY": 0.0,
         "lookZ": 0.0,
         "colors": {
-            "Conv2D": [
-                0,
-                255,
-                0
-            ],
-            "Dense": [
-                255,
-                0,
-                0
-            ],
-            "Flatten": [
-                255,
-                0,
-                255
-            ],
-            "Dropout": [
-                0,
-                255,
-                255
-            ],
-            "InputLayer": [
-                255,
-                255,
-                0
-            ],
-            "BatchNormalization": [
-                255,
-                128,
-                0
-            ],
-            "Concatenate": [
-                128,
-                255,
-                255
-            ],
-            "Add": [
-                170,
-                200,
-                255
-            ],
-            "LSTM": [
-                255,
-                0,
-                150
-            ],
-            "GRU": [
-                255,
-                0,
-                150
-            ],
-            "SimpleRNN": [
-                255,
-                0,
-                150
-            ],
-            "TimeDistributed": [
-                255,
-                0,
-                150
-            ],
-            "Bidirectional": [
-                255,
-                0,
-                150
-            ],
-            "ConvLSTM1D": [
-                255,
-                0,
-                150
-            ],
-            "ConvLSTM2D": [
-                255,
-                0,
-                150
-            ],
-            "ConvLSTM3D": [
-                255,
-                0,
-                150
-            ],
-            "BaseRNN": [
-                255,
-                0,
-                150
-            ],
-            "Default": [
-                128,
-                128,
-                128
-            ],
-            "Selected": [
-                0,
-                0,
-                255
-            ]
+            "Conv2D": [0, 255, 0],
+            "Dense": [255, 0, 0],
+            "Flatten": [255, 0, 255],
+            "Dropout": [0, 255, 255],
+            "InputLayer": [255, 255, 0],
+            "BatchNormalization": [255, 128, 0],
+            "Concatenate": [128, 255, 255],
+            "Add": [170, 200, 255],
+            "LSTM": [255, 0, 150],
+            "GRU": [255, 0, 150],
+            "SimpleRNN": [255, 0, 150],
+            "TimeDistributed": [255, 0, 150],
+            "Bidirectional": [255, 0, 150],
+            "ConvLSTM1D": [255, 0, 150],
+            "ConvLSTM2D": [255, 0, 150],
+            "ConvLSTM3D": [255, 0, 150],
+            "BaseRNN": [255, 0, 150],
+            "MaxPooling1D": [50, 50, 150],
+            "MaxPooling2D": [50, 50, 150],
+            "MaxPooling3D": [50, 50, 150],
+            "AveragePooling1D": [50, 50, 150],
+            "AveragePooling2D": [50, 50, 150],
+            "AveragePooling3D": [50, 50, 150],
+            "GlobalMaxPooling1D": [50, 50, 150],
+            "GlobalMaxPooling2D": [50, 50, 150],
+            "GlobalMaxPooling3D": [50, 50, 150],
+            "GlobalAveragePooling1D": [50, 50, 150],
+            "GlobalAveragePooling2D": [50, 50, 150],
+            "GlobalAveragePooling3D": [50, 50, 150],
+            "Default": [128, 128, 128],
+            "Selected": [0, 0, 255]
         },
-        "mArrowWidth": 0.1,
-        "mArrowHeight": 1,
+        "arrowWidth": 0.2,
+        "arrowHeight": 1,
+        "arrowPointRadius": 0.5,
         "sensitivityX": 1,
         "sensitivityY": 1,
         "sensitivityZ": 0.01,
@@ -115,6 +52,7 @@ function resetDynamicValues() {
         "maxX": 400,
         "maxZY": 200,
         "blocks": [],
-        "defaultSpaceBetweenLayers": 5
+        "defaultSpaceBetweenLayers": 5,
+        "layersAlreadyComputedPosition": []
     };
 }

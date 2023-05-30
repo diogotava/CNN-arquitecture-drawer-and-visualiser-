@@ -32,7 +32,7 @@ picked = 0
 mode = False
 
 layersNotToDraw = ["LeakyReLU"]
-layersNotToConsider = layersNotToDraw + ['Activation']
+layersNotToConsider = layersNotToDraw + ['Activation', 'BatchNormalization']
 # layers = []
 
 space_between_layers_open_aggregate = 20
