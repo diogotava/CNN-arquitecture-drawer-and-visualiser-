@@ -2,44 +2,109 @@ let selectedLayerID = -1;
 let bPressed = false;
 let block = [];
 
+function isLayerPossibleToBeInBlock(layerId, otherLayerId = -1, beginningLayer = true) {
+    if (layerId === -1)
+        return false;
+    let layer = layers[layerId];
+    if (beginningLayer) {
+        return true;
+    } else {
+        let otherLayer = layers[otherLayerId];
+        let allPrevLayers = getAllPreviousLayers(layer, layers)
+        let allNextLayers = getAllNextLayers(otherLayer, layers)
+        return (otherLayer.previousYPosition === layer.centerPosition[2] || layer.centerPosition[2] === otherLayer.centerPosition[2]) && allPrevLayers.includes(otherLayerId) && allNextLayers.includes(layerId);
+    }
+}
 
-function keyPressed() {
-    let id;
-    if (keyIsDown(67)) { // C
-        id = getLayerId();
-        if (id !== -1) {
-            if (selectedLayerID !== -1)
-                layers[selectedLayerID].selected = false;
-            layers[id].selected = true;
-            selectedLayerID = id;
-        } else {
-            if (selectedLayerID !== -1)
-                layers[selectedLayerID].selected = false;
-            selectedLayerID = -1;
+function selectLayer() {
+    let id = getLayerId();
+    if (id !== -1) {
+        if (selectedLayerID !== -1)
+            layers[selectedLayerID].selected = false;
+        layers[id].selected = true;
+        selectedLayerID = id;
+    } else {
+        if (selectedLayerID !== -1)
+            layers[selectedLayerID].selected = false;
+        selectedLayerID = -1;
+    }
+    selectedText();
+}
+
+function getLayerId() {
+    let gl = mPage.elt.getContext('webgl');
+    let pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+    gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+    let index = 4 * ((gl.drawingBufferHeight - mouseY) * gl.drawingBufferWidth + mouseX);
+
+    return (pixels[index] << 16 | pixels[index + 1] << 8 | pixels[index + 2]) - 1;
+}
+
+function getBlock() {
+    let layerId = getLayerId();
+    if (layerId !== -1) {
+        let isEndBlock = isTheEndOfBlock(layerId);
+        if (isEndBlock) {
+            let indexOfBlock = dynamicValues.blocks.findIndex(block => block[1] === layerId);
+            block
         }
-        selectedText();
-    } else if (keyIsDown(66)) {
-        id = getLayerId();
-        if (id !== -1) {
-            if (bPressed) {
-                let allPrevLayers = getAllPreviousLayers(layers[id], layers)
-                let allNextLayers = getAllNextLayers(layers[block[0]], layers)
-                if (allPrevLayers.includes(block[0]) && allNextLayers.includes(id) && id > block[0]) {
-                    block[1] = id;
+        if (bPressed) {
+            if (isLayerPossibleToBeInBlock(layerId, block[0], false)) {
+                if (layerId < block[0]) {
+                    block[1] = block[0];
+                    block[0] = layerId;
+                } else
+                    block[1] = layerId;
+
+                if (!dynamicValues.blocks.includes(block))
                     dynamicValues.blocks.push(block);
-                    alert('End of block selected!');
-                    layersChanged = true;
-                } else {
-                    alert("ERROR: It's not possible to select this layer as end of block!");
-                }
-                bPressed = false;
-                block = [];
+                alert('End of block selected!');
+                layersChanged = true;
             } else {
-                block[0] = id;
+                alert("ERROR: It's not possible to select this layer as end of block!");
+            }
+            bPressed = false;
+            block = [];
+        } else {
+            if (isLayerPossibleToBeInBlock(layerId)) {
+                block[0] = layerId;
                 alert('Begin of block selected!');
                 bPressed = true;
+            } else {
+                alert("ERROR: It's not possible to select this layer as end of block!");
             }
         }
+    } else {
+        if (bPressed) {
+            alert("Block rested!");
+            bPressed = false;
+            block = [];
+        }
+    }
+}
+
+function removeBlock() {
+    let layerId = getLayerId();
+    if (layerId !== -1) {
+        let isEndBlock = isTheEndOfBlock(layerId);
+        if (isEndBlock) {
+            let indexOfBlock = dynamicValues.blocks.findIndex(block => block[1] === layerId);
+            dynamicValues.blocks.splice(indexOfBlock, 1);
+            alert("Block removed!");
+            layersChanged = true;
+        } else {
+            alert("ERROR: Layer selected is not a block!")
+        }
+    }
+}
+
+function keyPressed() {
+    if (keyIsDown(67)) { // C
+        selectLayer();
+    } else if (keyIsDown(66)) {
+        getBlock();
+    } else if (keyIsDown(82)) {
+        removeBlock();
     }
 }
 
@@ -50,15 +115,17 @@ function selectedText() {
     let inputShape = select('#input_shape');
     let outputShape = select('#output_shape');
     let activation = select('#activation');
+    let batchNormalization = select('#batchNormalization');
 
-    if (selectedLayerID === -1) {
-        nothingSelectedH2.elt.hidden = false;
-        selectedH2.elt.hidden = true;
-        typeP.elt.hidden = true;
-        inputShape.elt.hidden = true;
-        outputShape.elt.hidden = true;
-        activation.elt.hidden = true;
-    } else {
+    nothingSelectedH2.elt.hidden = false;
+    selectedH2.elt.hidden = true;
+    typeP.elt.hidden = true;
+    inputShape.elt.hidden = true;
+    outputShape.elt.hidden = true;
+    activation.elt.hidden = true;
+    batchNormalization.elt.hidden = true;
+
+    if (selectedLayerID !== -1) {
         let selectedLayer = layers[selectedLayerID];
         nothingSelectedH2.elt.hidden = true;
 
@@ -66,7 +133,6 @@ function selectedText() {
         typeP.elt.hidden = false;
         inputShape.elt.hidden = false;
         outputShape.elt.hidden = false;
-        activation.elt.hidden = false;
         // TODO: remove id
         selectedH2.html("Selected layer: " + selectedLayer.id.toString() + " " + selectedLayer.name);
         typeP.html("<b>Type:</b> " + selectedLayer.type);
@@ -95,9 +161,13 @@ function selectedText() {
 
         outputShape.html("<b>Output shape:</b> " + outputText);
         if (selectedLayer.activation != null) {
+            activation.elt.hidden = false;
             activation.html("<b>Activation:</b> " + selectedLayer.activation);
-        } else {
-            activation.html("<b>Activation:</b> none");
+        }
+
+        if (selectedLayer.batchNormalization != null) {
+            batchNormalization.elt.hidden = false;
+            batchNormalization.html("<b>Batch normalization filters:</b> " + selectedLayer.batchNormalization);
         }
     }
 }
@@ -138,158 +208,4 @@ function getAllNextLayers(layer, array) {
     }
 
     return layersReturn;
-}
-
-
-function getMaxWidth(layer, layers) {
-    let maxLayers = {};
-
-    let count = 0;
-
-    for (let index in layer.nextLayers) {
-        let nextLayerIndex = layer.nextLayers[index];
-        let nextLayer = layers[nextLayerIndex];
-
-        if (nextLayer.prevLayers.length > 1) {
-            count += 1;
-        } else {
-            count += nextLayer.nextLayers.length;
-        }
-    }
-
-    return Math.max(maxLayers[layer.name] || 0, count);
-}
-
-function getLateralPositionLayersEndBlock(layer, layers, endBlockLayer, layersAlreadyComputedLateralPosition = null, xPosition = null, yPosition = null) {
-    layersAlreadyComputedLateralPosition.push(layer.name);
-    if (layer.id === endBlockLayer.id) {
-        getLateralPositionLayers(layer, layers, layersAlreadyComputedLateralPosition, xPosition, yPosition);
-    } else {
-        layer.shouldBeDrawn = false;
-        if (layer.nextLayers.length > 1) {
-            for (const nextLayerIndex of layer.nextLayers) {
-                let nextLayer = layers[nextLayerIndex];
-                nextLayer.previousYPosition = layer.centerPosition[2];
-                getLateralPositionLayersEndBlock(nextLayer, layers, endBlockLayer, layersAlreadyComputedLateralPosition, xPosition, yPosition);
-            }
-        } else if (layer.nextLayers.length === 1) {
-            let nextLayerIndex = layer.nextLayers[0];
-            let nextLayer = layers[nextLayerIndex];
-            nextLayer.previousYPosition = layer.previousYPosition;
-
-            getLateralPositionLayersEndBlock(nextLayer, layers, endBlockLayer, layersAlreadyComputedLateralPosition, xPosition, yPosition);
-        }
-    }
-}
-
-// TODO: If beggin layer of block has several branches and end block is a layer of one of that branches it crashes and
-//  if we select the first element of one branch and the end layer of all branches the reposition is wrong
-function getLateralPositionLayers(layer, layers, layersAlreadyComputedLateralPosition = null, xPosition = null, yPosition = null, spaceBetweenLayers = null) {
-    let isBeginningBlock = false;
-    let isEndBlock = false;
-    let endBlockLayer;
-    let beginningBlockLayer;
-    let indexY = 2;
-    let indexX = 0;
-    layer.shouldBeDrawn = true;
-    if (dynamicValues.blocks.some((block) => block[0] === layer.id)) {
-        isBeginningBlock = true;
-        endBlockLayer = layers[dynamicValues.blocks[dynamicValues.blocks.findIndex(list => list[0] === layer.id)][1]];
-        layer.nextLayersBackup = layer.nextLayers;
-        // layer.nextLayers = [endBlockLayer.id];
-    }
-    if (dynamicValues.blocks.some((block) => block[1] === layer.id)) {
-        isEndBlock = true;
-        beginningBlockLayer = layers[dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block[1] === layer.id)][0]];
-        layer.previousLayersBackup = layer.prevLayers;
-        yPosition = beginningBlockLayer.centerPosition[2];
-        xPosition = xPosition + dynamicValues.defaultSpaceBetweenLayers + dynamicValues.minX
-        // layer.prevLayers = [beginningBlockLayer.id];
-    }
-    if (layersAlreadyComputedLateralPosition === null && layer.prevLayers.length >= 1) {
-        for (let prevLayerIndex of layer.prevLayers) {
-            getLateralPositionLayers(layers[prevLayerIndex], layers);
-        }
-    }
-
-    if (yPosition !== null) {
-        if (layer.prevLayers.length > 1) {
-            yPosition = layer.previouYPosition;
-        }
-        layer.setYPosition(yPosition);
-    }
-
-    if (xPosition !== null) {
-        if (spaceBetweenLayers !== null) {
-            layer.spaceBetweenLayers = spaceBetweenLayers;
-        }
-        if (isEndBlock && layer.prevLayers.length > 1 || isEndBlock && layer.prevLayers.length > 1) {
-            layer.spaceBetweenLayers = 10;
-        } else if (isEndBlock) {
-            layer.spaceBetweenLayers = 5;
-        }
-        layer.setXPosition(xPosition);
-    }
-
-    if (layersAlreadyComputedLateralPosition === null) {
-        layersAlreadyComputedLateralPosition = [layer.name];
-    }
-
-    if (layer.nextLayers.length > 1) {
-        let n = layer.nextLayers.length / 2;
-        let negativeLayerIndex = 1;
-        let positiveLayerIndex = 1;
-
-        for (const [index, nextLayerIndex] of layer.nextLayers.entries()) {
-            let nextLayer = layers[nextLayerIndex];
-            nextLayer.previouYPosition = layer.getYPosition();
-            if (endBlockLayer !== undefined) {
-                xPosition = layer.centerPosition[indexX] + layer.shape[indexX] / 2;
-                getLateralPositionLayersEndBlock(nextLayer, layers, endBlockLayer, layersAlreadyComputedLateralPosition, xPosition, yPosition, 10);
-            } else {
-                let maxWidth = getMaxWidth(nextLayer, layers);
-                let y_pos;
-                if (index + 1 <= n) {
-                    if (yPosition !== null) {
-                        y_pos = yPosition - negativeLayerIndex * maxWidth * (layer.lateralSpaceBetweenLayers + layer.shape[indexY]);
-                    } else {
-                        y_pos = -negativeLayerIndex * maxWidth * (layer.lateralSpaceBetweenLayers + layer.shape[indexY]);
-                    }
-                    negativeLayerIndex += 1;
-                } else {
-                    if (yPosition !== null) {
-                        y_pos = yPosition + positiveLayerIndex * maxWidth * (layer.lateralSpaceBetweenLayers + layer.shape[indexY]);
-                    } else {
-                        y_pos = positiveLayerIndex * maxWidth * (layer.lateralSpaceBetweenLayers + layer.shape[indexY]);
-                    }
-                    positiveLayerIndex += 1;
-                }
-
-                if (!layersAlreadyComputedLateralPosition.includes(nextLayer.name)) {
-                    layersAlreadyComputedLateralPosition.push(nextLayer.name);
-                    xPosition = layer.centerPosition[indexX] + layer.shape[indexX] / 2;
-                    getLateralPositionLayers(nextLayer, layers, layersAlreadyComputedLateralPosition, xPosition, y_pos, 10);
-                }
-            }
-        }
-    } else if (layer.nextLayers.length === 1) {
-        let nextLayerIndex = layer.nextLayers[0];
-        let nextLayer = layers[nextLayerIndex];
-        nextLayer.previouYPosition = layer.previouYPosition;
-        if (endBlockLayer !== undefined) {
-            xPosition = layer.centerPosition[indexX] + layer.shape[indexX] / 2;
-            getLateralPositionLayersEndBlock(nextLayer, layers, endBlockLayer, layersAlreadyComputedLateralPosition, xPosition, yPosition);
-        } else {
-            if (!layersAlreadyComputedLateralPosition.includes(nextLayer.name)) {
-                layersAlreadyComputedLateralPosition.push(nextLayer.name);
-                xPosition = layer.centerPosition[indexX] + layer.shape[indexX] / 2;
-                getLateralPositionLayers(nextLayer, layers, layersAlreadyComputedLateralPosition, xPosition, yPosition);
-            }
-        }
-    }
-
-    if (isBeginningBlock)
-        layer.nextLayers = [endBlockLayer.id];
-    if (isEndBlock)
-        layer.prevLayers = [beginningBlockLayer.id];
 }

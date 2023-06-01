@@ -28,7 +28,8 @@ function drawNormalLayer(layer, array) {
             }
         }
         if (layer.shouldBeBlock) {
-            id = 0;
+            let endBlockLayer = getEndBlockLayer(array, layer.id);
+            id = endBlockLayer !== undefined ? endBlockLayer.id + 1 : -1;
             color = 0;
         }
         mTexture(color[0], color[1], color[2]);

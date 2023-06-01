@@ -53,6 +53,20 @@ function resetDynamicValues() {
         "maxZY": 200,
         "blocks": [],
         "defaultSpaceBetweenLayers": 5,
-        "layersAlreadyComputedPosition": []
+        "layersAlreadyComputedPosition": [],
+        "blockSize": 10
     };
+}
+
+function resetLayersAlreadyComputedPosition() {
+    dynamicValues.layersAlreadyComputedPosition = [];
+}
+
+function resetCameraValues() {
+    dynamicValues.camX = 500.0;
+    dynamicValues.camY = -500.0;
+    dynamicValues.camZ = 400.0;
+    dynamicValues.lookX = 500.0;
+    dynamicValues.lookY = 0.0;
+    dynamicValues.lookZ = 0.0;
 }

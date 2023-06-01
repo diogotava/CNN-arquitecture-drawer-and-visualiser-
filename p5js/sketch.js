@@ -1,18 +1,16 @@
 let layers = [];
 let layers_backup = [];
 let layersChanged = false;
-let inputModelFile;
 
 
 // Call python code to get the layer information of the model
 function setup() {
     resetDynamicValues();
-    let w = parseInt(windowWidth * 0.81, 10);
-    let h = parseInt(windowHeight * 0.98, 10);
+    var element1Width = document.getElementById('column1').offsetWidth + 27;
+    let w = parseInt(windowWidth - element1Width, 10);
+    let h = parseInt(windowHeight, 10);
     mCreateCanvas(w, h, WEBGL);
     mPerspective(PI / 3, width / height, 0.1, _renderer._curCamera.eyeZ * 10);
-
-    inputModelFile = select('#inFile');
 
     document.getElementById("upload-form").addEventListener("submit", function (event) {
         event.preventDefault();
@@ -34,7 +32,7 @@ function setup() {
                     let layer = new Layer(jsonLayer)
                     layers.push(layer)
                 }
-                layers_backup = [...layers];
+                layers_backup = layers.map(obj => obj.copy());
                 layersChanged = true;
             })
             .catch(error => {
@@ -60,8 +58,9 @@ function draw() {
 
     if (layers.length > 0) {
         if (layersChanged) {
-            layers = [...layers_backup];
-            getLateralPositionLayers(layers[0], layers)
+            layers = layers_backup.map(obj => obj.copy());
+            resetLayersAlreadyComputedPosition();
+            getLayersPosition(layers[0], layers);
             layersChanged = false;
         }
         layers.forEach(drawLayer);

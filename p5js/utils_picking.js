@@ -19,20 +19,6 @@ function mCreateCanvas(windowWidth, windowHeight, WEBGL) {
 }
 
 /**
- * getLayerId returns the ID number of the layer at the mouse position.
- *
- * @return {Number} the ID number of the layer at muse position.
- */
-function getLayerId() {
-    let gl = mPage.elt.getContext('webgl');
-    let pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
-    gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-    let index = 4 * ((gl.drawingBufferHeight - mouseY) * gl.drawingBufferWidth + mouseX);
-
-    return (pixels[index] << 16 | pixels[index + 1] << 8 | pixels[index + 2]) - 1;
-}
-
-/**
  * mBox creates a box primitive with an associated ID number.
  */
 function mBox(id, shapeX, shapeY, shapeZ) {
@@ -57,11 +43,14 @@ function mTranslate() {
 }
 
 function mResizeCanvas() {
-    let w = parseInt(windowWidth * 0.81, 10);
-    let h = parseInt(windowHeight * 0.98, 10);
+    var element1Width = document.getElementById('column1').offsetWidth + 27;
+    let w = parseInt(windowWidth - element1Width, 10);
+    let h = parseInt(windowHeight, 10);
     resizeCanvas(w, h);
+    pixelDensity(1);
     mPage.resizeCanvas(w, h);
-    mPerspective(PI / 3, width / height, 0.01, 150000);
+    mPage.pixelDensity(1);
+    mPerspective(PI / 3, width / height, 0.1, _renderer._curCamera.eyeZ * 10);
 }
 
 /**
