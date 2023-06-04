@@ -43,7 +43,7 @@ function mTranslate() {
 }
 
 function mResizeCanvas() {
-    var element1Width = document.getElementById('column1').offsetWidth + 27;
+    var element1Width = document.getElementById('column1').offsetWidth + 50;
     let w = parseInt(windowWidth - element1Width, 10);
     let h = parseInt(windowHeight, 10);
     resizeCanvas(w, h);

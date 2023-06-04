@@ -72,6 +72,15 @@ function getLayersPosition(layer, layers, xPosition = null, yPosition = null, sp
 
     if (layer.prevLayers.length >= 1) {
         for (let prevLayerIndex of layer.prevLayers) {
+            if(dynamicValues.layersAlreadyComputedPosition.length === 0){
+                let prevLayer = layers[prevLayerIndex];
+                if(prevLayer.nextLayers.length === 0){
+                    // Se for um input layer implicito que não tenha next layers colocar o primeiro layer
+                    prevLayer.nextLayers = [layer.id];
+                }
+                getLayersPosition(prevLayer, layers, xPosition, yPosition, spaceBetweenLayers);
+                return;
+            }
             if (!dynamicValues.layersAlreadyComputedPosition.includes(prevLayerIndex))
                 return;
         }

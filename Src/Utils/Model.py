@@ -71,6 +71,7 @@ def get_shape(shape, inverted):
 
     if shape == [None]:
         return [min_x, min_zy, min_zy]
+    shape = [element for element in shape if element is not None]
     if len(shape) == 1:
         if one_dim_orientation in ['x', 'y', 'z']:
             shape = list((1, ) * "xyz".index(one_dim_orientation) + tuple(shape))

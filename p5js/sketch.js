@@ -6,12 +6,11 @@ let layersChanged = false;
 // Call python code to get the layer information of the model
 function setup() {
     resetDynamicValues();
-    var element1Width = document.getElementById('column1').offsetWidth + 27;
+    var element1Width = document.getElementById('column1').offsetWidth + 50;
     let w = parseInt(windowWidth - element1Width, 10);
     let h = parseInt(windowHeight, 10);
     mCreateCanvas(w, h, WEBGL);
-    mPerspective(PI / 3, width / height, 0.1, _renderer._curCamera.eyeZ * 10);
-
+    mPerspective(PI / 3, width / height, 10, 10000);
     document.getElementById("upload-form").addEventListener("submit", function (event) {
         event.preventDefault();
 
@@ -62,6 +61,8 @@ function draw() {
             resetLayersAlreadyComputedPosition();
             getLayersPosition(layers[0], layers);
             layersChanged = false;
+            dynamicValues.camX = (layers[layers.length - 1].centerPosition[0] - layers[0].centerPosition[0]) / 2;
+            dynamicValues.lookX = dynamicValues.camX;
         }
         layers.forEach(drawLayer);
     }

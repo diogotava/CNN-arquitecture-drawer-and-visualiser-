@@ -125,8 +125,8 @@ function drawArrowForArrow(layer, array) {
 }
 
 function drawArrowRecursiveLayer(layer) {
-    if (layer.type !== "LSTM" || layer.type !== "GRU" || layer.type !== "SimpleRNN" || layer.type !== "TimeDistributed" || layer.type !== "Bidirectional"
-        || layer.type !== "ConvLSTM1D" || layer.type !== "ConvLSTM2D" || layer.type !== "ConvLSTM3D" || layer.type !== "BaseRNN") {
+    if (layer.type !== "LSTM" && layer.type !== "GRU" && layer.type !== "SimpleRNN" && layer.type !== "TimeDistributed" && layer.type !== "Bidirectional"
+        && layer.type !== "ConvLSTM1D" && layer.type !== "ConvLSTM2D" && layer.type !== "ConvLSTM3D" && layer.type !== "BaseRNN") {
         return;
     }
     let color = [...dynamicValues.colors[layer.type]];

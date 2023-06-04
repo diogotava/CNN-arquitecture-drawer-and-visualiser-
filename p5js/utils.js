@@ -209,3 +209,34 @@ function getAllNextLayers(layer, array) {
 
     return layersReturn;
 }
+
+function handleFile(file){
+
+    const formData = new FormData();
+    formData.append("model-file", file.file);
+
+    fetch("http://127.0.0.1:5000/process", {
+        method: "POST",
+        body: formData
+    }).then(response => response.json())  // parse response as JSON
+        .then(data => {
+            // handle the JSON response here
+            layers = [];
+            for (let jsonLayer of data) {
+                let layer = new Layer(jsonLayer)
+                layers.push(layer)
+            }
+            layers_backup = layers.map(obj => obj.copy());
+            layersChanged = true;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    resetDynamicValues();
+}
+
+function resetData(){
+    layers = layers_backup.map(obj => obj.copy());
+    resetDynamicValues();
+    layersChanged = true;
+}
