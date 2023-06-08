@@ -79,7 +79,7 @@ def process_file():
                             layers.append(next_layer)
                             next_layers.append(index)
                             index += 1
-                    else:
+                    elif layer_to_fill[0].id not in next_layers:
                         next_layers.append(layer_to_fill[0].id)
                 layer.next_layers = next_layers
 
@@ -97,7 +97,7 @@ def process_file():
                             layers.append(previous_layer)
                             previous_layers.append(index)
                             index += 1
-                    else:
+                    elif layer_to_fill[0].id not in previous_layers:
                         previous_layers.append(layer_to_fill[0].id)
 
                 layer.previous_layers = previous_layers

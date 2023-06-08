@@ -1,20 +1,41 @@
 function getMaxWidth(layer, layers) {
-    let maxLayers = {};
+    let layersSeen = []
+    let nextLayers = [...layer.nextLayers];
+    let maxWidth = layer.shape[1];
 
-    let count = 0;
-
-    for (let index in layer.nextLayers) {
-        let nextLayerIndex = layer.nextLayers[index];
+    while (nextLayers.length !== 0) {
+        let nextLayerIndex = nextLayers.shift();
+        layersSeen.push(nextLayerIndex);
         let nextLayer = layers[nextLayerIndex];
 
-        if (nextLayer.prevLayers.length > 1) {
-            count += 1;
-        } else {
-            count += nextLayer.nextLayers.length;
+        if (nextLayer.prevLayers.length === 1 && nextLayer.nextLayers.length > 1){
+            let width = 0;
+            for (let n_layer of nextLayer.nextLayers) {
+                width += getMaxWidth(layers[n_layer], layers) + layers[n_layer].lateralSpaceBetweenLayers;
+            }
+            if (nextLayer.shape[1] > maxWidth) {
+                maxWidth = nextLayer.shape[1];
+            }
+            if (width > maxWidth) {
+                maxWidth = width;
+            }
+        } else if (nextLayer.prevLayers.length > 1) {
+            if (nextLayers.length > 0 && nextLayer.nextLayers.some(elem => nextLayers.includes(elem)) && nextLayer.nextLayers.some(elem => !layersSeen.includes(elem))) {
+                layersSeen.pop();
+                if (!layersSeen.includes(layer.id) && !nextLayers.includes(layer.id))
+                    nextLayers.push(layer.id);
+            } else
+                return maxWidth;
+        } else if (nextLayer.shape[1] > maxWidth) {
+            maxWidth = nextLayer.shape[1];
+        }
+        for (let n_layer of nextLayer.nextLayers) {
+            if (!layersSeen.includes(n_layer) && !nextLayers.includes(n_layer))
+                nextLayers.push(n_layer);
         }
     }
 
-    return Math.max(maxLayers[layer.name] || 0, count);
+    return maxWidth;
 }
 
 function getPositionEndLayerBlock(layer, layers, xPosition = null, yPosition = null) {
@@ -72,9 +93,9 @@ function getLayersPosition(layer, layers, xPosition = null, yPosition = null, sp
 
     if (layer.prevLayers.length >= 1) {
         for (let prevLayerIndex of layer.prevLayers) {
-            if(dynamicValues.layersAlreadyComputedPosition.length === 0){
+            if (dynamicValues.layersAlreadyComputedPosition.length === 0) {
                 let prevLayer = layers[prevLayerIndex];
-                if(prevLayer.nextLayers.length === 0){
+                if (prevLayer.nextLayers.length === 0) {
                     // Se for um input layer implicito que não tenha next layers colocar o primeiro layer
                     prevLayer.nextLayers = [layer.id];
                 }
@@ -106,8 +127,6 @@ function getLayersPosition(layer, layers, xPosition = null, yPosition = null, sp
         } else {
             if (spaceBetweenLayers !== null)
                 layer.spaceBetweenLayers = spaceBetweenLayers;
-            else
-                layer.spaceBetweenLayers = 5;
         }
         if (isBeginningBlock) {
             layer.shouldBeBlock = true;
@@ -119,8 +138,8 @@ function getLayersPosition(layer, layers, xPosition = null, yPosition = null, sp
 
     if (layer.nextLayers.length > 1) {
         let n = layer.nextLayers.length / 2;
-        let negativeLayerIndex = 1;
-        let positiveLayerIndex = 1;
+        let prevNegYPosition = 0;
+        let prevPosYPosition = 0;
 
         for (const [index, nextLayerIndex] of layer.nextLayers.entries()) {
             let nextLayer = layers[nextLayerIndex];
@@ -130,28 +149,29 @@ function getLayersPosition(layer, layers, xPosition = null, yPosition = null, sp
                 getPositionLayersInsideBlock(nextLayer, layers, endBlockLayer, xPosition, yPosition);
             } else {
                 let maxWidth = getMaxWidth(nextLayer, layers);
-                let y_pos;
+                let yPos;
                 if (index + 1 <= n) {
                     if (yPosition !== null) {
-                        y_pos = yPosition - negativeLayerIndex * maxWidth * (layer.lateralSpaceBetweenLayers + layer.shape[indexY]);
+                        yPos = yPosition - (prevNegYPosition + maxWidth/2 + layer.lateralSpaceBetweenLayers);
                     } else {
-                        y_pos = -negativeLayerIndex * maxWidth * (layer.lateralSpaceBetweenLayers + layer.shape[indexY]);
+                        yPos = -(prevNegYPosition + maxWidth/2 + layer.lateralSpaceBetweenLayers);
                     }
-                    negativeLayerIndex += 1;
+                    prevNegYPosition = -(yPos - maxWidth/2);
                 } else {
                     if (yPosition !== null) {
-                        y_pos = yPosition + positiveLayerIndex * maxWidth * (layer.lateralSpaceBetweenLayers + layer.shape[indexY]);
+                        yPos = yPosition + prevPosYPosition + maxWidth/2 + layer.lateralSpaceBetweenLayers;
                     } else {
-                        y_pos = positiveLayerIndex * maxWidth * (layer.lateralSpaceBetweenLayers + layer.shape[indexY]);
+                        yPos = prevPosYPosition + maxWidth/2 + layer.lateralSpaceBetweenLayers;
                     }
-                    positiveLayerIndex += 1;
+                    prevPosYPosition = yPos + maxWidth/2;
                 }
 
                 if (!dynamicValues.layersAlreadyComputedPosition.includes(nextLayerIndex)) {
                     // dynamicValues.layersAlreadyComputedPosition.push(nextLayerIndex);
                     xPosition = layer.centerPosition[indexX] + layer.shape[indexX] / 2;
-                    getLayersPosition(nextLayer, layers, xPosition, y_pos, 10);
+                    getLayersPosition(nextLayer, layers, xPosition, yPos, 10);
                 }
+
             }
         }
     } else if (layer.nextLayers.length === 1) {

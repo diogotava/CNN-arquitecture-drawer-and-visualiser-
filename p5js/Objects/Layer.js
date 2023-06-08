@@ -22,11 +22,15 @@ class Layer {
         } else {
             this.selected = false;
             this.id = layer.id
-            this.lateralSpaceBetweenLayers = 10;
-            this.spaceBetweenLayers = 5;
+            this.lateralSpaceBetweenLayers = dynamicValues.defaultLateralSpaceBetweenLayers;
+            this.spaceBetweenLayers = dynamicValues.defaultSpaceBetweenLayers;
             this.centerPosition = [0, 0, 0];
             this.name = layer.name;
-            this.shape = layer.shape;
+            if(layer.type === "Dense" && layer.shape[0] === 5 && layer.shape[1] === 5)
+                this.shape = [layer.shape[0], layer.shape[2], layer.shape[1]];
+            else
+                this.shape = layer.shape;
+
             this.prevLayers = layer.previous_layers;
             this.nextLayers = layer.next_layers;
             this.activation = null;

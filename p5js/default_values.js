@@ -14,7 +14,6 @@ function resetDynamicValues() {
             "Flatten": [255, 0, 255],
             "Dropout": [0, 255, 255],
             "InputLayer": [255, 255, 0],
-            "BatchNormalization": [255, 128, 0],
             "Concatenate": [128, 255, 255],
             "Add": [170, 200, 255],
             "LSTM": [255, 0, 150],
@@ -38,6 +37,7 @@ function resetDynamicValues() {
             "GlobalAveragePooling1D": [50, 50, 150],
             "GlobalAveragePooling2D": [50, 50, 150],
             "GlobalAveragePooling3D": [50, 50, 150],
+            "Reshape": [250, 128, 0],
             "Default": [128, 128, 128],
             "Selected": [0, 0, 255]
         },
@@ -51,8 +51,10 @@ function resetDynamicValues() {
         "minZY": 5,
         "maxX": 400,
         "maxZY": 200,
+        "minWindowSize": 400,
         "blocks": [],
-        "defaultSpaceBetweenLayers": 5,
+        "defaultSpaceBetweenLayers": 10,
+        "defaultLateralSpaceBetweenLayers": 20,
         "layersAlreadyComputedPosition": [],
         "blockSize": 10
     };

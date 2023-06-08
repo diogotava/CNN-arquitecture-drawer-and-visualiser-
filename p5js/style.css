@@ -2,6 +2,8 @@ html, body {
     margin: 0;
     padding: 0;
     background-color: #000000;
+    min-width:600px;
+    min-Height:600px;
 }
 
 canvas {

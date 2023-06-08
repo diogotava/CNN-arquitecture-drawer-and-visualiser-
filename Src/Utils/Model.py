@@ -8,9 +8,20 @@ from tensorflow.keras.optimizers import Adam
 
 min_x = 5
 min_zy = 5
-max_zy = 200
+max_zy = 400
 max_x = 400
 
+def shouldShapeBeInverted(layer, shape):
+    if len(shape) == 3 and shape[0] == shape[1] and shape[0] > shape[2]:
+        return True
+    if layer.__class__.__name__ == "InputLayer" and len(shape) == 3:
+        return True
+    if layer.__class__.__name__ == "BatchNormalization" and len(shape) == 3:
+        return True
+    if layer.__class__.__name__ == "Concatenate" and len(shape) == 3:
+        return True
+    if layer.__class__.__name__ == "Add" and len(shape) == 3 :
+        return False
 
 def get_shapes(layer, input_shape=False, correct_shape=False):
     inverted = False
@@ -33,8 +44,8 @@ def get_shapes(layer, input_shape=False, correct_shape=False):
         else:
             shape = shape[1:]
 
-        if ( layer.__class__.__name__ == "InputLayer" or layer.__class__.__name__ == "BatchNormalization" or layer.__class__.__name__ == "Concatenate" or layer.__class__.__name__ == "Add" ) and len(shape) == 3:
-            inverted = True
+        if not inverted and shouldShapeBeInverted(layer, shape) != None:
+            inverted = shouldShapeBeInverted(layer, shape)
         if not correct_shape:
             shape_return = [get_shape(shape, inverted)]
         else:
@@ -45,8 +56,10 @@ def get_shapes(layer, input_shape=False, correct_shape=False):
             shape = list(shape)
 
         shape = shape[1:]
-        if ( layer.__class__.__name__ == "InputLayer" or layer.__class__.__name__ == "BatchNormalization" or layer.__class__.__name__ == "Concatenate" or layer.__class__.__name__ == "Add" ) and len(shape) == 3:
-            inverted = True
+
+        if not inverted and shouldShapeBeInverted(layer, shape) != None:
+            inverted = shouldShapeBeInverted(layer, shape)
+
         if not correct_shape:
             shape_return = [get_shape(shape, inverted)]
         else:
@@ -57,8 +70,10 @@ def get_shapes(layer, input_shape=False, correct_shape=False):
             if isinstance(shape, tuple):
                 shape = list(shape)
             shape = shape[1:]
-            if ( layer.__class__.__name__ == "InputLayer" or layer.__class__.__name__ == "BatchNormalization" or layer.__class__.__name__ == "Concatenate" or layer.__class__.__name__ == "Add" ) and len(shape) == 3:
-                inverted = True
+
+            if not inverted and shouldShapeBeInverted(layer, shape) != None:
+                inverted = shouldShapeBeInverted(layer, shape)
+
             if not correct_shape:
                 shape = get_shape(shape, inverted)
             shape_return.append(shape)
@@ -92,8 +107,13 @@ def get_shape(shape, inverted):
 
     shape_return = shape.copy()
     shape_return[0] = min(max(shape[index_x], min_x), max_x)
-    shape_return[1] = min(max(shape[index_z], min_zy), max_zy)
-    shape_return[2] = min(max(shape[index_y], min_zy), max_zy)
+    shape_return[1] = min(max(shape[index_y], min_zy), max_zy)
+    shape_return[2] = min(max(shape[index_z], min_zy), max_zy)
+
+    # if shape_return[2] > shape_return[1]:
+    #     aux_val = shape_return[1]
+    #     shape_return[1] = shape_return[2]
+    #     shape_return[2] = aux_val
 
     return shape_return
 
