@@ -59,7 +59,7 @@ function draw() {
         if (layersChanged) {
             layers = layers_backup.map(obj => obj.copy());
             resetLayersAlreadyComputedPosition();
-            getLayersPosition(layers[0], layers);
+            getLayersPosition(layers);
             layersChanged = false;
             dynamicValues.camX = (layers[layers.length - 1].centerPosition[0] - layers[0].centerPosition[0]) / 2;
             dynamicValues.lookX = dynamicValues.camX;

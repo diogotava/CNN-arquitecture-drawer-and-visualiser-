@@ -7,69 +7,6 @@ edges = ((0, 1), (0, 3), (0, 4),
          )
 
 
-# def polygon(dimensions_lower_x, dimensions_bigger_x, shift, value_x):
-#     x = value_x
-#     y = 0
-#     z = 1
-
-#     x_vert = 0
-#     y_vert = 0
-#     z_vert = 0
-
-#     vertices = ((x / 2 + shift, -dimensions_bigger_x[y] / 2, -dimensions_bigger_x[z] / 2),
-#                 (x / 2 + shift, dimensions_bigger_x[y] / 2, -dimensions_bigger_x[z] / 2),
-#                 (-x / 2 + shift, dimensions_lower_x[y] / 2, -dimensions_lower_x[z] / 2),
-#                 (-x / 2 + shift, -dimensions_lower_x[y] / 2, -dimensions_lower_x[z] / 2),
-#                 (x / 2 + shift, -dimensions_bigger_x[y] / 2, dimensions_bigger_x[z] / 2),
-#                 (x / 2 + shift, dimensions_bigger_x[y] / 2, dimensions_bigger_x[z] / 2),
-#                 (-x / 2 + shift, -dimensions_lower_x[y] / 2, dimensions_lower_x[z] / 2),
-#                 (-x / 2 + shift, dimensions_lower_x[y] / 2, dimensions_lower_x[z] / 2),
-#                 )
-
-#     glBegin(GL_QUADS)
-#     glVertex3f(vertices[1][x_vert], vertices[1][y_vert], vertices[1][z_vert])
-#     glVertex3f(vertices[2][x_vert], vertices[2][y_vert], vertices[2][z_vert])
-#     glVertex3f(vertices[7][x_vert], vertices[7][y_vert], vertices[7][z_vert])
-#     glVertex3f(vertices[5][x_vert], vertices[5][y_vert], vertices[5][z_vert])
-
-#     glVertex3f(vertices[4][x_vert], vertices[4][y_vert], vertices[4][z_vert])
-#     glVertex3f(vertices[6][x_vert], vertices[6][y_vert], vertices[6][z_vert])
-#     glVertex3f(vertices[3][x_vert], vertices[3][y_vert], vertices[3][z_vert])
-#     glVertex3f(vertices[0][x_vert], vertices[0][y_vert], vertices[0][z_vert])
-
-#     glVertex3f(vertices[5][x_vert], vertices[5][y_vert], vertices[5][z_vert])
-#     glVertex3f(vertices[7][x_vert], vertices[7][y_vert], vertices[7][z_vert])
-#     glVertex3f(vertices[6][x_vert], vertices[6][y_vert], vertices[6][z_vert])
-#     glVertex3f(vertices[4][x_vert], vertices[4][y_vert], vertices[4][z_vert])
-
-#     glVertex3f(vertices[0][x_vert], vertices[0][y_vert], vertices[0][z_vert])
-#     glVertex3f(vertices[3][x_vert], vertices[3][y_vert], vertices[3][z_vert])
-#     glVertex3f(vertices[2][x_vert], vertices[2][y_vert], vertices[2][z_vert])
-#     glVertex3f(vertices[1][x_vert], vertices[1][y_vert], vertices[1][z_vert])
-
-#     glVertex3f(vertices[0][x_vert], vertices[0][y_vert], vertices[0][z_vert])
-#     glVertex3f(vertices[1][x_vert], vertices[1][y_vert], vertices[1][z_vert])
-#     glVertex3f(vertices[5][x_vert], vertices[5][y_vert], vertices[5][z_vert])
-#     glVertex3f(vertices[4][x_vert], vertices[4][y_vert], vertices[4][z_vert])
-
-#     glVertex3f(vertices[6][x_vert], vertices[6][y_vert], vertices[6][z_vert])
-#     glVertex3f(vertices[7][x_vert], vertices[7][y_vert], vertices[7][z_vert])
-#     glVertex3f(vertices[2][x_vert], vertices[2][y_vert], vertices[2][z_vert])
-#     glVertex3f(vertices[3][x_vert], vertices[3][y_vert], vertices[3][z_vert])
-
-#     glEnd()
-
-#     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, [0.0, 0.0, 0.0, 1.0])
-#     glLineWidth(5)
-#     glBegin(GL_LINES)
-#     for edge in edges:
-#         for vertex in edge:
-#             glVertex3fv(vertices[vertex])
-#     glEnd()
-
-#     return value_x / 2 + shift
-
-
 def cube(dimensions_cube, shift, color, code=False):
     if code:
         glColor3f(color[0], color[1], color[2])

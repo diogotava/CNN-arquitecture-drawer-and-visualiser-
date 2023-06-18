@@ -1,6 +1,6 @@
 from Src.Utils.DrawShapes import *
 from Src.Utils.Values import layersNotToConsider
-from Src.Utils.Model import get_shapes
+from Src.Utils.Shapes import get_shapes
 
 
 def get_next_layer(outbound_nodes):
@@ -12,13 +12,15 @@ def get_next_layer(outbound_nodes):
             if type(layers) == list:
                 for layer in layers:
                     if layer.__class__.__name__ not in layersNotToConsider:
-                        next_layers.append(layer)
+                        if layer not in next_layers:
+                            next_layers.append(layer)
                     else:
                         next_layers_of_next = get_next_layer(layer.outbound_nodes)
                         next_layers = next_layers + next_layers_of_next
             else:
                 if layers.__class__.__name__ not in layersNotToConsider:
-                    next_layers.append(layers)
+                    if layers not in next_layers:
+                        next_layers.append(layers)
                 else:
                     next_layers = get_next_layer(layers.outbound_nodes)
 
@@ -33,13 +35,15 @@ def get_prev_layer(inbound_nodes):
             if type(layers) == list:
                 for layer in layers:
                     if layer.__class__.__name__ not in layersNotToConsider:
-                        prev_layers.append(layer)
+                        if layer not in prev_layers:
+                            prev_layers.append(layer)
                     else:
                         prev_layers_of_prev = get_prev_layer(layer.inbound_nodes)
                         prev_layers = prev_layers + prev_layers_of_prev
             else:
                 if layers.__class__.__name__ not in layersNotToConsider:
-                    prev_layers.append(layers)
+                    if layers not in prev_layers:
+                        prev_layers.append(layers)
                 else:
                     prev_layers = get_prev_layer(layers.inbound_nodes)
 
@@ -66,11 +70,16 @@ class Layer:
         self.computed_position = False
 
         self.previous_y_position = 0
+        if hasattr(layer, "data_format"):
+            self.data_format = layer.data_format
         try:
             self.activation = layer.activation.__name__
         except AttributeError:
             self.activation = None
         pass
+
+    def setId(self, id):
+        self.id = id
 
     def setXPosition(self, x_position):
         self.center_position[0] = x_position + (self.shape[0]/2) + self.space_between_layers

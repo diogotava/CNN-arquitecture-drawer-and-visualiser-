@@ -56,7 +56,9 @@ function resetDynamicValues() {
         "defaultSpaceBetweenLayers": 10,
         "defaultLateralSpaceBetweenLayers": 20,
         "layersAlreadyComputedPosition": [],
-        "blockSize": 10
+        "blockSize": 10,
+        "selectedLayerID": -1,
+        "bPressed": false
     };
 }
 

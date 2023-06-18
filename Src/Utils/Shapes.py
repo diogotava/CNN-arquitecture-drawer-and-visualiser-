@@ -1,35 +1,39 @@
 import numpy as np
-import tensorflow as tf
-from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D
-from tensorflow.keras.layers import LeakyReLU
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.models import load_model
-from tensorflow.keras.optimizers import Adam
 
 min_x = 5
 min_zy = 5
 max_zy = 400
 max_x = 400
 
-def shouldShapeBeInverted(layer, shape):
+def isClass(layer, class_type):
+    if not hasattr(layer, "type"):
+        return layer.__class__.__name__ == class_type
+    else:
+        return layer.type == class_type
+
+def shouldShapeBeInverted(layer, shape, layers):
     if len(shape) == 3 and shape[0] == shape[1] and shape[0] > shape[2]:
         return True
-    if layer.__class__.__name__ == "InputLayer" and len(shape) == 3:
+    if isClass(layer, "InputLayer") and len(shape) == 3:
         return True
-    if layer.__class__.__name__ == "BatchNormalization" and len(shape) == 3:
+    if isClass(layer, "BatchNormalization") and len(shape) == 3:
         return True
-    if layer.__class__.__name__ == "Concatenate" and len(shape) == 3:
+    if isClass(layer, "Concatenate") and len(shape) == 3:
         return True
-    if layer.__class__.__name__ == "Add" and len(shape) == 3 :
-        return False
+    if isClass(layer, "Add") and len(shape) == 3 :
+        if layers is None:
+            return False
+        else:
+            return shouldShapeBeInverted(layers[layer.previous_layers[0]].original_model_layer, layers[layer.previous_layers[0]].shape, layers)
 
-def get_shapes(layer, input_shape=False, correct_shape=False):
-    inverted = False
     try:
         if layer.data_format == "channels_last":
-            inverted = True
-    except:
-        inverted = False
+            return True
+    except AttributeError:
+        return False
+
+def get_shapes(layer, input_shape=False, correct_shape=False, layers = None):
+    inverted = False
 
     if input_shape:
         layer_shape = layer.input_shape
@@ -44,8 +48,8 @@ def get_shapes(layer, input_shape=False, correct_shape=False):
         else:
             shape = shape[1:]
 
-        if not inverted and shouldShapeBeInverted(layer, shape) != None:
-            inverted = shouldShapeBeInverted(layer, shape)
+        if shouldShapeBeInverted(layer, shape, layers) != None:
+            inverted = shouldShapeBeInverted(layer, shape, layers)
         if not correct_shape:
             shape_return = [get_shape(shape, inverted)]
         else:
@@ -55,10 +59,11 @@ def get_shapes(layer, input_shape=False, correct_shape=False):
         if isinstance(shape, tuple):
             shape = list(shape)
 
-        shape = shape[1:]
+        if not hasattr(layer, "type"):
+            shape = shape[1:]
 
-        if not inverted and shouldShapeBeInverted(layer, shape) != None:
-            inverted = shouldShapeBeInverted(layer, shape)
+        if shouldShapeBeInverted(layer, shape, layers) != None:
+            inverted = shouldShapeBeInverted(layer, shape, layers)
 
         if not correct_shape:
             shape_return = [get_shape(shape, inverted)]
@@ -71,8 +76,8 @@ def get_shapes(layer, input_shape=False, correct_shape=False):
                 shape = list(shape)
             shape = shape[1:]
 
-            if not inverted and shouldShapeBeInverted(layer, shape) != None:
-                inverted = shouldShapeBeInverted(layer, shape)
+            if shouldShapeBeInverted(layer, shape, layers) != None:
+                inverted = shouldShapeBeInverted(layer, shape, layers)
 
             if not correct_shape:
                 shape = get_shape(shape, inverted)
@@ -90,6 +95,10 @@ def get_shape(shape, inverted):
     if len(shape) == 1:
         if one_dim_orientation in ['x', 'y', 'z']:
             shape = list((1, ) * "xyz".index(one_dim_orientation) + tuple(shape))
+            if not inverted:
+                shape_aux = shape[2]
+                shape[2] = shape[1]
+                shape[1] = shape_aux
         else:
             raise ValueError(f"unsupported orientation: {one_dim_orientation}")
 
@@ -104,6 +113,10 @@ def get_shape(shape, inverted):
 
     if shape[index_x] >= min_x*2:
         shape[index_x] = shape[index_x] / np.log(shape[index_x])
+    if shape[index_y] >= min_zy*2:
+        shape[index_y] = shape[index_y] / np.log(shape[index_y])
+    if shape[index_z] >= min_zy*2:
+        shape[index_z] = shape[index_z] / np.log(shape[index_z])
 
     shape_return = shape.copy()
     shape_return[0] = min(max(shape[index_x], min_x), max_x)
@@ -116,9 +129,3 @@ def get_shape(shape, inverted):
     #     shape_return[2] = aux_val
 
     return shape_return
-
-
-def get_model(model_file):
-    model = load_model(model_file)
-
-    return model

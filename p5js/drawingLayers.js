@@ -9,7 +9,7 @@ function drawNormalLayer(layer, array) {
     mPush();
     mTranslate(centerPosition[0], centerPosition[1], centerPosition[2]);
 
-    if (layer.shape === []) {
+    if (layer.shape.length === 0) {
         layer.shape[0] = dynamicValues.minX;
         layer.shape[1] = dynamicValues.minZY;
         layer.shape[2] = dynamicValues.minZY;

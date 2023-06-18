@@ -2,7 +2,7 @@ from Src.Layers.Conv2D import *
 from Src.Layers.Dense import *
 from Src.Layers.Input import *
 from Src.Layers.Layer import *
-from Src.Utils.Model import get_shapes
+from Src.Utils.Shapes import get_shapes
 from Src.Utils.Values import layersNotToDraw
 
 activation_layers = ['ReLU', 'Softmax', 'LeakyReLU', 'PReLU', 'ELU', 'ThresholdedReLU']

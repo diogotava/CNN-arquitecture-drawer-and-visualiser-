@@ -19,14 +19,15 @@ class Layer {
             this.batchNormalization = layer.batchNormalization;
             this.shouldBeDrawn = layer.shouldBeDrawn;
             this.shouldBeBlock = layer.shouldBeBlock;
+
         } else {
             this.selected = false;
             this.id = layer.id
             this.lateralSpaceBetweenLayers = dynamicValues.defaultLateralSpaceBetweenLayers;
-            this.spaceBetweenLayers = dynamicValues.defaultSpaceBetweenLayers;
+            this.spaceBetweenLayers = layer.previous_layers.length <= 1 ? dynamicValues.defaultSpaceBetweenLayers : dynamicValues.defaultSpaceBetweenLayers + 5;
             this.centerPosition = [0, 0, 0];
             this.name = layer.name;
-            if(layer.type === "Dense" && layer.shape[0] === 5 && layer.shape[1] === 5)
+            if(layer.type === "Dense" && layer.shape[0] === dynamicValues.minX && layer.shape[1] === dynamicValues.minZY)
                 this.shape = [layer.shape[0], layer.shape[2], layer.shape[1]];
             else
                 this.shape = layer.shape;
@@ -43,9 +44,11 @@ class Layer {
             this.shouldBeDrawn = true;
             this.shouldBeBlock = false;
         }
+        this.lastNegativeYPosition = 0;
+        this.lastPositiveYPosition = 0;
     }
 
-    setXPositionOfLayer(xPosition) {
+    setXPosition(xPosition) {
         this.centerPosition[0] = xPosition + (this.shape[0] / 2) + this.spaceBetweenLayers;
     }
 

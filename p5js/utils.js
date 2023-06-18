@@ -1,5 +1,3 @@
-let selectedLayerID = -1;
-let bPressed = false;
 let block = [];
 
 function isLayerPossibleToBeInBlock(layerId, otherLayerId = -1, beginningLayer = true) {
@@ -19,14 +17,14 @@ function isLayerPossibleToBeInBlock(layerId, otherLayerId = -1, beginningLayer =
 function selectLayer() {
     let id = getLayerId();
     if (id !== -1) {
-        if (selectedLayerID !== -1)
-            layers[selectedLayerID].selected = false;
+        if (dynamicValues.selectedLayerID !== -1)
+            layers[dynamicValues.selectedLayerID].selected = false;
         layers[id].selected = true;
-        selectedLayerID = id;
+        dynamicValues.selectedLayerID = id;
     } else {
-        if (selectedLayerID !== -1)
-            layers[selectedLayerID].selected = false;
-        selectedLayerID = -1;
+        if (dynamicValues.selectedLayerID !== -1)
+            layers[dynamicValues.selectedLayerID].selected = false;
+        dynamicValues.selectedLayerID = -1;
     }
     selectedText();
 }
@@ -46,9 +44,9 @@ function getBlock() {
         let isEndBlock = isTheEndOfBlock(layerId);
         if (isEndBlock) {
             let indexOfBlock = dynamicValues.blocks.findIndex(block => block[1] === layerId);
-            block
+            // block
         }
-        if (bPressed) {
+        if (dynamicValues.bPressed) {
             if (isLayerPossibleToBeInBlock(layerId, block[0], false)) {
                 if (layerId < block[0]) {
                     block[1] = block[0];
@@ -63,21 +61,21 @@ function getBlock() {
             } else {
                 alert("ERROR: It's not possible to select this layer as end of block!");
             }
-            bPressed = false;
+            dynamicValues.bPressed = false;
             block = [];
         } else {
             if (isLayerPossibleToBeInBlock(layerId)) {
                 block[0] = layerId;
                 alert('Begin of block selected!');
-                bPressed = true;
+                dynamicValues.bPressed = true;
             } else {
                 alert("ERROR: It's not possible to select this layer as end of block!");
             }
         }
     } else {
-        if (bPressed) {
+        if (dynamicValues.bPressed) {
             alert("Block rested!");
-            bPressed = false;
+            dynamicValues.bPressed = false;
             block = [];
         }
     }
@@ -125,8 +123,8 @@ function selectedText() {
     activation.elt.hidden = true;
     batchNormalization.elt.hidden = true;
 
-    if (selectedLayerID !== -1) {
-        let selectedLayer = layers[selectedLayerID];
+    if (dynamicValues.selectedLayerID !== -1) {
+        let selectedLayer = layers[dynamicValues.selectedLayerID];
         nothingSelectedH2.elt.hidden = true;
 
         selectedH2.elt.hidden = false;
@@ -208,31 +206,6 @@ function getAllNextLayers(layer, array) {
     }
 
     return layersReturn;
-}
-
-function handleFile(file){
-
-    const formData = new FormData();
-    formData.append("model-file", file.file);
-
-    fetch("http://127.0.0.1:5000/process", {
-        method: "POST",
-        body: formData
-    }).then(response => response.json())  // parse response as JSON
-        .then(data => {
-            // handle the JSON response here
-            layers = [];
-            for (let jsonLayer of data) {
-                let layer = new Layer(jsonLayer)
-                layers.push(layer)
-            }
-            layers_backup = layers.map(obj => obj.copy());
-            layersChanged = true;
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    resetDynamicValues();
 }
 
 function resetData(){
