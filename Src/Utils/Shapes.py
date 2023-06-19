@@ -12,25 +12,15 @@ def isClass(layer, class_type):
         return layer.type == class_type
 
 def shouldShapeBeInverted(layer, shape, layers):
-    if len(shape) == 3 and shape[0] == shape[1] and shape[0] > shape[2]:
-        return True
-    if isClass(layer, "InputLayer") and len(shape) == 3:
-        return True
-    if isClass(layer, "BatchNormalization") and len(shape) == 3:
-        return True
-    if isClass(layer, "Concatenate") and len(shape) == 3:
-        return True
+    if isClass(layer, "Dense") and len(shape) == 1:
+        return False
     if isClass(layer, "Add") and len(shape) == 3 :
         if layers is None:
             return False
         else:
             return shouldShapeBeInverted(layers[layer.previous_layers[0]].original_model_layer, layers[layer.previous_layers[0]].shape, layers)
 
-    try:
-        if layer.data_format == "channels_last":
-            return True
-    except AttributeError:
-        return False
+    return True
 
 def get_shapes(layer, input_shape=False, correct_shape=False, layers = None):
     inverted = False

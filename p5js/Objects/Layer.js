@@ -43,6 +43,7 @@ class Layer {
             this.batchNormalization = layer.batch_normalization;
             this.shouldBeDrawn = true;
             this.shouldBeBlock = false;
+            this.isInsideBlock = false;
         }
         this.lastNegativeYPosition = 0;
         this.lastPositiveYPosition = 0;
@@ -60,8 +61,12 @@ class Layer {
     setXPositionInternalBlockLayer(xPosition) {
         this.shape = [dynamicValues.blockSize, dynamicValues.blockSize, dynamicValues.blockSize];
         this.centerPosition[0] = xPosition - dynamicValues.blockSize / 2;
+        this.isInsideBlock = true;
     }
 
+    isLayerInsideBlock(){
+        return this.isInsideBlock;
+    }
 
     setYPosition(yPosition) {
         this.centerPosition[2] = yPosition;

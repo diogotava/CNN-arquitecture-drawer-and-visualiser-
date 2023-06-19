@@ -2,10 +2,10 @@ let dynamicValues;
 
 function resetDynamicValues() {
     dynamicValues = {
-        "camX": 500.0,
-        "camY": -500.0,
-        "camZ": 400.0,
-        "lookX": 500.0,
+        "camX": 0.0,
+        "camY": 0.0,
+        "camZ": 0.0,
+        "lookX": 0.0,
         "lookY": 0.0,
         "lookZ": 0.0,
         "colors": {
@@ -54,12 +54,13 @@ function resetDynamicValues() {
         "minWindowSize": 400,
         "blocks": [],
         "defaultSpaceBetweenLayers": 10,
-        "defaultLateralSpaceBetweenLayers": 20,
+        "defaultLateralSpaceBetweenLayers": 10,
         "layersAlreadyComputedPosition": [],
         "blockSize": 10,
         "selectedLayerID": -1,
         "bPressed": false
     };
+    resetCameraValues();
 }
 
 function resetLayersAlreadyComputedPosition() {

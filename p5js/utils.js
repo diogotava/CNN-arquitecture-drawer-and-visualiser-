@@ -42,10 +42,6 @@ function getBlock() {
     let layerId = getLayerId();
     if (layerId !== -1) {
         let isEndBlock = isTheEndOfBlock(layerId);
-        if (isEndBlock) {
-            let indexOfBlock = dynamicValues.blocks.findIndex(block => block[1] === layerId);
-            // block
-        }
         if (dynamicValues.bPressed) {
             if (isLayerPossibleToBeInBlock(layerId, block[0], false)) {
                 if (layerId < block[0]) {
@@ -56,7 +52,9 @@ function getBlock() {
 
                 if (!dynamicValues.blocks.includes(block))
                     dynamicValues.blocks.push(block);
-                alert('End of block selected!');
+                if(confirm("End of block selected!\nDo you want to name the block?")) {
+                    let nameOfBlock = prompt("Please enter the block name!", "");
+                }
                 layersChanged = true;
             } else {
                 alert("ERROR: It's not possible to select this layer as end of block!");
@@ -103,6 +101,12 @@ function keyPressed() {
         getBlock();
     } else if (keyIsDown(82)) {
         removeBlock();
+    }
+}
+
+function mousePressed() {
+    if (mouseButton === CENTER) {
+        selectLayer();
     }
 }
 

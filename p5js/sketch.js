@@ -10,7 +10,8 @@ function setup() {
     let w = parseInt(windowWidth - element1Width, 10);
     let h = parseInt(windowHeight, 10);
     mCreateCanvas(w, h, WEBGL);
-    mPerspective(PI / 3, width / height, 10, 10000);
+    mPerspective();
+    // mOrtho();
     document.getElementById("upload-form").addEventListener("submit", function (event) {
         event.preventDefault();
 
@@ -52,8 +53,6 @@ function draw() {
     dynamicValues.lookX = cam.centerX;
     dynamicValues.lookY = cam.centerY;
     dynamicValues.lookZ = cam.centerZ;
-
-    mResetMatrix();
 
     if (layers.length > 0) {
         if (layersChanged) {
