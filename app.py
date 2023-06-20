@@ -14,8 +14,8 @@ CORS(app)
 
 @app.route('/process', methods=['POST'])
 def process_file():
-    print('Received!')
     file = request.files["model-file"]
+    print(f'Received {file.filename}!')
     file.save(file.filename)
     layers = []
     try:

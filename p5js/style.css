@@ -4,6 +4,8 @@ html, body {
     background-color: #000000;
     min-width:600px;
     min-Height:600px;
+    display: flex;
+    font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
 }
 
 canvas {
@@ -13,17 +15,16 @@ canvas {
 #column2 {
     color: #ffffff;
     float: left;
-    height: 90%;
-    padding: 0 5px;
+    /*height: 98vh;*/
+    flex: 2;
 }
 
 #column1 {
     color: #ffffff;
     float: left;
-    padding: 10px 0;
-    height: 96vh;
-    width: 28vh;
-    background-color: #000000;
+    padding: 10px 5px;
+    flex: 1;
+    background-color: #101010;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -42,3 +43,104 @@ canvas {
 p {
     font-size: large;
 }
+
+#modelFileLabel{
+    display: inline;
+}
+#exportImage, #settingsButton{
+    display: inline-block;
+}
+.button-12 {
+    margin: 5px;
+    padding: 6px 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    border-radius: 6px;
+    border: none;
+    text-align: center;
+    background: #6E6D70;
+    box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.1), inset 0px 0.5px 0.5px rgba(255, 255, 255, 0.5), 0px 0px 0px 0.5px rgba(0, 0, 0, 0.12);
+    color: #DFDEDF;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.button-12:focus {
+    box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+    outline: 0;
+}
+
+input[type="file"] {
+    display: none;
+}
+.custom-file-upload {
+    border: 1px solid #ccc;
+    background: white;
+    color: black;
+
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    text-align: center;
+    align-self: center;
+}
+
+fieldset label {
+    display: inline-block;
+    width: 50px;
+    text-align: center;
+    color: antiquewhite;
+}
+label {
+    display: inline-block;
+    width: 250px;
+    text-align: left;
+    color: antiquewhite;
+}
+
+fieldset {
+    margin: 10px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+fieldset legend {
+    margin-top: 10px;
+    color: lightsalmon;
+}
+
+#settingsPopup, #settingsColorsPopup {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 550px;
+    padding: 10px;
+    background-color: rgb(80, 80, 80);
+    border: 1px solid #1c1c1c;
+    border-radius: 5px;
+}
+
+#settingsForm input {
+    width: 50px;
+}
+#settingsPopup h2 {
+    margin-top: 0;
+}
+
+#settingsPopup button {
+    margin-top: 10px;
+}
+
+#settingsColorsForm input {
+    width: 50px;
+}
+#settingsColorsPopup h2 {
+    margin-top: 0;
+}
+
+#settingsColorsPopup button {
+    margin-top: 10px;
+}
+

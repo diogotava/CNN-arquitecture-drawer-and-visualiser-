@@ -55,7 +55,6 @@ function resetDynamicValues() {
         "blocks": [],
         "defaultSpaceBetweenLayers": 10,
         "defaultLateralSpaceBetweenLayers": 10,
-        "layersAlreadyComputedPosition": [],
         "blockSize": 10,
         "selectedLayerID": -1,
         "bPressed": false
