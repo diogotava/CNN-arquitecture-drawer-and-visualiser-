@@ -38,22 +38,27 @@ function getLayerId() {
     return (pixels[index] << 16 | pixels[index + 1] << 8 | pixels[index + 2]) - 1;
 }
 
-function getBlock() {
+function selectBlock() {
     let layerId = getLayerId();
     if (layerId !== -1) {
         let isEndBlock = isTheEndOfBlock(layerId);
         if (dynamicValues.bPressed) {
             if (isLayerPossibleToBeInBlock(layerId, block[0], false)) {
-                if (layerId < block[0]) {
-                    block[1] = block[0];
-                    block[0] = layerId;
-                } else
-                    block[1] = layerId;
+                block = new Block(block[0], layerId);
+                // if (layerId < block[0]) {
+                //     block[1] = block[0];
+                //     block[0] = layerId;
+                // } else
+                //     block[1] = layerId;
 
-                if (!dynamicValues.blocks.includes(block))
+                if (!dynamicValues.blocks.some(obj => obj.isEqual(block))){
+                    if(confirm("End of block selected!\nDo you want to name the block?")) {
+                        let nameOfBlock = prompt("Please enter the block name!", "");
+                        block.setName(nameOfBlock);
+                    }
                     dynamicValues.blocks.push(block);
-                if(confirm("End of block selected!\nDo you want to name the block?")) {
-                    let nameOfBlock = prompt("Please enter the block name!", "");
+                } else {
+                    alert("ERROR: It's not possible to select this layer as end of block!")
                 }
                 layersChanged = true;
             } else {
@@ -84,7 +89,7 @@ function removeBlock() {
     if (layerId !== -1) {
         let isEndBlock = isTheEndOfBlock(layerId);
         if (isEndBlock) {
-            let indexOfBlock = dynamicValues.blocks.findIndex(block => block[1] === layerId);
+            let indexOfBlock = dynamicValues.blocks.findIndex(block => block.endLayer === layerId);
             dynamicValues.blocks.splice(indexOfBlock, 1);
             alert("Block removed!");
             layersChanged = true;
@@ -98,7 +103,7 @@ function keyPressed() {
     if (keyIsDown(67)) { // C
         selectLayer();
     } else if (keyIsDown(66)) {
-        getBlock();
+        selectBlock();
     } else if (keyIsDown(82)) {
         removeBlock();
     }
@@ -127,7 +132,19 @@ function selectedText() {
     activation.elt.hidden = true;
     batchNormalization.elt.hidden = true;
 
-    if (dynamicValues.selectedLayerID !== -1) {
+    if( isTheEndOfBlock(dynamicValues.selectedLayerID) || isTheBeginningOfBlock(dynamicValues.selectedLayerID)){
+        let selectedLayer = layers[dynamicValues.selectedLayerID];
+        nothingSelectedH2.elt.hidden = true;
+
+        selectedH2.elt.hidden = false;
+        typeP.elt.hidden = false;
+        // TODO: remove id
+        let blockName = dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.endLayer === selectedLayer.id)].name;
+        blockName = blockName === "" ? "(Block without name.)": blockName;
+        selectedH2.html("Selected block: " + selectedLayer.id.toString() + " " + blockName);
+        typeP.html("<b>Type:</b> Block");
+
+    } else if (dynamicValues.selectedLayerID !== -1) {
         let selectedLayer = layers[dynamicValues.selectedLayerID];
         nothingSelectedH2.elt.hidden = true;
 

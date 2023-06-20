@@ -3,23 +3,23 @@ let indexY = 2;
 let indexZ = 1;
 
 function isTheBeginningOfBlock(layerId) {
-    return dynamicValues.blocks.some((block) => block[0] === layerId);
+    return dynamicValues.blocks.some((block) => block.initialLayer === layerId);
 }
 
 function isTheEndOfBlock(layerId) {
-    return dynamicValues.blocks.some((block) => block[1] === layerId);
+    return dynamicValues.blocks.some((block) => block.endLayer === layerId);
 }
 
 function getEndBlockLayer(layers, layerId) {
     if (isTheBeginningOfBlock(layerId))
-        return layers[dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block[0] === layerId)][1]]
+        return layers[dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.initialLayer === layerId)].endLayer]
     else
         return undefined;
 }
 
 function getBeginningBlockLayer(layers, layerId) {
     if (isTheEndOfBlock(layerId))
-        return layers[dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block[1] === layerId)][0]]
+        return layers[dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.endLayer === layerId)].initialLayer]
     else
         return undefined;
 }
