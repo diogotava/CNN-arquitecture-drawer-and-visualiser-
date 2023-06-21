@@ -32,14 +32,6 @@ canvas {
     text-align: center;
 }
 
-#paragraphs {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
-}
-
 p {
     font-size: large;
 }
@@ -50,6 +42,34 @@ p {
 #exportImage, #settingsButton{
     display: inline-block;
 }
+
+#loader {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    margin: -76px 0 0 -76px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .button-12 {
     margin: 5px;
     padding: 6px 14px;
@@ -93,7 +113,7 @@ fieldset label {
 }
 label {
     display: inline-block;
-    width: 250px;
+    width: 300px;
     text-align: left;
     color: antiquewhite;
 }
@@ -109,7 +129,7 @@ fieldset legend {
     color: lightsalmon;
 }
 
-#settingsPopup, #settingsColorsPopup {
+#settingsPopup, #settingsColorsPopup, #paragraphs {
     display: none;
     position: absolute;
     top: 50%;
@@ -122,8 +142,17 @@ fieldset legend {
     border-radius: 5px;
 }
 
+#paragraphs {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    background-color: rgba(80, 80, 80, 0.6);
+}
+
 #settingsForm input {
-    width: 50px;
+    margin: 2px;
+    width: 60px;
 }
 #settingsPopup h2 {
     margin-top: 0;
@@ -134,7 +163,7 @@ fieldset legend {
 }
 
 #settingsColorsForm input {
-    width: 50px;
+    width: 100px;
 }
 #settingsColorsPopup h2 {
     margin-top: 0;
@@ -143,4 +172,3 @@ fieldset legend {
 #settingsColorsPopup button {
     margin-top: 10px;
 }
-

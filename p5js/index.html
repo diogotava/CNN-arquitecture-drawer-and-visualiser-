@@ -29,6 +29,7 @@
     <div id="column2">
     </div>
     <div id="column1">
+        <div class="loader" id="loader"></div>
         <form id="upload-form">
             <label id="inputLabel" class="button-12">
                 <input type="file" id="model-file" name="model-file"/>
@@ -42,8 +43,10 @@
             <button class="button-12" id="exportImage"><b>Export Image</b></button>
             <button class="button-12" id="settingsButton"><b>Open Settings</b></button>
         </div>
+
+        <h2 id="nothing_selected_h2">Nothing Selected!</h2>
+
         <div id="paragraphs">
-            <h2 id="nothing_selected_h2">Nothing Selected!</h2>
             <h2 id="selected_h2" hidden><b>Selected layer:</b> </h2>
             <p id="type" hidden><b>Type: </b></p>
             <p id="input_shape" hidden><b>Input shape: </b></p>
@@ -56,52 +59,50 @@
         <div id="settingsPopup">
             <h2>Settings</h2>
             <form id="settingsForm">
-                <!-- Add your settings options here -->
-
                 <fieldset>
                     <legend>Camera Position</legend>
                     <label for="camX">X</label>
-                    <input type="number" id="camX" name="camX" value="500">
+                    <input type="number" step="1" id="camX" name="camX" value="500">
 
                     <label for="camY">Y</label>
-                    <input type="number" step="0.01" id="camY" name="camY" value="-500">
+                    <input type="number" step="1" id="camY" name="camY" value="-500">
 
                     <label for="camZ">Z</label>
-                    <input type="number" step="0.01" id="camZ" name="camZ" value="400"><br>
+                    <input type="number" step="1" id="camZ" name="camZ" value="400"><br>
 
                     <legend>Look position</legend>
                     <label for="lookX">X</label>
-                    <input type="number" id="lookX" name="lookX" value="500">
+                    <input type="number" step="1" id="lookX" name="lookX" value="500">
 
                     <label for="lookY">Y</label>
-                    <input type="number" step="0.01" id="lookY" name="lookY" value="0">
+                    <input type="number" step="1" id="lookY" name="lookY" value="0">
 
                     <label for="lookZ">Z</label>
-                    <input type="number" step="0.01" id="lookZ" name="lookZ" value="0">
+                    <input type="number" step="1" id="lookZ" name="lookZ" value="0">
                 </fieldset>
 
                 <fieldset>
                     <legend>Arrow</legend>
                     <label for="arrowWidth">Width</label>
-                    <input type="number" id="arrowWidth" name="arrowWidth" value="0.2">
+                    <input type="number" step="0.01" id="arrowWidth" name="arrowWidth" value="0.2">
 
                     <label for="arrowHeight">Height</label>
                     <input type="number" step="0.01" id="arrowHeight" name="arrowHeight" value="1">
 
-                    <label for="arrowRadius">Radius</label>
-                    <input type="number" step="0.01" id="arrowRadius" name="arrowRadius" value="0.5">
+                    <label for="arrowPointRadius">Radius</label>
+                    <input type="number" step="0.01" id="arrowPointRadius" name="arrowPointRadius" value="0.5">
                 </fieldset>
 
                 <fieldset>
                     <legend>Sensitivity</legend>
-                    <label for="sensX">X</label>
-                    <input type="number" id="sensX" name="sensX" value="1">
+                    <label for="sensitivityX">X</label>
+                    <input type="number" step="0.0001" id="sensitivityX" name="sensitivityX" value="1">
 
-                    <label for="sensY">Y</label>
-                    <input type="number" step="0.01" id="sensY" name="sensY" value="1">
+                    <label for="sensitivityY">Y</label>
+                    <input type="number" step="0.0001" id="sensitivityY" name="sensitivityY" value="1">
 
-                    <label for="sensZ">Z</label>
-                    <input type="number" step="0.01" id="sensZ" name="sensZ" value="0.01"><br>
+                    <label for="sensitivityZ">Z</label>
+                    <input type="number" step="0.0001" id="sensitivityZ" name="sensitivityZ" value="0.01"><br>
                 </fieldset>
 
                 <label for="defaultSpaceBetweenLayers">Default space between layers:</label>
@@ -116,6 +117,7 @@
                 <button class="button-12" id="settingsColorsButton"><b>Open layer color Settings</b></button><br>
 
                 <button class="button-12" type="submit"><b>Save</b></button>
+                <button class="button-12" id="settingsCloseButton"><b>Close</b></button>
             </form>
         </div>
 
@@ -123,8 +125,6 @@
         <div id="settingsColorsPopup">
             <h2>Layers Colors Settings</h2>
             <form id="settingsColorsForm">
-                <!-- Add your settings options here -->
-
                 <label for="Conv2D">Conv2D:</label>
                 <input type="color" id="Conv2D" name="Conv2D" value="#00ff00"><br>
 
@@ -219,6 +219,7 @@
                 <input type="color" id="Selected" name="Selected" value="#0000FF"><br>
 
                 <button class="button-12" type="submit"><b>Save</b></button>
+                <button class="button-12" id="settingsColorsCloseButton"><b>Close</b></button>
             </form>
         </div>
     </div>

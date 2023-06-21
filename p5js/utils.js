@@ -51,8 +51,8 @@ function selectBlock() {
                 // } else
                 //     block[1] = layerId;
 
-                if (!dynamicValues.blocks.some(obj => obj.isEqual(block))){
-                    if(confirm("End of block selected!\nDo you want to name the block?")) {
+                if (!dynamicValues.blocks.some(obj => obj.isEqual(block))) {
+                    if (confirm("End of block selected!\nDo you want to name the block?")) {
                         let nameOfBlock = prompt("Please enter the block name!", "");
                         block.setName(nameOfBlock);
                     }
@@ -117,6 +117,7 @@ function mousePressed() {
 
 function selectedText() {
     let nothingSelectedH2 = select('#nothing_selected_h2');
+    let paragraphs = document.getElementById("paragraphs");
     let selectedH2 = select('#selected_h2');
     let typeP = select('#type');
     let inputShape = select('#input_shape');
@@ -125,6 +126,7 @@ function selectedText() {
     let batchNormalization = select('#batchNormalization');
 
     nothingSelectedH2.elt.hidden = false;
+    paragraphs.style.display = 'none';
     selectedH2.elt.hidden = true;
     typeP.elt.hidden = true;
     inputShape.elt.hidden = true;
@@ -132,7 +134,7 @@ function selectedText() {
     activation.elt.hidden = true;
     batchNormalization.elt.hidden = true;
 
-    if( isTheEndOfBlock(dynamicValues.selectedLayerID) || isTheBeginningOfBlock(dynamicValues.selectedLayerID)){
+    if (isTheEndOfBlock(dynamicValues.selectedLayerID) || isTheBeginningOfBlock(dynamicValues.selectedLayerID)) {
         let selectedLayer = layers[dynamicValues.selectedLayerID];
         nothingSelectedH2.elt.hidden = true;
 
@@ -140,9 +142,13 @@ function selectedText() {
         typeP.elt.hidden = false;
         // TODO: remove id
         let blockName = dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.endLayer === selectedLayer.id)].name;
-        blockName = blockName === "" ? "(Block without name.)": blockName;
+        blockName = blockName === "" ? "(Block without name.)" : blockName;
         selectedH2.html("Selected block: " + selectedLayer.id.toString() + " " + blockName);
         typeP.html("<b>Type:</b> Block");
+
+        paragraphs.style.display = 'block';
+        paragraphs.style.left = mouseX.toString() + 'px';
+        paragraphs.style.top = (mouseY - paragraphs.offsetHeight / 2).toString() + 'px';
 
     } else if (dynamicValues.selectedLayerID !== -1) {
         let selectedLayer = layers[dynamicValues.selectedLayerID];
@@ -188,6 +194,10 @@ function selectedText() {
             batchNormalization.elt.hidden = false;
             batchNormalization.html("<b>Batch normalization filters:</b> " + selectedLayer.batchNormalization);
         }
+
+        paragraphs.style.display = 'block';
+        paragraphs.style.left = mouseX.toString() + 'px';
+        paragraphs.style.top = (mouseY - paragraphs.offsetHeight / 2).toString() + 'px';
     }
 }
 
@@ -229,7 +239,7 @@ function getAllNextLayers(layer, array) {
     return layersReturn;
 }
 
-function resetData(){
+function resetData() {
     layers = layers_backup.map(obj => obj.copy());
     resetDynamicValues();
     layersChanged = true;
