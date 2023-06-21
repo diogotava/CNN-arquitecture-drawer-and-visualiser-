@@ -13,6 +13,8 @@ function setup() {
 
     document.getElementById("upload-form").addEventListener("submit", function (event) {
         event.preventDefault();
+        const loader = document.getElementById("loader");
+        loader.style.display = 'block';
 
         const fileInput = document.getElementById("model-file");
         const file = fileInput.files[0];
@@ -33,14 +35,18 @@ function setup() {
                 }
                 layers_backup = layers.map(obj => obj.copy());
                 layersChanged = true;
+                loader.style.display = 'none';
             })
             .catch(error => {
+                loader.style.display = 'none';
+                alert("Was not possible to load the model selected!")
                 console.error(error);
             });
         resetDynamicValues();
     });
 
     const settingsButton = document.getElementById('settingsButton');
+    const settingsCloseButton = document.getElementById('settingsCloseButton');
     const settingsPopup = document.getElementById('settingsPopup');
     const settingsForm = document.getElementById('settingsForm');
 
@@ -48,16 +54,17 @@ function setup() {
         settingsPopup.style.display = 'block';
     });
 
-    settingsForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        // Handle form submission and save the settings here
-        // You can access the form values using settingsForm.username.value and settingsForm.theme.value
-        // For example, you can save the settings to local storage or send them to a server
-        // After saving, you can close the settings popup
+    settingsCloseButton.addEventListener('click', () => {
         settingsPopup.style.display = 'none';
     });
 
+    settingsForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        updateValues();
+    });
+
     const settingsColorsButton = document.getElementById('settingsColorsButton');
+    const settingsColorsCloseButton = document.getElementById('settingsColorsCloseButton');
     const settingsColorsPopup = document.getElementById('settingsColorsPopup');
     const settingsColorsForm = document.getElementById('settingsColorsForm');
 
@@ -65,14 +72,14 @@ function setup() {
         settingsColorsPopup.style.display = 'block';
     });
 
-    settingsColorsForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        // Handle form submission and save the settings here
-        // You can access the form values using settingsForm.username.value and settingsForm.theme.value
-        // For example, you can save the settings to local storage or send them to a server
-        // After saving, you can close the settings popup
+    settingsColorsCloseButton.addEventListener('click', () => {
         settingsColorsPopup.style.display = 'none';
         settingsPopup.style.display = 'block';
+    });
+
+    settingsColorsForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        updateColors();
     });
 
     const fileInput = document.getElementById('model-file');
@@ -90,21 +97,21 @@ function draw() {
     mCamera(dynamicValues.camX, dynamicValues.camY, dynamicValues.camZ, dynamicValues.lookX, dynamicValues.lookY, dynamicValues.lookZ, 0, 1, 0);
     mOrbitControl(dynamicValues.sensitivityX, dynamicValues.sensitivityY, dynamicValues.sensitivityZ);
     const cam = _renderer._curCamera;
-    dynamicValues.camX = cam.eyeX;
-    dynamicValues.camY = cam.eyeY;
-    dynamicValues.camZ = cam.eyeZ;
-    dynamicValues.lookX = cam.centerX;
-    dynamicValues.lookY = cam.centerY;
-    dynamicValues.lookZ = cam.centerZ;
+    if (Math.round(cam.eyeX) !== dynamicValues.camX || Math.round(cam.eyeY) !== dynamicValues.camY || Math.round(cam.eyeZ) !== dynamicValues.camZ || Math.round(cam.centerX) !== dynamicValues.lookX || Math.round(cam.centerY) !== dynamicValues.lookY || Math.round(cam.centerZ) !== dynamicValues.lookZ) {
+        dynamicValues.camX = Math.round(cam.eyeX);
+        dynamicValues.camY = Math.round(cam.eyeY);
+        dynamicValues.camZ = Math.round(cam.eyeZ);
+        dynamicValues.lookX = Math.round(cam.centerX);
+        dynamicValues.lookY = Math.round(cam.centerY);
+        dynamicValues.lookZ = Math.round(cam.centerZ);
+        updateCameraShownValues();
+    }
 
     if (layers.length > 0) {
         if (layersChanged) {
             layers = layers_backup.map(obj => obj.copy());
-            resetLayersAlreadyComputedPosition();
             getLayersPosition(layers);
             layersChanged = false;
-            dynamicValues.camX = (layers[layers.length - 1].centerPosition[0] - layers[0].centerPosition[0]) / 2;
-            dynamicValues.lookX = dynamicValues.camX;
         }
         layers.forEach(drawLayer);
     }

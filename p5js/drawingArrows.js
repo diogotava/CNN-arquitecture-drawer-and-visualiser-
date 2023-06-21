@@ -1,14 +1,14 @@
 function drawArrow(halfShape, height) {
-    translate(halfShape + (height / 2) - 0.5, 0, 0);
+    translate(halfShape + (height / 2) - dynamicValues.arrowHeight / 2, 0, 0);
 
     push();
     angleMode(DEGREES);
     rotateZ(90);
     fill(0);
-    cylinder(dynamicValues.arrowWidth, height);
+    cylinder(dynamicValues.arrowWidth, height - dynamicValues.arrowHeight);
     pop();
 
-    translate((height / 2) - dynamicValues.arrowHeight / 2 + 0.4, 0, 0);
+    translate((height / 2), 0, 0);
 
     rotateZ(-90);
     fill(0);
@@ -38,14 +38,14 @@ function drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, xPosition,
     cylinder(dynamicValues.arrowWidth, yPosition);
     pop();
 
-    translate(nextLayer.spaceBetweenLayers / 4, 0, yPosition / 2);
+    translate(nextLayer.spaceBetweenLayers / 4 - dynamicValues.arrowHeight/2, 0, yPosition / 2);
 
     push();
     rotateZ(90);
     fill(0);
-    cylinder(dynamicValues.arrowWidth, nextLayer.spaceBetweenLayers / 2);
+    cylinder(dynamicValues.arrowWidth, nextLayer.spaceBetweenLayers / 2 - dynamicValues.arrowHeight);
     pop();
-    translate((nextLayer.spaceBetweenLayers / 4) - dynamicValues.arrowHeight / 2 + 0.1, 0, 0);
+    translate((nextLayer.spaceBetweenLayers / 4) , 0, 0);
     rotateZ(-90);
     fill(0);
     cone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
@@ -70,18 +70,18 @@ function drawArrowMultipleNextLayers(layer, xPosition) {
         cylinder(dynamicValues.arrowWidth, nextLayerYPosition);
         pop();
 
-        translate((nextLayerXPosition / 4) - 0.5, 0, nextLayerYPosition / 2);
+        translate((nextLayerXPosition / 4) - dynamicValues.arrowHeight / 2 + 0.1, 0, nextLayerYPosition / 2);
 
         push();
         rotateZ(90);
         fill(0);
         if (nextLayerXPosition > nextLayer.spaceBetweenLayers)
-            cylinder(dynamicValues.arrowWidth, nextLayerXPosition - nextLayer.spaceBetweenLayers / 2);
+            cylinder(dynamicValues.arrowWidth, nextLayerXPosition - nextLayer.spaceBetweenLayers / 2 - dynamicValues.arrowHeight / 2);
         else
-            cylinder(dynamicValues.arrowWidth, nextLayerXPosition / 2 - 1);
+            cylinder(dynamicValues.arrowWidth, nextLayerXPosition / 2 - dynamicValues.arrowHeight / 2);
         pop();
         if (nextLayerXPosition <= nextLayer.spaceBetweenLayers) {
-            translate((nextLayerXPosition / 4) - dynamicValues.arrowHeight / 2 + 0.5, 0, 0);
+            translate((nextLayerXPosition / 4) -0.1, 0, 0);
             rotateZ(-90);
             fill(0);
             cone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);

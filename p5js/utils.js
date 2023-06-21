@@ -117,6 +117,7 @@ function mousePressed() {
 
 function selectedText() {
     let nothingSelectedH2 = select('#nothing_selected_h2');
+    let paragraphs = document.getElementById("paragraphs");
     let selectedH2 = select('#selected_h2');
     let typeP = select('#type');
     let inputShape = select('#input_shape');
@@ -125,6 +126,7 @@ function selectedText() {
     let batchNormalization = select('#batchNormalization');
 
     nothingSelectedH2.elt.hidden = false;
+    paragraphs.style.display = 'none';
     selectedH2.elt.hidden = true;
     typeP.elt.hidden = true;
     inputShape.elt.hidden = true;
@@ -135,6 +137,10 @@ function selectedText() {
     if( isTheEndOfBlock(dynamicValues.selectedLayerID) || isTheBeginningOfBlock(dynamicValues.selectedLayerID)){
         let selectedLayer = layers[dynamicValues.selectedLayerID];
         nothingSelectedH2.elt.hidden = true;
+
+        paragraphs.style.display = 'block';
+        paragraphs.style.top = mouseY;
+        paragraphs.style.left = mouseX;
 
         selectedH2.elt.hidden = false;
         typeP.elt.hidden = false;
@@ -188,6 +194,10 @@ function selectedText() {
             batchNormalization.elt.hidden = false;
             batchNormalization.html("<b>Batch normalization filters:</b> " + selectedLayer.batchNormalization);
         }
+
+        paragraphs.style.display = 'block';
+        paragraphs.style.left = mouseX.toString() + 'px';
+        paragraphs.style.top = (mouseY - paragraphs.offsetHeight/2).toString() + 'px';
     }
 }
 
