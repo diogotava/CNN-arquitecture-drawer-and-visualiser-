@@ -138,6 +138,10 @@ function selectedText() {
         let selectedLayer = layers[dynamicValues.selectedLayerID];
         nothingSelectedH2.elt.hidden = true;
 
+        paragraphs.style.display = 'block';
+        paragraphs.style.top = mouseY;
+        paragraphs.style.left = mouseX;
+
         selectedH2.elt.hidden = false;
         typeP.elt.hidden = false;
         // TODO: remove id
