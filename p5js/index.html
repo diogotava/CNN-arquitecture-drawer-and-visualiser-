@@ -8,8 +8,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.dom.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
-    <script src="https://kit.fontawesome.com/298fd45b46.js" crossorigin="anonymous"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="sketch.js"></script>
@@ -17,6 +15,7 @@
     <script src="Objects/Layer.js"></script>
     <script src="Objects/Block.js"></script>
     <script src="utils.js"></script>
+    <script src="colorSettings.js"></script>
     <script src="layerPosition.js"></script>
     <script src="utils_graphics.js"></script>
     <script src="drawingArrows.js"></script>
@@ -32,21 +31,20 @@
         <div class="loader" id="loader"></div>
         <form id="upload-form">
             <label id="inputLabel" class="button-12">
-                <input type="file" id="model-file" name="model-file"/>
+                <input type="file" id="model-file" name="model-file" />
                 <i class="fa fa-cloud-upload"></i>
                 <p id="modelFileLabel"><b>Choose Model File</b></p>
             </label><br>
-            <button class="button-12" type="submit"><b>Upload</b></button>
-            <button class="button-12" onclick="resetData();"><b>Reset</b></button>
+            <button class="button-12" type="submit">Upload</button>
         </form>
         <div>
-            <button class="button-12" id="exportImage"><b>Export Image</b></button>
-            <button class="button-12" id="settingsButton"><b>Open Settings</b></button>
+            <button class="button-12" id="exportImage">Export Image</button>
+            <button class="button-12" id="settingsButton">Open Settings</button>
         </div>
 
         <h2 id="nothing_selected_h2">Nothing Selected!</h2>
 
-        <div id="paragraphs">
+        <div id="paragraphs" class="bubble-bottom">
             <h2 id="selected_h2" hidden><b>Selected layer:</b> </h2>
             <p id="type" hidden><b>Type: </b></p>
             <p id="input_shape" hidden><b>Input shape: </b></p>
@@ -58,169 +56,356 @@
 
         <div id="settingsPopup">
             <h2>Settings</h2>
-            <form id="settingsForm">
-                <fieldset>
-                    <legend>Camera Position</legend>
-                    <label for="camX">X</label>
-                    <input type="number" step="1" id="camX" name="camX" value="500">
+            <div id="settingsDiv">
+                <form id="settingsForm">
+                    <fieldset>
+                        <legend>Camera Position</legend>
+                        <label for="camX">X</label>
+                        <input type="number" step="1" id="camX" name="camX" value="500">
 
-                    <label for="camY">Y</label>
-                    <input type="number" step="1" id="camY" name="camY" value="-500">
+                        <label for="camY">Y</label>
+                        <input type="number" step="1" id="camY" name="camY" value="-500">
 
-                    <label for="camZ">Z</label>
-                    <input type="number" step="1" id="camZ" name="camZ" value="400"><br>
+                        <label for="camZ">Z</label>
+                        <input type="number" step="1" id="camZ" name="camZ" value="400"><br>
 
-                    <legend>Look position</legend>
-                    <label for="lookX">X</label>
-                    <input type="number" step="1" id="lookX" name="lookX" value="500">
+                        <legend>Look position</legend>
+                        <label for="lookX">X</label>
+                        <input type="number" step="1" id="lookX" name="lookX" value="500">
 
-                    <label for="lookY">Y</label>
-                    <input type="number" step="1" id="lookY" name="lookY" value="0">
+                        <label for="lookY">Y</label>
+                        <input type="number" step="1" id="lookY" name="lookY" value="0">
 
-                    <label for="lookZ">Z</label>
-                    <input type="number" step="1" id="lookZ" name="lookZ" value="0">
-                </fieldset>
+                        <label for="lookZ">Z</label>
+                        <input type="number" step="1" id="lookZ" name="lookZ" value="0">
+                    </fieldset>
 
-                <fieldset>
-                    <legend>Arrow</legend>
-                    <label for="arrowWidth">Width</label>
-                    <input type="number" step="0.01" id="arrowWidth" name="arrowWidth" value="0.2">
+                    <fieldset>
+                        <legend>Arrow</legend>
+                        <label for="arrowWidth">Width</label>
+                        <input type="number" step="0.1" id="arrowWidth" name="arrowWidth" value="0.4">
 
-                    <label for="arrowHeight">Height</label>
-                    <input type="number" step="0.01" id="arrowHeight" name="arrowHeight" value="1">
+                        <label for="arrowHeight">Height</label>
+                        <input type="number" id="arrowHeight" name="arrowHeight" value="3">
 
-                    <label for="arrowPointRadius">Radius</label>
-                    <input type="number" step="0.01" id="arrowPointRadius" name="arrowPointRadius" value="0.5">
-                </fieldset>
+                        <label for="arrowPointRadius">Radius</label>
+                        <input type="number" step="0.1" id="arrowPointRadius" name="arrowPointRadius" value="1.5">
+                    </fieldset>
 
-                <fieldset>
-                    <legend>Sensitivity</legend>
-                    <label for="sensitivityX">X</label>
-                    <input type="number" step="0.0001" id="sensitivityX" name="sensitivityX" value="1">
+                    <fieldset>
+                        <legend>Sensitivity</legend>
+                        <label for="sensitivityX">X</label>
+                        <input type="number" step="0.0001" id="sensitivityX" name="sensitivityX" value="1">
 
-                    <label for="sensitivityY">Y</label>
-                    <input type="number" step="0.0001" id="sensitivityY" name="sensitivityY" value="1">
+                        <label for="sensitivityY">Y</label>
+                        <input type="number" step="0.0001" id="sensitivityY" name="sensitivityY" value="1">
 
-                    <label for="sensitivityZ">Z</label>
-                    <input type="number" step="0.0001" id="sensitivityZ" name="sensitivityZ" value="0.01"><br>
-                </fieldset>
+                        <label for="sensitivityZ">Z</label>
+                        <input type="number" step="0.0001" id="sensitivityZ" name="sensitivityZ" value="0.01"><br>
+                    </fieldset>
 
-                <label for="defaultSpaceBetweenLayers">Default space between layers:</label>
-                <input type="number" step="0.01" id="defaultSpaceBetweenLayers" name="defaultSpaceBetweenLayers" value="10"><br>
+                    <label for="defaultSpaceBetweenLayers">Space between layers:</label>
+                    <input type="number" id="defaultSpaceBetweenLayers" name="defaultSpaceBetweenLayers" value="10"><br>
 
-                <label for="defaultLateralSpaceBetweenLayers">Default lateral space between layers:</label>
-                <input type="number" step="0.01" id="defaultLateralSpaceBetweenLayers" name="defaultLateralSpaceBetweenLayers" value="10"><br>
+                    <label for="defaultLateralSpaceBetweenLayers">Lateral space between layers:</label>
+                    <input type="number" id="defaultLateralSpaceBetweenLayers" name="defaultLateralSpaceBetweenLayers"
+                        value="10"><br>
 
-                <label for="blockSize">Block size:</label>
-                <input type="number" step="0.01" id="blockSize" name="blockSize" value="10"><br>
+                    <label for="blockSize">Block size:</label>
+                    <input type="number" id="blockSize" name="blockSize" value="10"><br>
 
-                <button class="button-12" id="settingsColorsButton"><b>Open layer color Settings</b></button><br>
+                    <button class="button-12" id="settingsColorsButton">Open layer color Settings</button>
 
-                <button class="button-12" type="submit"><b>Save</b></button>
-                <button class="button-12" id="settingsCloseButton"><b>Close</b></button>
-            </form>
+                    <input type="reset" class="button-12" value="Reset">
+                </form>
+            </div>
+            <button class="button-12" type="submit">Save</button>
+            <button class="button-12" id="settingsCloseButton">Close</button>
         </div>
 
 
         <div id="settingsColorsPopup">
             <h2>Layers Colors Settings</h2>
-            <form id="settingsColorsForm">
-                <label for="Conv2D">Conv2D:</label>
-                <input type="color" id="Conv2D" name="Conv2D" value="#00ff00"><br>
+            <div id="settingsColorsDiv">
+                <form id="settingsColorsForm">
+                    <div class="checkbox-wrapper-14">
+                        <label for="resetPrevious" style="margin-right: 5px;">Reset to the default color</label>
+                        <input id="resetPrevious" type="checkbox" class="switch">
+                        <label for="resetPrevious">Reset to the color previous saving</label>
+                    </div>
+                    <form>
+                        <label class="colorLabel" for="Dense">Dense:</label>
+                        <input type="color" id="Dense" name="Dense" value="#ff0000">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
 
-                <label for="Dense">Dense:</label>
-                <input type="color" id="Dense" name="Dense" value="#ff0000"><br>
+                    <form>
+                        <label class="colorLabel" for="Flatten">Flatten:</label>
+                        <input type="color" id="Flatten" name="Flatten" value="#ff00ff">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
 
-                <label for="Flatten">Flatten:</label>
-                <input type="color" id="Flatten" name="Flatten" value="#ff00ff"><br>
+                    <form>
+                        <label class="colorLabel" for="Dropout">Dropout:</label>
+                        <input type="color" id="Dropout" name="Dropout" value="#00FFFF">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
 
-                <label for="Dropout">Dropout:</label>
-                <input type="color" id="Dropout" name="Dropout" value="#00FFFF"><br>
+                    <form>
+                        <label class="colorLabel" for="Input">Input:</label>
+                        <input type="color" id="Input" name="Input" value="#FFFF00">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
 
-                <label for="InputLayer">InputLayer:</label>
-                <input type="color" id="InputLayer" name="InputLayer" value="#FFFF00"><br>
+                    <form>
+                        <label class="colorLabel" for="Concatenate">Concatenate:</label>
+                        <input type="color" id="Concatenate" name="Concatenate" value="#80FFFF">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
 
-                <label for="Concatenate">Concatenate:</label>
-                <input type="color" id="Concatenate" name="Concatenate" value="#80FFFF"><br>
+                    <form>
+                        <label class="colorLabel" for="Add">Add:</label>
+                        <input type="color" id="Add" name="Add" value="#AAC8FF">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
 
-                <label for="Add">Add:</label>
-                <input type="color" id="Add" name="Add" value="#AAC8FF"><br>
+                    <form>
+                        <label class="colorLabel" for="LSTM">LSTM:</label>
+                        <input type="color" id="LSTM" name="LSTM" value="#FF0096">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
 
-                <label for="LSTM">LSTM:</label>
-                <input type="color" id="LSTM" name="LSTM" value="#FF0096"><br>
+                    <form>
+                        <label class="colorLabel" for="GRU">GRU:</label>
+                        <input type="color" id="GRU" name="GRU" value="#FF0096">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
 
-                <label for="GRU">GRU:</label>
-                <input type="color" id="GRU" name="GRU" value="#FF0096"><br>
+                    <form>
+                        <label class="colorLabel" for="SimpleRNN">SimpleRNN:</label>
+                        <input type="color" id="SimpleRNN" name="SimpleRNN" value="#FF0096">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
 
-                <label for="SimpleRNN">SimpleRNN:</label>
-                <input type="color" id="SimpleRNN" name="SimpleRNN" value="#FF0096"><br>
+                    <form>
+                        <label class="colorLabel" for="TimeDistributed">TimeDistributed:</label>
+                        <input type="color" id="TimeDistributed" name="TimeDistributed" value="#FF0096">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
 
-                <label for="TimeDistributed">TimeDistributed:</label>
-                <input type="color" id="TimeDistributed" name="TimeDistributed" value="#FF0096"><br>
+                    <form>
+                        <label class="colorLabel" for="Bidirectional">Bidirectional:</label>
+                        <input type="color" id="Bidirectional" name="Bidirectional" value="#FF0096">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
 
-                <label for="Bidirectional">Bidirectional:</label>
-                <input type="color" id="Bidirectional" name="Bidirectional" value="#FF0096"><br>
+                    <form>
+                        <label class="colorLabel" for="BaseRNN">BaseRNN:</label>
+                        <input type="color" id="BaseRNN" name="BaseRNN" value="#FF0096">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
 
-                <label for="ConvLSTM1D">ConvLSTM1D:</label>
-                <input type="color" id="ConvLSTM1D" name="ConvLSTM1D" value="#FF0096"><br>
+                    <fieldset>
+                        <legend>Convolutional LSTM</legend>
 
-                <label for="ConvLSTM2D">ConvLSTM2D:</label>
-                <input type="color" id="ConvLSTM2D" name="ConvLSTM2D" value="#FF0096"><br>
+                        <div class="checkbox-wrapper-14">
+                            <input id="s1-14" type="checkbox" class="switch" onchange="allConvLSTMSameColor();">
+                            <label for="s1-14">All with the same color</label>
+                        </div>
+                        <div id="colorsConvLSTM" class="colors">
+                            <form id="ConvLSTMColor1">
+                                <label id="ConvLSTM1DLabel" for="ConvLSTM1D">1D:</label>
+                                <input type="color" id="ConvLSTM1D" name="ConvLSTM1D" value="#FF0096"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
 
-                <label for="ConvLSTM3D">ConvLSTM3D:</label>
-                <input type="color" id="ConvLSTM3D" name="ConvLSTM3D" value="#FF0096"><br>
+                            <form id="ConvLSTMColor2">
+                                <label for="ConvLSTM2D">2D:</label>
+                                <input type="color" id="ConvLSTM2D" name="ConvLSTM2D" value="#FF0096"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
 
-                <label for="BaseRNN">BaseRNN:</label>
-                <input type="color" id="BaseRNN" name="BaseRNN" value="#FF0096"><br>
+                            <form id="ConvLSTMColor3">
+                                <label for="ConvLSTM3D">3D:</label>
+                                <input type="color" id="ConvLSTM3D" name="ConvLSTM3D" value="#FF0096"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
+                        </div>
+                    </fieldset>
 
-                <label for="MaxPooling1D">MaxPooling1D:</label>
-                <input type="color" id="MaxPooling1D" name="MaxPooling1D" value="#323296"><br>
+                    <fieldset>
+                        <legend>Convolutional</legend>
 
-                <label for="MaxPooling2D">MaxPooling2D:</label>
-                <input type="color" id="MaxPooling2D" name="MaxPooling2D" value="#323296"><br>
+                        <div class="checkbox-wrapper-14">
+                            <input id="s1-15" type="checkbox" class="switch" onchange="allConvSameColor();">
+                            <label for="s1-15">All with the same color</label>
+                        </div>
 
-                <label for="MaxPooling3D">MaxPooling3D:</label>
-                <input type="color" id="MaxPooling3D" name="MaxPooling3D" value="#323296"><br>
+                        <div id="colorsConv" class="colors">
+                            <form id="ConvColor1">
+                                <label id="Conv1DLabel" for="Conv1D">1D:</label>
+                                <input type="color" id="Conv1D" name="Conv1D" value="#00ff00"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
 
-                <label for="AveragePooling1D">AveragePooling1D:</label>
-                <input type="color" id="AveragePooling1D" name="AveragePooling1D" value="#323296"><br>
+                            <form id="ConvColor2">
+                                <label for="Conv2D">2D:</label>
+                                <input type="color" id="Conv2D" name="Conv2D" value="#00ff00"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
 
-                <label for="AveragePooling2D">AveragePooling2D:</label>
-                <input type="color" id="AveragePooling2D" name="AveragePooling2D" value="#323296"><br>
+                            <form id="ConvColor3">
+                                <label for="Conv3D">3D:</label>
+                                <input type="color" id="Conv3D" name="Conv3D" value="#00ff00"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
+                        </div>
+                    </fieldset>
 
-                <label for="AveragePooling3D">AveragePooling3D:</label>
-                <input type="color" id="AveragePooling3D" name="AveragePooling3D" value="#323296"><br>
+                    <fieldset>
+                        <legend>Max pooling</legend>
 
-                <label for="GlobalMaxPooling1D">GlobalMaxPooling1D:</label>
-                <input type="color" id="GlobalMaxPooling1D" name="GlobalMaxPooling1D" value="#323296"><br>
+                        <div class="checkbox-wrapper-14">
+                            <input id="s1-16" type="checkbox" class="switch" onchange="allMaxPoolingSameColor();">
+                            <label for="s1-16">All with the same color</label>
+                        </div>
 
-                <label for="GlobalMaxPooling2D">GlobalMaxPooling2D:</label>
-                <input type="color" id="GlobalMaxPooling2D" name="GlobalMaxPooling2D" value="#323296"><br>
+                        <div id="colorsMaxPooling" class="colors">
+                            <form id="MaxPoolingColor1">
+                                <label id="MaxPooling1DLabel" for="MaxPooling1D">1D:</label>
+                                <input type="color" id="MaxPooling1D" name="MaxPooling1D" value="#323296"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
 
-                <label for="GlobalMaxPooling3D">GlobalMaxPooling3D:</label>
-                <input type="color" id="GlobalMaxPooling3D" name="GlobalMaxPooling3D" value="#323296"><br>
+                            <form id="MaxPoolingColor2">
+                                <label for="MaxPooling2D">2D:</label>
+                                <input type="color" id="MaxPooling2D" name="MaxPooling2D" value="#323296"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
 
-                <label for="GlobalAveragePooling1D">GlobalAveragePooling1D:</label>
-                <input type="color" id="GlobalAveragePooling1D" name="GlobalAveragePooling1D" value="#323296"><br>
+                            <form id="MaxPoolingColor3">
+                                <label for="MaxPooling3D">3D:</label>
+                                <input type="color" id="MaxPooling3D" name="MaxPooling3D" value="#323296"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
+                        </div>
+                    </fieldset>
 
-                <label for="GlobalAveragePooling2D">GlobalAveragePooling2D:</label>
-                <input type="color" id="GlobalAveragePooling2D" name="GlobalAveragePooling2D" value="#323296"><br>
+                    <fieldset>
+                        <legend>Average pooling</legend>
 
-                <label for="GlobalAveragePooling3D">GlobalAveragePooling3D:</label>
-                <input type="color" id="GlobalAveragePooling3D" name="GlobalAveragePooling3D" value="#323296"><br>
+                        <div class="checkbox-wrapper-14">
+                            <input id="s1-17" type="checkbox" class="switch" onchange="allAveragePoolingSameColor();">
+                            <label for="s1-17">All with the same color</label>
+                        </div>
 
-                <label for="Reshape">Reshape:</label>
-                <input type="color" id="Reshape" name="Reshape" value="#FA8000"><br>
+                        <div id="colorsAveragePooling" class="colors">
+                            <form id="AveragePoolingColor1">
+                                <label id="AveragePooling1DLabel" for="AveragePooling1D">1D:</label>
+                                <input type="color" id="AveragePooling1D" name="AveragePooling1D" value="#323296"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
 
-                <label for="Default">Default:</label>
-                <input type="color" id="Default" name="Default" value="#808080"><br>
+                            <form id="AveragePoolingColor2">
+                                <label for="AveragePooling2D">2D:</label>
+                                <input type="color" id="AveragePooling2D" name="AveragePooling2D" value="#323296"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
 
-                <label for="Selected">Selected:</label>
-                <input type="color" id="Selected" name="Selected" value="#0000FF"><br>
+                            <form id="AveragePoolingColor3">
+                                <label for="AveragePooling3D">3D:</label>
+                                <input type="color" id="AveragePooling3D" name="AveragePooling3D" value="#323296"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
+                        </div>
+                    </fieldset>
 
-                <button class="button-12" type="submit"><b>Save</b></button>
-                <button class="button-12" id="settingsColorsCloseButton"><b>Close</b></button>
-            </form>
+                    <fieldset>
+                        <legend>Global max pooling</legend>
+
+                        <div class="checkbox-wrapper-14">
+                            <input id="s1-18" type="checkbox" class="switch" onchange="allGlobalMaxPoolingSameColor();">
+                            <label for="s1-18">All with the same color</label>
+                        </div>
+
+                        <div id="colorsGlobalMaxPooling" class="colors">
+                            <form id="GlobalMaxPoolingColor1">
+                                <label id="GlobalMaxPooling1DLabel" for="GlobalMaxPooling1D">1D:</label>
+                                <input type="color" id="GlobalMaxPooling1D" name="GlobalMaxPooling1D" value="#323296"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
+
+                            <form id="GlobalMaxPoolingColor2">
+                                <label for="GlobalMaxPooling2D">2D:</label>
+                                <input type="color" id="GlobalMaxPooling2D" name="GlobalMaxPooling2D" value="#323296"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
+
+                            <form id="GlobalMaxPoolingColor3">
+                                <label for="GlobalMaxPooling3D">3D:</label>
+                                <input type="color" id="GlobalMaxPooling3D" name="GlobalMaxPooling3D" value="#323296"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Global average pooling</legend>
+
+                        <div class="checkbox-wrapper-14">
+                            <input id="s1-19" type="checkbox" class="switch" onchange="allGlobalAveragePoolingSameColor();">
+                            <label for="s1-19">All with the same color</label>
+                        </div>
+
+                        <div id="colorsGlobalAveragePooling" class="colors">
+                            <form id="GlobalAveragePoolingColor1">
+                                <label id="GlobalAveragePooling1DLabel" for="GlobalAveragePooling1D">1D:</label>
+                                <input type="color" id="GlobalAveragePooling1D" name="GlobalAveragePooling1D" value="#323296"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
+
+                            <form id="GlobalAveragePoolingColor2">
+                                <label for="GlobalAveragePooling2D">2D:</label>
+                                <input type="color" id="GlobalAveragePooling2D" name="GlobalAveragePooling2D" value="#323296"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
+
+                            <form id="GlobalAveragePoolingColor3">
+                                <label for="GlobalAveragePooling3D">3D:</label>
+                                <input type="color" id="GlobalAveragePooling3D" name="GlobalAveragePooling3D" value="#323296"><br>
+                        <input type="reset" class="button-12_color_reset">
+                            </form>
+                        </div>
+                    </fieldset>
+
+                    <form>
+                        <label class="colorLabel" for="Reshape">Reshape:</label>
+                        <input type="color" id="Reshape" name="Reshape" value="#FA8000">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
+
+                    <form>
+                        <label class="colorLabel" for="Default">Default:</label>
+                        <input type="color" id="Default" name="Default" value="#808080">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
+
+                    <form>
+                        <label class="colorLabel" for="Block">Block:</label>
+                        <input type="color" id="Block" name="Block" value="#000000">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
+
+                    <form>
+                        <label class="colorLabel" for="Selected">Selected:</label>
+                        <input type="color" id="Selected" name="Selected" value="#0000FF">
+                        <input type="reset" class="button-12_color_reset">
+                    </form>
+
+                </form>
+            </div>
+            <button class="button-12" id="settingsColorsSaveButton" type="submit">Save</button>
+            <button class="button-12" id="settingsColorsCloseButton">Close</button>
         </div>
     </div>
 

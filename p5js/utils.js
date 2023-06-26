@@ -152,7 +152,13 @@ function selectedText() {
 
         paragraphs.style.display = 'block';
         paragraphs.style.left = mouseX.toString() + 'px';
-        paragraphs.style.top = (mouseY - paragraphs.offsetHeight / 2).toString() + 'px';
+        let height = 0;
+        if( mouseY - 7 - paragraphs.offsetHeight < 0 ){
+            height = paragraphs.offsetHeight/2
+        } else {
+            height =  mouseY - 7 - paragraphs.offsetHeight/2;
+        }
+        paragraphs.style.top = (height).toString() + 'px';
 
     } else if (dynamicValues.selectedLayerID !== -1) {
         let selectedLayer = layers[dynamicValues.selectedLayerID];
@@ -201,7 +207,14 @@ function selectedText() {
 
         paragraphs.style.display = 'block';
         paragraphs.style.left = mouseX.toString() + 'px';
-        paragraphs.style.top = (mouseY - paragraphs.offsetHeight / 2).toString() + 'px';
+
+        let height = 0;
+        if( mouseY - 7 - paragraphs.offsetHeight < 0 ){
+            height = paragraphs.offsetHeight/2
+        } else {
+            height =  mouseY - 7 - paragraphs.offsetHeight/2;
+        }
+        paragraphs.style.top = (height).toString() + 'px';
     }
 }
 
@@ -243,8 +256,196 @@ function getAllNextLayers(layer, array) {
     return layersReturn;
 }
 
-function resetData() {
-    layers = layers_backup.map(obj => obj.copy());
-    resetDynamicValues();
-    layersChanged = true;
+function settingsBehaviour(){
+    const settingsForm = document.getElementById('settingsForm');
+    const settingsCloseButton = document.getElementById('settingsCloseButton');
+    const settingsPopup = document.getElementById('settingsPopup');
+
+    settingsCloseButton.addEventListener('click', () => {
+        settingsPopup.style.display = 'none';
+    });
+
+    settingsForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        updateValues();
+        layersChanged = true;
+    });
+
+    const settingsColorsButton = document.getElementById('settingsColorsButton');
+    const settingsColorsPopup = document.getElementById('settingsColorsPopup');
+    settingsColorsButton.addEventListener('click', () => {
+        settingsColorsPopup.style.display = 'block';
+    });
+}
+
+function settingsColorsBehaviour(){
+    const settingsColorsCloseButton = document.getElementById('settingsColorsCloseButton');
+    const settingsColorsSaveButton = document.getElementById('settingsColorsSaveButton');
+    const settingsColorsPopup = document.getElementById('settingsColorsPopup');
+
+    settingsColorsCloseButton.addEventListener('click', () => {
+        settingsColorsPopup.style.display = 'none';
+    });
+
+    settingsColorsSaveButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        updateColors();
+    });
+}
+
+function allConvSameColor(){
+    const allConvSameColor = document.getElementById('s1-15');
+    const colorsConv = document.getElementById('colorsConv');
+    const conv1DLabel = document.getElementById('Conv1DLabel');
+    const conv2DColor = document.getElementById('ConvColor2');
+    const conv3DColor = document.getElementById('ConvColor3');
+
+    if(allConvSameColor.checked) {
+        colorsConv.style.justifyContent='center';
+        conv1DLabel.style.display = 'none';
+        conv2DColor.style.display = 'none';
+        conv3DColor.style.display = 'none';
+
+    } else {
+        colorsConv.style.justifyContent='space-between';
+        conv1DLabel.style.display = 'inline-block';
+        conv2DColor.style.display = 'inline-block';
+        conv3DColor.style.display = 'inline-block';
+    }
+}
+
+function allConvLSTMSameColor(){
+    const allConvLSTMSameColor = document.getElementById('s1-14');
+    const colorsConvLSTM = document.getElementById('colorsConvLSTM');
+    const convLSTM1DLabel = document.getElementById('ConvLSTM1DLabel');
+    const convLSTM2DColor = document.getElementById('ConvLSTMColor2');
+    const convLSTM3DColor = document.getElementById('ConvLSTMColor3');
+
+    if(allConvLSTMSameColor.checked) {
+        colorsConvLSTM.style.justifyContent='center';
+        convLSTM1DLabel.style.display = 'none';
+        convLSTM2DColor.style.display = 'none';
+        convLSTM3DColor.style.display = 'none';
+
+    } else {
+        colorsConvLSTM.style.justifyContent='space-between';
+        convLSTM1DLabel.style.display = 'inline-block';
+        convLSTM2DColor.style.display = 'inline-block';
+        convLSTM3DColor.style.display = 'inline-block';
+    }
+}
+
+function allMaxPoolingSameColor(){
+    const allMaxPoolingSameColor = document.getElementById('s1-16');
+    const colorsMaxPooling = document.getElementById('colorsMaxPooling');
+    const maxPooling1DLabel = document.getElementById('MaxPooling1DLabel');
+    const maxPooling2DColor = document.getElementById('MaxPoolingColor2');
+    const maxPooling3DColor = document.getElementById('MaxPoolingColor3');
+
+    if(allMaxPoolingSameColor.checked) {
+        colorsMaxPooling.style.justifyContent='center';
+        maxPooling1DLabel.style.display = 'none';
+        maxPooling2DColor.style.display = 'none';
+        maxPooling3DColor.style.display = 'none';
+
+    } else {
+        colorsMaxPooling.style.justifyContent='space-between';
+        maxPooling1DLabel.style.display = 'inline-block';
+        maxPooling2DColor.style.display = 'inline-block';
+        maxPooling3DColor.style.display = 'inline-block';
+    }
+}
+
+function allAveragePoolingSameColor(){
+    const allAveragePoolingSameColor = document.getElementById('s1-17');
+    const colorsAveragePooling = document.getElementById('colorsAveragePooling');
+    const averagePooling1DLabel = document.getElementById('AveragePooling1DLabel');
+    const averagePooling2DColor = document.getElementById('AveragePoolingColor2');
+    const averagePooling3DColor = document.getElementById('AveragePoolingColor3');
+
+    if(allAveragePoolingSameColor.checked) {
+        colorsAveragePooling.style.justifyContent='center';
+        averagePooling1DLabel.style.display = 'none';
+        averagePooling2DColor.style.display = 'none';
+        averagePooling3DColor.style.display = 'none';
+
+    } else {
+        colorsAveragePooling.style.justifyContent='space-between';
+        averagePooling1DLabel.style.display = 'inline-block';
+        averagePooling2DColor.style.display = 'inline-block';
+        averagePooling3DColor.style.display = 'inline-block';
+    }
+}
+
+function allGlobalMaxPoolingSameColor(){
+    const allGlobalMaxPoolingSameColor = document.getElementById('s1-18');
+    const colorsGlobalMaxPooling = document.getElementById('colorsGlobalMaxPooling');
+    const globalMaxPooling1DLabel = document.getElementById('GlobalMaxPooling1DLabel');
+    const globalMaxPooling2DColor = document.getElementById('GlobalMaxPoolingColor2');
+    const globalMaxPooling3DColor = document.getElementById('GlobalMaxPoolingColor3');
+
+    if(allGlobalMaxPoolingSameColor.checked) {
+        colorsGlobalMaxPooling.style.justifyContent='center';
+        globalMaxPooling1DLabel.style.display = 'none';
+        globalMaxPooling2DColor.style.display = 'none';
+        globalMaxPooling3DColor.style.display = 'none';
+
+    } else {
+        colorsGlobalMaxPooling.style.justifyContent='space-between';
+        globalMaxPooling1DLabel.style.display = 'inline-block';
+        globalMaxPooling2DColor.style.display = 'inline-block';
+        globalMaxPooling3DColor.style.display = 'inline-block';
+    }
+}
+
+function allGlobalAveragePoolingSameColor(){
+    const allGlobalAveragePoolingSameColor = document.getElementById('s1-19');
+    const colorsGlobalAveragePooling = document.getElementById('colorsGlobalAveragePooling');
+    const globalAveragePooling1DLabel = document.getElementById('GlobalAveragePooling1DLabel');
+    const globalAveragePooling2DColor = document.getElementById('GlobalAveragePoolingColor2');
+    const globalAveragePooling3DColor = document.getElementById('GlobalAveragePoolingColor3');
+
+    if(allGlobalAveragePoolingSameColor.checked) {
+        colorsGlobalAveragePooling.style.justifyContent='center';
+        globalAveragePooling1DLabel.style.display = 'none';
+        globalAveragePooling2DColor.style.display = 'none';
+        globalAveragePooling3DColor.style.display = 'none';
+
+    } else {
+        colorsGlobalAveragePooling.style.justifyContent='space-between';
+        globalAveragePooling1DLabel.style.display = 'inline-block';
+        globalAveragePooling2DColor.style.display = 'inline-block';
+        globalAveragePooling3DColor.style.display = 'inline-block';
+    }
+}
+
+function buttonsBehaviour(){
+    const settingsButton = document.getElementById('settingsButton');
+    const settingsPopup = document.getElementById('settingsPopup');
+
+
+    const fileInput = document.getElementById('model-file');
+    const fileNameLabel = document.getElementById('modelFileLabel');
+
+    settingsButton.addEventListener('click', () => {
+        settingsPopup.style.display = 'block';
+    });
+
+    fileInput.addEventListener('change', () => {
+        const fileName = fileInput.files[0].name;
+        const labelText = fileNameLabel.textContent;
+        fileNameLabel.innerHTML = `<b>${fileName}</b>`;
+    });
+
+    settingsBehaviour();
+    settingsColorsBehaviour();
+}
+
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length === 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }

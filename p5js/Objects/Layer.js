@@ -3,8 +3,6 @@ class Layer {
         if (copy) {
             this.selected = layer.selected;
             this.id = layer.id;
-            this.lateralSpaceBetweenLayers = layer.lateralSpaceBetweenLayers;
-            this.spaceBetweenLayers = layer.spaceBetweenLayers;
             this.centerPosition = layer.centerPosition;
             this.name = layer.name;
             this.shape = layer.shape;
@@ -22,12 +20,10 @@ class Layer {
 
         } else {
             this.selected = false;
-            this.id = layer.id
-            this.lateralSpaceBetweenLayers = dynamicValues.defaultLateralSpaceBetweenLayers;
-            this.spaceBetweenLayers = layer.previous_layers.length <= 1 ? dynamicValues.defaultSpaceBetweenLayers : dynamicValues.defaultSpaceBetweenLayers + 5;
+            this.id = layer.id;
             this.centerPosition = [0, 0, 0];
             this.name = layer.name;
-            if(layer.type === "Dense" && layer.shape[0] === dynamicValues.minX && layer.shape[1] === dynamicValues.minZY)
+            if (layer.type === "Dense" && layer.shape[0] === dynamicValues.minX && layer.shape[1] === dynamicValues.minZY)
                 this.shape = [layer.shape[0], layer.shape[2], layer.shape[1]];
             else
                 this.shape = layer.shape;
@@ -50,12 +46,12 @@ class Layer {
     }
 
     setXPosition(xPosition) {
-        this.centerPosition[0] = xPosition + (this.shape[0] / 2) + this.spaceBetweenLayers;
+        this.centerPosition[0] = xPosition + (this.shape[0] / 2) + dynamicValues.defaultSpaceBetweenLayers;
     }
 
     setXPositionOfBeginBlockLayer(xPosition) {
         this.shape = [dynamicValues.blockSize, dynamicValues.blockSize, dynamicValues.blockSize];
-        this.centerPosition[0] = xPosition + (this.shape[0] / 2) + this.spaceBetweenLayers;
+        this.centerPosition[0] = xPosition + (this.shape[0] / 2) + dynamicValues.defaultSpaceBetweenLayers;
     }
 
     setXPositionInternalBlockLayer(xPosition) {
@@ -64,7 +60,7 @@ class Layer {
         this.isInsideBlock = true;
     }
 
-    isLayerInsideBlock(){
+    isLayerInsideBlock() {
         return this.isInsideBlock;
     }
 

@@ -46,10 +46,10 @@ function getMaxWidth(layer, layers) {
         layersSeen.push(nextLayerIndex);
         let nextLayer = layers[nextLayerIndex];
 
-        if (nextLayer.prevLayers.length === 1 && nextLayer.nextLayers.length > 1){
+        if (nextLayer.prevLayers.length === 1 && nextLayer.nextLayers.length > 1) {
             let width = 0;
             for (let n_layer of nextLayer.nextLayers) {
-                width += getMaxWidth(layers[n_layer], layers) + layers[n_layer].lateralSpaceBetweenLayers;
+                width += getMaxWidth(layers[n_layer], layers) + dynamicValues.defaultLateralSpaceBetweenLayers;
             }
             if (nextLayer.shape[indexY] > maxWidth) {
                 maxWidth = nextLayer.shape[indexY];
@@ -86,9 +86,10 @@ function getPositionEndLayerBlock(layer, layers, xPosition = null, yPosition = n
     } else
         for (const nextLayerIndex of layer.nextLayers) {
             let nextLayer = layers[nextLayerIndex];
-            nextLayer.previousYPosition = {id: layer.id,
-                                             yPosition: layer.centerPosition[indexY]};
-            dynamicValues.layersAlreadyComputedPosition.push(layer.id);
+            nextLayer.previousYPosition = {
+                id: layer.id,
+                yPosition: layer.centerPosition[indexY]
+            };
             layer.setXPositionInternalBlockLayer(xPosition);
             // getLayersPosition(nextLayer, layers, xPosition, yPosition, spaceBetweenLayers);
         }
@@ -99,75 +100,78 @@ function getPositionLayersInsideBlock(layer, layers, endBlockLayer, xPosition = 
 
     for (const nextLayerIndex of layer.nextLayers) {
         let nextLayer = layers[nextLayerIndex];
-        nextLayer.previousYPosition = {id: layer.id,
-                                        yPosition: layer.centerPosition[indexY]};
+        nextLayer.previousYPosition = {
+            id: layer.id,
+            yPosition: layer.centerPosition[indexY]
+        };
         if (layer.id === endBlockLayer.id) {
             getPositionEndLayerBlock(layer, layers, xPosition, yPosition);
         } else {
-            dynamicValues.layersAlreadyComputedPosition.push(layer.id);
             layer.setXPositionInternalBlockLayer(xPosition);
             getPositionLayersInsideBlock(nextLayer, layers, endBlockLayer, xPosition, yPosition);
         }
     }
 }
 
-function getYPosition(layer, layers){
+function getYPosition(layer, layers) {
     let yPosition = 0;
 
-    if( layer.prevLayers.length === 1 ){
+    if (layer.prevLayers.length === 1) {
         let previousLayer = layers[layer.prevLayers[indexX]];
         yPosition = previousLayer.getYPosition();
-        if(previousLayer.nextLayers.length > 1) {
-            let halfOfNextLayersOfPreviousLayer = previousLayer.nextLayers.length /2;
+        if (previousLayer.nextLayers.length > 1) {
+            let halfOfNextLayersOfPreviousLayer = previousLayer.nextLayers.length / 2;
             let index = previousLayer.nextLayers.indexOf(layer.id);
             let maxWidth = getMaxWidth(layer, layers);
 
             if (index + 1 <= halfOfNextLayersOfPreviousLayer) {
-                let halfPreviousLayerShape = previousLayer.lastNegativeYPosition === 0 ? Math.max(previousLayer.shape[indexY]/2, dynamicValues.defaultLateralSpaceBetweenLayers/2) : layer.lateralSpaceBetweenLayers;
-                yPosition = yPosition - (previousLayer.lastNegativeYPosition + halfPreviousLayerShape + maxWidth/2);
+                let halfPreviousLayerShape = previousLayer.lastNegativeYPosition === 0 ? Math.max(previousLayer.shape[indexY] / 2, dynamicValues.defaultLateralSpaceBetweenLayers / 2) : dynamicValues.defaultLateralSpaceBetweenLayers;
+                yPosition = yPosition - (previousLayer.lastNegativeYPosition + halfPreviousLayerShape + maxWidth / 2);
 
-                previousLayer.lastNegativeYPosition = -(yPosition - maxWidth/2);
+                previousLayer.lastNegativeYPosition = -(yPosition - maxWidth / 2);
             } else {
-                let halfPreviousLayerShape = previousLayer.lastPositiveYPosition === 0 ?  Math.max(previousLayer.shape[indexY]/2, dynamicValues.defaultLateralSpaceBetweenLayers/2) : layer.lateralSpaceBetweenLayers;
-                yPosition = yPosition + previousLayer.lastPositiveYPosition + halfPreviousLayerShape + maxWidth/2;
+                let halfPreviousLayerShape = previousLayer.lastPositiveYPosition === 0 ? Math.max(previousLayer.shape[indexY] / 2, dynamicValues.defaultLateralSpaceBetweenLayers / 2) : dynamicValues.defaultLateralSpaceBetweenLayers;
+                yPosition = yPosition + previousLayer.lastPositiveYPosition + halfPreviousLayerShape + maxWidth / 2;
 
-                previousLayer.lastPositiveYPosition = yPosition + maxWidth/2;
+                previousLayer.lastPositiveYPosition = yPosition + maxWidth / 2;
             }
         }
-    } else if(layer.prevLayers.length > 1){
+    } else if (layer.prevLayers.length > 1) {
         yPosition = layer.previousYPosition.yPosition;
 
     }
 
-    if(layer.id === 0){
-        layer.previousYPosition = {id: layer.id, yPosition: yPosition};
+    if (layer.id === 0) {
+        layer.previousYPosition = { id: layer.id, yPosition: yPosition };
     }
-    if(layer.nextLayers.length > 1) {
+    if (layer.nextLayers.length > 1) {
         let prevYPos = {};
-        if(yPosition === layer.previousYPosition.yPosition){
+        if (yPosition === layer.previousYPosition.yPosition) {
             prevYPos = layer.previousYPosition;
         } else {
-            prevYPos = {id: layer.id,
-                        yPosition: yPosition};
+            prevYPos = {
+                id: layer.id,
+                yPosition: yPosition
+            };
         }
         for (let next_layer of layer.nextLayers) {
             layers[next_layer].previousYPosition = prevYPos;
         }
-    } else if(layer.nextLayers.length === 1 && layer.prevLayers.length <= 1){
+    } else if (layer.nextLayers.length === 1 && layer.prevLayers.length <= 1) {
         layers[layer.nextLayers[indexX]].previousYPosition = layer.previousYPosition;
-    } else if(layer.nextLayers.length === 1 && layer.prevLayers.length > 1){
+    } else if (layer.nextLayers.length === 1 && layer.prevLayers.length > 1) {
         layers[layer.nextLayers[indexX]].previousYPosition = layers[layer.previousYPosition.id].previousYPosition;
     }
 
     return yPosition;
 }
 
-function getXPosition(layer, layers){
+function getXPosition(layer, layers) {
     let xPosition = 0;
 
-    if( layer.prevLayers.length === 1 ){
-        xPosition = layers[layer.prevLayers[indexX]].centerPosition[indexX] + layers[layer.prevLayers[indexX]].shape[indexX]/2;
-    } else if(layer.prevLayers.length > 1){
+    if (layer.prevLayers.length === 1) {
+        xPosition = layers[layer.prevLayers[indexX]].centerPosition[indexX] + layers[layer.prevLayers[indexX]].shape[indexX] / 2;
+    } else if (layer.prevLayers.length > 1) {
         xPosition = getMaxXPositionOfPrevLayers(layer.prevLayers, layers);
     }
 
@@ -175,30 +179,30 @@ function getXPosition(layer, layers){
 }
 
 function getLayersPosition(layers) {
-    for(let layer of layers){
+    for (let layer of layers) {
         getLayerPosition(layer, layers)
     }
 }
 
-function getLayerPosition(layer, layers){
+function getLayerPosition(layer, layers) {
     let isBeginningBlock = isTheBeginningOfBlock(layer.id);
     let endBlockLayer = getEndBlockLayer(layers, layer.id);
     let isInsideBlock = layer.isLayerInsideBlock();
 
     let xPosition = getXPosition(layer, layers);
     let yPosition = getYPosition(layer, layers);
-    if(isInsideBlock)
+    if (isInsideBlock)
         return;
 
     layer.shouldBeDrawn = true;
     if (isBeginningBlock) {
         layer.shouldBeBlock = true;
         layer.setXPositionOfBeginBlockLayer(xPosition)
-        for(let nextLayerId of layer.nextLayers) {
+        for (let nextLayerId of layer.nextLayers) {
             let nextLayer = layers[nextLayerId];
             getPositionLayersInsideBlock(nextLayer, layers, endBlockLayer, layer.centerPosition[indexX] + layer.shape[indexX] / 2, yPosition);
         }
-        if(!isTheBeginningOfBlock(endBlockLayer.id))
+        if (!isTheBeginningOfBlock(endBlockLayer.id))
             layer.nextLayers = endBlockLayer.nextLayers;
         else
             layer.nextLayers = [endBlockLayer.id];

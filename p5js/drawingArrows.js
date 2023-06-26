@@ -38,14 +38,14 @@ function drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, xPosition,
     cylinder(dynamicValues.arrowWidth, yPosition);
     pop();
 
-    translate(nextLayer.spaceBetweenLayers / 4 - dynamicValues.arrowHeight/2, 0, yPosition / 2);
+    translate((dynamicValues.defaultSpaceBetweenLayers / 4) - (dynamicValues.arrowHeight / 2), 0, yPosition / 2);
 
     push();
     rotateZ(90);
     fill(0);
-    cylinder(dynamicValues.arrowWidth, nextLayer.spaceBetweenLayers / 2 - dynamicValues.arrowHeight);
+    cylinder(dynamicValues.arrowWidth, dynamicValues.defaultSpaceBetweenLayers / 2 - dynamicValues.arrowHeight);
     pop();
-    translate((nextLayer.spaceBetweenLayers / 4) , 0, 0);
+    translate((dynamicValues.defaultSpaceBetweenLayers / 4), 0, 0);
     rotateZ(-90);
     fill(0);
     cone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
@@ -75,13 +75,13 @@ function drawArrowMultipleNextLayers(layer, xPosition) {
         push();
         rotateZ(90);
         fill(0);
-        if (nextLayerXPosition > nextLayer.spaceBetweenLayers)
-            cylinder(dynamicValues.arrowWidth, nextLayerXPosition - nextLayer.spaceBetweenLayers / 2 - dynamicValues.arrowHeight / 2);
+        if (nextLayerXPosition > dynamicValues.defaultSpaceBetweenLayers)
+            cylinder(dynamicValues.arrowWidth, nextLayerXPosition - dynamicValues.defaultSpaceBetweenLayers / 2 - dynamicValues.arrowHeight / 2);
         else
-            cylinder(dynamicValues.arrowWidth, nextLayerXPosition / 2 - dynamicValues.arrowHeight / 2);
+            cylinder(dynamicValues.arrowWidth, nextLayerXPosition / 2 - dynamicValues.arrowHeight);
         pop();
-        if (nextLayerXPosition <= nextLayer.spaceBetweenLayers) {
-            translate((nextLayerXPosition / 4) -0.1, 0, 0);
+        if (nextLayerXPosition <= dynamicValues.defaultSpaceBetweenLayers) {
+            translate((nextLayerXPosition / 4) - 0.1, 0, 0);
             rotateZ(-90);
             fill(0);
             cone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
@@ -108,7 +108,7 @@ function drawArrowForArrow(layer, array) {
         } else if (nextLayer.prevLayers.length > 1) {
             push();
             let positionX = (nextLayer.centerPosition[0] - nextLayer.shape[0] / 2) - (layer.centerPosition[0] + layer.shape[0] / 2) +
-                ((nextLayer.centerPosition[0] - nextLayer.spaceBetweenLayers - nextLayer.shape[0] / 2) -
+                ((nextLayer.centerPosition[0] - dynamicValues.defaultSpaceBetweenLayers - nextLayer.shape[0] / 2) -
                     (layer.centerPosition[0] + layer.shape[0] / 2));
             let positionY = (nextLayer.centerPosition[2]) - (layer.centerPosition[2]);
 
@@ -133,15 +133,15 @@ function drawArrowRecursiveLayer(layer) {
     color[1] = 150
     push();
 
-    translate((layer.shape[0] / 2 + (layer.spaceBetweenLayers - 0.5) / 4), 0, 1);
+    translate((layer.shape[0] / 2 + (dynamicValues.defaultSpaceBetweenLayers - 0.5) / 4), 0, 1);
     push();
     angleMode(DEGREES);
     rotateZ(90);
     fill(color);
-    cylinder(dynamicValues.arrowWidth, (layer.spaceBetweenLayers - 0.5) / 2);
+    cylinder(dynamicValues.arrowWidth, (dynamicValues.defaultSpaceBetweenLayers - 0.5) / 2);
     pop();
 
-    translate((layer.spaceBetweenLayers - 0.5) / 4, 0, (layer.shape[2] / 2 + 1) / 2);
+    translate((dynamicValues.defaultSpaceBetweenLayers - 0.5) / 4, 0, (layer.shape[2] / 2 + 1) / 2);
 
     push();
     rotateZ(90);
@@ -150,15 +150,15 @@ function drawArrowRecursiveLayer(layer) {
     cylinder(dynamicValues.arrowWidth, layer.shape[2] / 2 + 1);
     pop();
 
-    translate(-((layer.spaceBetweenLayers - 0.5) + layer.shape[0]) / 2, 0, (layer.shape[2] / 2 + 1) / 2);
+    translate(-((dynamicValues.defaultSpaceBetweenLayers - 0.5) + layer.shape[0]) / 2, 0, (layer.shape[2] / 2 + 1) / 2);
 
     push();
     rotateZ(90);
     fill(color);
-    cylinder(dynamicValues.arrowWidth, (layer.spaceBetweenLayers - 0.5) + layer.shape[0]);
+    cylinder(dynamicValues.arrowWidth, (dynamicValues.defaultSpaceBetweenLayers - 0.5) + layer.shape[0]);
     pop();
 
-    translate(-((layer.spaceBetweenLayers - 0.5) + layer.shape[0]) / 2, 0, -(layer.shape[2] / 2 + 1) / 2);
+    translate(-((dynamicValues.defaultSpaceBetweenLayers - 0.5) + layer.shape[0]) / 2, 0, -(layer.shape[2] / 2 + 1) / 2);
 
     push();
     rotateZ(90);
@@ -167,16 +167,16 @@ function drawArrowRecursiveLayer(layer) {
     cylinder(dynamicValues.arrowWidth, layer.shape[2] / 2 + 1);
     pop();
 
-    translate((layer.spaceBetweenLayers - 0.5) / 4 - 0.25, 0, -(layer.shape[2] / 2 + 1) / 2);
+    translate((dynamicValues.defaultSpaceBetweenLayers - 0.5) / 4 - 0.25, 0, -(layer.shape[2] / 2 + 1) / 2);
 
     push();
     angleMode(DEGREES);
     rotateZ(90);
     fill(color);
-    cylinder(dynamicValues.arrowWidth, (layer.spaceBetweenLayers - 0.5) / 2 - 0.5);
+    cylinder(dynamicValues.arrowWidth, (dynamicValues.defaultSpaceBetweenLayers - 0.5) / 2 - 0.5);
     pop();
 
-    translate(((layer.spaceBetweenLayers + 0.5) / 4) - dynamicValues.arrowHeight / 2 - 0.1, 0, 0);
+    translate(((dynamicValues.defaultSpaceBetweenLayers + 0.5) / 4) - dynamicValues.arrowHeight / 2 - 0.1, 0, 0);
 
     rotateZ(-90);
     fill(color);
