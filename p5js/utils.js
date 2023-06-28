@@ -210,11 +210,13 @@ function selectedText() {
 
         let height = 0;
         if( mouseY - 7 - paragraphs.offsetHeight < 0 ){
-            height = paragraphs.offsetHeight/2
+            height = mouseY + 7 + paragraphs.offsetHeight/2;
+            paragraphs.className = 'bubble-top';
         } else {
             height =  mouseY - 7 - paragraphs.offsetHeight/2;
+            paragraphs.className = 'bubble-bottom';
         }
-        paragraphs.style.top = (height).toString() + 'px';
+        paragraphs.style.top = height.toString() + 'px';
     }
 }
 
@@ -257,7 +259,7 @@ function getAllNextLayers(layer, array) {
 }
 
 function settingsBehaviour(){
-    const settingsForm = document.getElementById('settingsForm');
+    const saveSettingsButton = document.getElementById('saveSettings');
     const settingsCloseButton = document.getElementById('settingsCloseButton');
     const settingsPopup = document.getElementById('settingsPopup');
 
@@ -265,7 +267,7 @@ function settingsBehaviour(){
         settingsPopup.style.display = 'none';
     });
 
-    settingsForm.addEventListener('submit', (event) => {
+    saveSettingsButton.addEventListener('click', (event) => {
         event.preventDefault();
         updateValues();
         layersChanged = true;
@@ -290,6 +292,210 @@ function settingsColorsBehaviour(){
     settingsColorsSaveButton.addEventListener('click', (event) => {
         event.preventDefault();
         updateColors();
+    });
+
+    const resetDenseButton = document.getElementById('resetDense');
+    resetDenseButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetDense();
+    });
+
+    const resetFlattenButton = document.getElementById('resetFlatten');
+    resetFlattenButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetFlatten();
+    });
+
+    const resetDropoutButton = document.getElementById('resetDropout');
+    resetDropoutButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetDropout();
+    });
+
+    const resetInputButton = document.getElementById('resetInput');
+    resetInputButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetInput();
+    });
+
+    const resetConcatenateButton = document.getElementById('resetConcatenate');
+    resetConcatenateButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetConcatenate();
+    });
+
+    const resetAddButton = document.getElementById('resetAdd');
+    resetAddButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetAdd();
+    });
+
+    const resetLSTMButton = document.getElementById('resetLSTM');
+    resetLSTMButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetLSTM();
+    });
+
+    const resetGRUButton = document.getElementById('resetGRU');
+    resetGRUButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetGRU();
+    });
+
+    const resetSimpleRNNButton = document.getElementById('resetSimpleRNN');
+    resetSimpleRNNButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetSimpleRNN();
+    });
+
+    const resetTimeDistributedButton = document.getElementById('resetTimeDistributed');
+    resetTimeDistributedButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetTimeDistributed();
+    });
+
+    const resetBidirectionalButton = document.getElementById('resetBidirectional');
+    resetBidirectionalButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetBidiretional();
+    });
+
+    const resetBaseRNNButton = document.getElementById('resetBaseRNN');
+    resetBaseRNNButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetBaseRNN();
+    });
+
+    const resetConvLSTM1DButton = document.getElementById('resetConvLSTM1D');
+    resetConvLSTM1DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetConvLSTM1D();
+    });
+
+    const resetConvLSTM2DButton = document.getElementById('resetConvLSTM2D');
+    resetConvLSTM2DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetConvLSTM2D();
+    });
+
+    const resetConvLSTM3DButton = document.getElementById('resetConvLSTM3D');
+    resetConvLSTM3DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetConvLSTM3D();
+    });
+
+    const resetConv1DButton = document.getElementById('resetConv1D');
+    resetConv1DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetConv1D();
+    });
+
+    const resetConv2DButton = document.getElementById('resetConv2D');
+    resetConv2DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetConv2D();
+    });
+
+    const resetConv3DButton = document.getElementById('resetConv3D');
+    resetConv3DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetConv3D();
+    });
+
+    const resetMaxPooling1DButton = document.getElementById('resetMaxPooling1D');
+    resetMaxPooling1DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetMaxPooling1D();
+    });
+
+    const resetMaxPooling2DButton = document.getElementById('resetMaxPooling2D');
+    resetMaxPooling2DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetMaxPooling2D();
+    });
+
+    const resetMaxPooling3DButton = document.getElementById('resetMaxPooling3D');
+    resetMaxPooling3DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetMaxPooling3D();
+    });
+
+    const resetAveragePooling1DButton = document.getElementById('resetAveragePooling1D');
+    resetAveragePooling1DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetAveragePooling1D();
+    });
+
+    const resetAveragePooling2DButton = document.getElementById('resetAveragePooling2D');
+    resetAveragePooling2DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetAveragePooling2D();
+    });
+
+    const resetAveragePooling3DButton = document.getElementById('resetAveragePooling3D');
+    resetAveragePooling3DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetAveragePooling3D();
+    });
+
+    const resetGlobalMaxPooling1DButton = document.getElementById('resetGlobalMaxPooling1D');
+    resetGlobalMaxPooling1DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetGlobalMaxPooling1D();
+    });
+
+    const resetGlobalMaxPooling2DButton = document.getElementById('resetGlobalMaxPooling2D');
+    resetGlobalMaxPooling2DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetGlobalMaxPooling2D();
+    });
+
+    const resetGlobalMaxPooling3DButton = document.getElementById('resetGlobalMaxPooling3D');
+    resetGlobalMaxPooling3DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetGlobalMaxPooling3D();
+    });
+
+    const resetGlobalAveragePooling1DButton = document.getElementById('resetGlobalAveragePooling1D');
+    resetGlobalAveragePooling1DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetGlobalAveragePooling1D();
+    });
+
+    const resetGlobalAveragePooling2DButton = document.getElementById('resetGlobalAveragePooling2D');
+    resetGlobalAveragePooling2DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetGlobalAveragePooling2D();
+    });
+
+    const resetGlobalAveragePooling3DButton = document.getElementById('resetGlobalAveragePooling3D');
+    resetGlobalAveragePooling3DButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetGlobalAveragePooling3D();
+    });
+
+    const resetReshapeButton = document.getElementById('resetReshape');
+    resetReshapeButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetReshape();
+    });
+
+    const resetDefaultButton = document.getElementById('resetDefault');
+    resetDefaultButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetDefault();
+    });
+
+    const resetBlockButton = document.getElementById('resetBlock');
+    resetBlockButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetBlock();
+    });
+
+    const resetSelectedButton = document.getElementById('resetSelected');
+    resetSelectedButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetSelected();
     });
 }
 
@@ -448,4 +654,8 @@ function componentToHex(c) {
 
 function rgbToHex(r, g, b) {
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+function equalsCheck(a, b) {
+    return JSON.stringify(a) === JSON.stringify(b);
 }

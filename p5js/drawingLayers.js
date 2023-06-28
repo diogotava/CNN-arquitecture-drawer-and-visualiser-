@@ -2,14 +2,10 @@ function drawLayer(layer, i, array) {
     if (layer.shouldBeDrawn || layer.shouldBeBlock) {
         let centerPosition = [...layer.centerPosition]
 
+        let shape = layer.getShape();
+
         mPush();
         mTranslate(centerPosition[0], centerPosition[1], centerPosition[2]);
-
-        if (layer.shape.length === 0) {
-            layer.shape[0] = dynamicValues.minX;
-            layer.shape[1] = dynamicValues.minZY;
-            layer.shape[2] = dynamicValues.minZY;
-        }
 
         if (layer.shouldBeDrawn) {
             let id = layer.id + 1;
@@ -29,7 +25,7 @@ function drawLayer(layer, i, array) {
                 color = dynamicValues.colors.Block;
             }
             mTexture(color[0], color[1], color[2]);
-            mBox(id, layer.shape[0], layer.shape[1], layer.shape[2]);
+            mBox(id, shape[0], shape[1], shape[2]);
             drawArrowForArrow(layer, array);
         }
         mPop();

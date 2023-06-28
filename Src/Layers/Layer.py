@@ -67,6 +67,7 @@ class Layer:
         self.type = layer.__class__.__name__
         self.input_shape = get_shapes(layer, True, True)
         self.output_shape = get_shapes(layer, False, True)
+        self.invertedShape = layer.invertedShape
         self.computed_position = False
 
         self.previous_y_position = 0
@@ -89,20 +90,3 @@ class Layer:
 
     def getYPosition(self):
         return self.center_position[2]
-
-    def draw(self, color_code=None):
-        if self.selected:
-            if color_code != None:
-                color = color_code
-                code = True
-            else:
-                color = [0.0, 0.0, 255.0]
-                code = False
-        else:
-            if color_code != None:
-                code = True
-                color = color_code
-            else:
-                color = self.color
-                code = False
-        cube(self.shape, self.center_position, color, code)

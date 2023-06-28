@@ -16,7 +16,7 @@ function drawArrow(halfShape, height) {
 }
 
 function drawFirstPartOfArrowMultiple(layer, xPosition) {
-    translate((layer.shape[0] / 2) + (xPosition / 4), 0, 0);
+    translate((layer.getShape()[0] / 2) + (xPosition / 4), 0, 0);
 
     push();
     angleMode(DEGREES);
@@ -59,7 +59,7 @@ function drawArrowMultipleNextLayers(layer, xPosition) {
         let nextLayer = layers[nextLayerIndex];
 
         let nextLayerYPosition = (nextLayer.centerPosition[2]) - (layer.centerPosition[2]);
-        let nextLayerXPosition = (nextLayer.centerPosition[0] - nextLayer.shape[0] / 2) - (layer.centerPosition[0] + layer.shape[0] / 2);
+        let nextLayerXPosition = (nextLayer.centerPosition[0] - nextLayer.getShape()[0] / 2) - (layer.centerPosition[0] + layer.getShape()[0] / 2);
 
         translate((nextLayerXPosition / 4), 0, nextLayerYPosition / 2);
 
@@ -101,15 +101,15 @@ function drawArrowForArrow(layer, array) {
         let nextLayer = array[layer.nextLayers[0]];
         if (nextLayer.prevLayers.length <= 1) {
             push();
-            let height = (nextLayer.centerPosition[0] - nextLayer.shape[0] / 2) - (layer.centerPosition[0] + layer.shape[0] / 2);
-            let halfShape = layer.shape[0] / 2;
+            let height = (nextLayer.centerPosition[0] - nextLayer.getShape()[0] / 2) - (layer.centerPosition[0] + layer.getShape()[0] / 2);
+            let halfShape = layer.getShape()[0] / 2;
             drawArrow(halfShape, height);
             pop();
         } else if (nextLayer.prevLayers.length > 1) {
             push();
-            let positionX = (nextLayer.centerPosition[0] - nextLayer.shape[0] / 2) - (layer.centerPosition[0] + layer.shape[0] / 2) +
-                ((nextLayer.centerPosition[0] - dynamicValues.defaultSpaceBetweenLayers - nextLayer.shape[0] / 2) -
-                    (layer.centerPosition[0] + layer.shape[0] / 2));
+            let positionX = (nextLayer.centerPosition[0] - nextLayer.getShape()[0] / 2) - (layer.centerPosition[0] + layer.getShape()[0] / 2) +
+                ((nextLayer.centerPosition[0] - dynamicValues.defaultSpaceBetweenLayers - nextLayer.getShape()[0] / 2) -
+                    (layer.centerPosition[0] + layer.getShape()[0] / 2));
             let positionY = (nextLayer.centerPosition[2]) - (layer.centerPosition[2]);
 
             drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, positionX, positionY);
@@ -118,7 +118,7 @@ function drawArrowForArrow(layer, array) {
     } else if (layer.nextLayers.length > 1) {
         push();
         smooth();
-        let positionX = (array[layer.nextLayers[0]].centerPosition[0] - array[layer.nextLayers[0]].shape[0] / 2) - (layer.centerPosition[0] + layer.shape[0] / 2);
+        let positionX = (array[layer.nextLayers[0]].centerPosition[0] - array[layer.nextLayers[0]].getShape()[0] / 2) - (layer.centerPosition[0] + layer.getShape()[0] / 2);
         drawArrowMultipleNextLayers(layer, positionX);
 
     }
@@ -133,7 +133,7 @@ function drawArrowRecursiveLayer(layer) {
     color[1] = 150
     push();
 
-    translate((layer.shape[0] / 2 + (dynamicValues.defaultSpaceBetweenLayers - 0.5) / 4), 0, 1);
+    translate((layer.getShape()[0] / 2 + (dynamicValues.defaultSpaceBetweenLayers - 0.5) / 4), 0, 1);
     push();
     angleMode(DEGREES);
     rotateZ(90);
@@ -141,33 +141,33 @@ function drawArrowRecursiveLayer(layer) {
     cylinder(dynamicValues.arrowWidth, (dynamicValues.defaultSpaceBetweenLayers - 0.5) / 2);
     pop();
 
-    translate((dynamicValues.defaultSpaceBetweenLayers - 0.5) / 4, 0, (layer.shape[2] / 2 + 1) / 2);
+    translate((dynamicValues.defaultSpaceBetweenLayers - 0.5) / 4, 0, (layer.getShape()[2] / 2 + 1) / 2);
 
     push();
     rotateZ(90);
     rotateX(90);
     fill(color);
-    cylinder(dynamicValues.arrowWidth, layer.shape[2] / 2 + 1);
+    cylinder(dynamicValues.arrowWidth, layer.getShape()[2] / 2 + 1);
     pop();
 
-    translate(-((dynamicValues.defaultSpaceBetweenLayers - 0.5) + layer.shape[0]) / 2, 0, (layer.shape[2] / 2 + 1) / 2);
+    translate(-((dynamicValues.defaultSpaceBetweenLayers - 0.5) + layer.getShape()[0]) / 2, 0, (layer.getShape()[2] / 2 + 1) / 2);
 
     push();
     rotateZ(90);
     fill(color);
-    cylinder(dynamicValues.arrowWidth, (dynamicValues.defaultSpaceBetweenLayers - 0.5) + layer.shape[0]);
+    cylinder(dynamicValues.arrowWidth, (dynamicValues.defaultSpaceBetweenLayers - 0.5) + layer.getShape()[0]);
     pop();
 
-    translate(-((dynamicValues.defaultSpaceBetweenLayers - 0.5) + layer.shape[0]) / 2, 0, -(layer.shape[2] / 2 + 1) / 2);
+    translate(-((dynamicValues.defaultSpaceBetweenLayers - 0.5) + layer.getShape()[0]) / 2, 0, -(layer.getShape()[2] / 2 + 1) / 2);
 
     push();
     rotateZ(90);
     rotateX(90);
     fill(color);
-    cylinder(dynamicValues.arrowWidth, layer.shape[2] / 2 + 1);
+    cylinder(dynamicValues.arrowWidth, layer.getShape()[2] / 2 + 1);
     pop();
 
-    translate((dynamicValues.defaultSpaceBetweenLayers - 0.5) / 4 - 0.25, 0, -(layer.shape[2] / 2 + 1) / 2);
+    translate((dynamicValues.defaultSpaceBetweenLayers - 0.5) / 4 - 0.25, 0, -(layer.getShape()[2] / 2 + 1) / 2);
 
     push();
     angleMode(DEGREES);
