@@ -58,72 +58,115 @@
             <h2>Settings</h2>
             <div id="settingsDiv">
                 <form id="settingsForm">
+                    <fieldset id="upload-settings-file">
+                        <form>
+                            <label id="inputSettingsFileLabel" class="button-12" style="display: inline;">
+                                <input type="file" id="settings-file" name="settings-file" accept=".json"/>
+                                <i class="fa fa-cloud-upload"></i>
+                                <p id="settingsFileLabel" style="display: inline; font-size: 14px;">Settings File</p>
+                            </label>
+                            <button class="button-12" id="buttonUploadSettingsFile" type="submit">Upload</button>
+                        </form>
+                        <a class="button-12" href="template.json" download="package.json">
+                            <i class="fa fa-cloud-download"></i>
+                            Template
+                        </a>
+                    </fieldset>
+
                     <fieldset>
                         <legend>Camera Position</legend>
-                        <label for="camX">X</label>
-                        <input type="number" class="fieldsetInput" step="1" id="camX" name="camX" value="500">
+                        <form>
+                            <label for="camX">X</label>
+                            <input type="number" class="fieldsetInput" step="1" id="camX" name="camX" value="500">
 
-                        <label for="camY">Y</label>
-                        <input type="number" class="fieldsetInput" step="1" id="camY" name="camY" value="-500">
+                            <label for="camY">Y</label>
+                            <input type="number" class="fieldsetInput" step="1" id="camY" name="camY" value="-500">
 
-                        <label for="camZ">Z</label>
-                        <input type="number" class="fieldsetInput" step="1" id="camZ" name="camZ" value="400"><br>
+                            <label for="camZ">Z</label>
+                            <input type="number" class="fieldsetInput" step="1" id="camZ" name="camZ" value="400"><br>
 
-                        <legend>Look position</legend>
-                        <label for="lookX">X</label>
-                        <input type="number" class="fieldsetInput" step="1" id="lookX" name="lookX" value="500">
+                            <legend>Look position</legend>
+                            <label for="lookX">X</label>
+                            <input type="number" class="fieldsetInput" step="1" id="lookX" name="lookX" value="500">
 
-                        <label for="lookY">Y</label>
-                        <input type="number" class="fieldsetInput" step="1" id="lookY" name="lookY" value="0">
+                            <label for="lookY">Y</label>
+                            <input type="number" class="fieldsetInput" step="1" id="lookY" name="lookY" value="0">
 
-                        <label for="lookZ">Z</label>
-                        <input type="number" class="fieldsetInput" step="1" id="lookZ" name="lookZ" value="0">
+                            <label for="lookZ">Z</label>
+                            <input type="number" class="fieldsetInput" step="1" id="lookZ" name="lookZ" value="0"><br>
+
+                            <input type="reset" class="button-12" value="Reset">
+                        </form>
                     </fieldset>
 
                     <fieldset>
                         <legend>Arrow</legend>
-                        <label for="arrowWidth">Width</label>
-                        <input type="number" class="fieldsetInput" step="0.1" id="arrowWidth" name="arrowWidth" value="0.4">
+                        <form>
+                            <label for="arrowWidth">Width</label>
+                            <input type="number" class="fieldsetInput" step="0.1" id="arrowWidth" name="arrowWidth" value="0.4">
 
-                        <label for="arrowHeight">Height</label>
-                        <input type="number" class="fieldsetInput" id="arrowHeight" name="arrowHeight" value="3">
+                            <label for="arrowHeight">Height</label>
+                            <input type="number" class="fieldsetInput" id="arrowHeight" name="arrowHeight" value="3">
 
-                        <label for="arrowPointRadius">Radius</label>
-                        <input type="number" class="fieldsetInput" step="0.1" id="arrowPointRadius" name="arrowPointRadius" value="1.5">
+                            <label for="arrowPointRadius">Radius</label>
+                            <input type="number" class="fieldsetInput" step="0.1" id="arrowPointRadius" name="arrowPointRadius" value="1.5"><br>
+
+                            <input type="reset" class="button-12" value="Reset">
+                        </form>
                     </fieldset>
 
                     <fieldset>
                         <legend>Sensitivity</legend>
-                        <label for="sensitivityX">X</label>
-                        <input type="number" class="fieldsetInput" step="0.0001" id="sensitivityX" name="sensitivityX" value="1">
+                        <form>
+                            <label for="sensitivityX">X</label>
+                            <input type="number" class="fieldsetInput" step="0.0001" id="sensitivityX" name="sensitivityX" value="1">
 
-                        <label for="sensitivityY">Y</label>
-                        <input type="number" class="fieldsetInput" step="0.0001" id="sensitivityY" name="sensitivityY" value="1">
+                            <label for="sensitivityY">Y</label>
+                            <input type="number" class="fieldsetInput" step="0.0001" id="sensitivityY" name="sensitivityY" value="1">
 
-                        <label for="sensitivityZ">Z</label>
-                        <input type="number" class="fieldsetInput" step="0.0001" id="sensitivityZ" name="sensitivityZ" value="0.01"><br>
+                            <label for="sensitivityZ">Z</label>
+                            <input type="number" class="fieldsetInput" step="0.0001" id="sensitivityZ" name="sensitivityZ" value="0.01"><br>
+
+                            <input type="reset" class="button-12" value="Reset">
+                        </form>
                     </fieldset>
 
-                    <label for="dimensionType">Layers dimensions:</label>
-                    <select class="settingsFormSelect" name="dimensionType" id="dimensionType" onchange="layersChanged = true;">
-                        <option>Exponential</option>
-                        <option>Real</option>
-                        <option>Linear</option>
-                    </select>
+                    <form>
+                        <label for="dimensionType">Layers dimensions:</label>
+                        <select class="settingsFormSelect" name="dimensionType" id="dimensionType" onchange="layersChanged = true;">
+                            <option>Exponential</option>
+                            <option>Real</option>
+                            <option>Linear</option>
+                        </select>
 
-                    <label for="defaultSpaceBetweenLayers">Space between layers:</label>
-                    <input type="number" class="settingsFormInput" id="defaultSpaceBetweenLayers" name="defaultSpaceBetweenLayers" value="10"><br>
+                        <input type="reset" class="button-12" value="Reset">
+                    </form>
 
-                    <label for="defaultLateralSpaceBetweenLayers">Lateral space between layers:</label>
-                    <input type="number" class="settingsFormInput" id="defaultLateralSpaceBetweenLayers" name="defaultLateralSpaceBetweenLayers"
-                        value="10"><br>
+                    <form>
+                        <label for="defaultSpaceBetweenLayers">Space between layers:</label>
+                        <input type="number" class="settingsFormInput" id="defaultSpaceBetweenLayers" name="defaultSpaceBetweenLayers" value="10">
 
-                    <label for="blockSize">Block size:</label>
-                    <input type="number" class="settingsFormInput" id="blockSize" name="blockSize" value="10"><br>
+                        <input type="reset" class="button-12" value="Reset"><br>
+                    </form>
+
+                    <form>
+                        <label for="defaultLateralSpaceBetweenLayers">Lateral space between layers:</label>
+                        <input type="number" class="settingsFormInput" id="defaultLateralSpaceBetweenLayers" name="defaultLateralSpaceBetweenLayers"
+                            value="10">
+
+                        <input type="reset" class="button-12" value="Reset"><br>
+                    </form>
+
+                    <form>
+                        <label for="blockSize">Block size:</label>
+                        <input type="number" class="settingsFormInput" id="blockSize" name="blockSize" value="10">
+
+                        <input type="reset" class="button-12" value="Reset"><br>
+                    </form>
 
                     <button class="button-12" id="settingsColorsButton">Open layer color Settings</button>
 
-                    <input type="reset" class="button-12" value="Reset">
+                    <input type="reset" class="button-12" value="Reset" value="Reset">
                 </form>
             </div>
             <button class="button-12" type="submit" id="saveSettings">Save</button>
@@ -133,13 +176,13 @@
 
         <div id="settingsColorsPopup">
             <h2>Layers Colors Settings</h2>
+            <div class="checkbox-wrapper-14">
+                <label for="resetPrevious" style="margin-right: 5px;">Reset to the default color</label>
+                <input id="resetPrevious" type="checkbox" class="switch">
+                <label for="resetPrevious">Reset to the color previous saving</label>
+            </div>
             <div id="settingsColorsDiv">
                 <form id="settingsColorsForm">
-                    <div class="checkbox-wrapper-14">
-                        <label for="resetPrevious" style="margin-right: 5px;">Reset to the default color</label>
-                        <input id="resetPrevious" type="checkbox" class="switch">
-                        <label for="resetPrevious">Reset to the color previous saving</label>
-                    </div>
                     <form>
                         <label class="colorLabel" for="Dense">Dense:</label>
                         <input type="color" id="Dense" name="Dense" value="#ff0000">
