@@ -52,12 +52,12 @@ function resetDynamicValues() {
         "sensitivityZ": Number(document.getElementById('sensitivityZ').defaultValue),
         "minX": 5,
         "minZY": 5,
-        "maxX": 400,
-        "maxZY": 200,
+        "maxX": Number(document.getElementById('maxLength').defaultValue),
+        "maxZY": Number(document.getElementById('maxWidth').defaultValue),
         "minWindowSize": 400,
         "blocks": [],
-        "defaultSpaceBetweenLayers": Number(document.getElementById('defaultSpaceBetweenLayers').defaultValue),
-        "defaultLateralSpaceBetweenLayers": Number(document.getElementById('defaultLateralSpaceBetweenLayers').defaultValue),
+        "defaultSpaceBetweenLayers": Number(document.getElementById('spaceBetweenLayers').defaultValue),
+        "defaultLateralSpaceBetweenLayers": Number(document.getElementById('lateralSpaceBetweenLayers').defaultValue),
         "blockSize": Number(document.getElementById('blockSize').defaultValue),
         "selectedLayerID": -1,
         "bPressed": false
@@ -74,44 +74,50 @@ function updateValues() {
     dynamicValues.sensitivityX = Number(document.getElementById('sensitivityX').value);
     dynamicValues.sensitivityY = Number(document.getElementById('sensitivityY').value);
     dynamicValues.sensitivityZ = Number(document.getElementById('sensitivityZ').value);
-    dynamicValues.defaultSpaceBetweenLayers = Number(document.getElementById('defaultSpaceBetweenLayers').value);
+    dynamicValues.maxX = Number(document.getElementById('maxLength').value);
+    dynamicValues.maxZY = Number(document.getElementById('maxWidth').value);
+    dynamicValues.defaultSpaceBetweenLayers = Number(document.getElementById('spaceBetweenLayers').value);
     document.getElementById('arrowHeight').max = dynamicValues.defaultSpaceBetweenLayers / 2 - 1;
-    dynamicValues.defaultLateralSpaceBetweenLayers = Number(document.getElementById('defaultLateralSpaceBetweenLayers').value);
+    dynamicValues.defaultLateralSpaceBetweenLayers = Number(document.getElementById('lateralSpaceBetweenLayers').value);
     dynamicValues.blockSize = Number(document.getElementById('blockSize').value);
+    layersChanged = true;
 }
 
 function updateCameraValues() {
-    dynamicValues.camX = document.getElementById('camX').value;
-    dynamicValues.camY = document.getElementById('camY').value;
-    dynamicValues.camZ = document.getElementById('camZ').value;
-    dynamicValues.lookX = document.getElementById('lookX').value;
-    dynamicValues.lookY = document.getElementById('lookY').value;
-    dynamicValues.lookZ = document.getElementById('lookZ').value;
+    dynamicValues.camX = !isNaN(Number(document.getElementById('camX').value)) ? Number(document.getElementById('camX').value) : 0;
+    dynamicValues.camY = !isNaN(Number(document.getElementById('camY').value)) ? Number(document.getElementById('camY').value) : 0;
+    dynamicValues.camZ = !isNaN(Number(document.getElementById('camZ').value)) ? Number(document.getElementById('camZ').value) : 0;
+    dynamicValues.lookX = !isNaN(Number(document.getElementById('lookX').value)) ? Number(document.getElementById('lookX').value) : 0;
+    dynamicValues.lookY = !isNaN(Number(document.getElementById('lookY').value)) ? Number(document.getElementById('lookY').value) : 0;
+    dynamicValues.lookZ = !isNaN(Number(document.getElementById('lookZ').value)) ? Number(document.getElementById('lookZ').value) : 0;
 }
 
 function updateCameraShownValues() {
-    document.getElementById('camX').value = dynamicValues.camX;
-    document.getElementById('camY').value = dynamicValues.camY;
-    document.getElementById('camZ').value = dynamicValues.camZ;
-    document.getElementById('lookX').value = dynamicValues.lookX;
-    document.getElementById('lookY').value = dynamicValues.lookY;
-    document.getElementById('lookZ').value = dynamicValues.lookZ;
+    document.getElementById('camX').value = !isNaN(Math.round(dynamicValues.camX)) ? Math.round(dynamicValues.camX) : 0;
+    document.getElementById('camY').value = !isNaN(Math.round(dynamicValues.camY)) ? Math.round(dynamicValues.camY) : 0;
+    document.getElementById('camZ').value = !isNaN(Math.round(dynamicValues.camZ)) ? Math.round(dynamicValues.camZ) : 0;
+    document.getElementById('lookX').value = !isNaN(Math.round(dynamicValues.lookX)) ? Math.round(dynamicValues.lookX) : 0;
+    document.getElementById('lookY').value = !isNaN(Math.round(dynamicValues.lookY)) ? Math.round(dynamicValues.lookY) : 0;
+    document.getElementById('lookZ').value = !isNaN(Math.round(dynamicValues.lookZ)) ? Math.round(dynamicValues.lookZ) : 0;
 }
 
 function updateShownValues() {
+    updateCameraShownValues();
+    updateColorsShownValues();
     document.getElementById('arrowWidth').value = dynamicValues.arrowWidth;
     document.getElementById('arrowHeight').value = dynamicValues.arrowHeight;
     document.getElementById('arrowPointRadius').value = dynamicValues.arrowPointRadius;
     document.getElementById('sensitivityX').value = dynamicValues.sensitivityX;
     document.getElementById('sensitivityY').value = dynamicValues.sensitivityY;
     document.getElementById('sensitivityZ').value = dynamicValues.sensitivityZ;
-    document.getElementById('defaultSpaceBetweenLayers').value = dynamicValues.defaultSpaceBetweenLayers;
-    document.getElementById('defaultLateralSpaceBetweenLayers').value = dynamicValues.defaultLateralSpaceBetweenLayers;
+    document.getElementById('maxLength').value = dynamicValues.maxX;
+    document.getElementById('maxWidth').value = dynamicValues.maxZY;
+    document.getElementById('spaceBetweenLayers').value = dynamicValues.defaultSpaceBetweenLayers;
+    document.getElementById('lateralSpaceBetweenLayers').value = dynamicValues.defaultLateralSpaceBetweenLayers;
     document.getElementById('blockSize').value = dynamicValues.blockSize;
 }
 
 function resetValues() {
-    updateCameraShownValues();
-    updateShownValues();
     resetColors();
+    updateShownValues();
 }

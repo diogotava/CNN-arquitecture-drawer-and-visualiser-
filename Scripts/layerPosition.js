@@ -10,6 +10,13 @@ function isTheEndOfBlock(layerId) {
     return dynamicValues.blocks.some((block) => block.endLayer === layerId);
 }
 
+function getBlockColor(layers, layerId){
+    if (isTheBeginningOfBlock(layerId))
+        return dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.initialLayer === layerId)].getColor();
+    else
+        return undefined;
+}
+
 function getEndBlockLayer(layers, layerId) {
     if (isTheBeginningOfBlock(layerId))
         return layers[dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.initialLayer === layerId)].endLayer]
@@ -186,7 +193,7 @@ function getLayersPosition(layers) {
 
 function getLayerPosition(layer, layers) {
     let isBeginningBlock = isTheBeginningOfBlock(layer.id);
-    let endBlockLayer = getEndBlockLayer(layers, layer.id);
+    let endBlockLayer =  getEndBlockLayer(layers, layer.id);
     let isInsideBlock = layer.isLayerInsideBlock();
 
     let xPosition = getXPosition(layer, layers);

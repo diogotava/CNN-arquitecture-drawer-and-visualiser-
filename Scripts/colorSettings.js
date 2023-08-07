@@ -380,6 +380,43 @@ function allGlobalAveragePoolingSameColor(){
     }
 }
 
+function updateColorsShownValues(){
+    document.getElementById('Conv1D').value                 = rgbToHex(dynamicValues.colors.Conv1D[0], dynamicValues.colors.Conv1D[1], dynamicValues.colors.Conv1D[2]);
+    document.getElementById('Conv2D').value                 = rgbToHex(dynamicValues.colors.Conv2D[0], dynamicValues.colors.Conv2D[1], dynamicValues.colors.Conv2D[2]);
+    document.getElementById('Conv3D').value                 = rgbToHex(dynamicValues.colors.Conv3D[0], dynamicValues.colors.Conv3D[1], dynamicValues.colors.Conv3D[2]);
+    document.getElementById('Dense').value                  = rgbToHex(dynamicValues.colors.Dense[0], dynamicValues.colors.Dense[1], dynamicValues.colors.Dense[2]);
+    document.getElementById('Flatten').value                = rgbToHex(dynamicValues.colors.Flatten[0], dynamicValues.colors.Flatten[1], dynamicValues.colors.Flatten[2]);
+    document.getElementById('Dropout').value                = rgbToHex(dynamicValues.colors.Dropout[0], dynamicValues.colors.Dropout[1], dynamicValues.colors.Dropout[2]);
+    document.getElementById('Input').value                  = rgbToHex(dynamicValues.colors.InputLayer[0], dynamicValues.colors.InputLayer[1], dynamicValues.colors.InputLayer[2]);
+    document.getElementById('Concatenate').value            = rgbToHex(dynamicValues.colors.Concatenate[0], dynamicValues.colors.Concatenate[1], dynamicValues.colors.Concatenate[2]);
+    document.getElementById('Add').value                    = rgbToHex(dynamicValues.colors.Add[0], dynamicValues.colors.Add[1], dynamicValues.colors.Add[2]);
+    document.getElementById('LSTM').value                   = rgbToHex(dynamicValues.colors.LSTM[0], dynamicValues.colors.LSTM[1], dynamicValues.colors.LSTM[2]);
+    document.getElementById('GRU').value                    = rgbToHex(dynamicValues.colors.GRU[0], dynamicValues.colors.GRU[1], dynamicValues.colors.GRU[2]);
+    document.getElementById('SimpleRNN').value              = rgbToHex(dynamicValues.colors.SimpleRNN[0], dynamicValues.colors.SimpleRNN[1], dynamicValues.colors.SimpleRNN[2]);
+    document.getElementById('TimeDistributed').value        = rgbToHex(dynamicValues.colors.TimeDistributed[0], dynamicValues.colors.TimeDistributed[1], dynamicValues.colors.TimeDistributed[2]);
+    document.getElementById('Bidirectional').value          = rgbToHex(dynamicValues.colors.Bidirectional[0], dynamicValues.colors.Bidirectional[1], dynamicValues.colors.Bidirectional[2]);
+    document.getElementById('ConvLSTM1D').value             = rgbToHex(dynamicValues.colors.ConvLSTM1D[0], dynamicValues.colors.ConvLSTM1D[1], dynamicValues.colors.ConvLSTM1D[2]);
+    document.getElementById('ConvLSTM2D').value             = rgbToHex(dynamicValues.colors.ConvLSTM2D[0], dynamicValues.colors.ConvLSTM2D[1], dynamicValues.colors.ConvLSTM2D[2]);
+    document.getElementById('ConvLSTM3D').value             = rgbToHex(dynamicValues.colors.ConvLSTM3D[0], dynamicValues.colors.ConvLSTM3D[1], dynamicValues.colors.ConvLSTM3D[2]);
+    document.getElementById('BaseRNN').value                = rgbToHex(dynamicValues.colors.BaseRNN[0], dynamicValues.colors.BaseRNN[1], dynamicValues.colors.BaseRNN[2]);
+    document.getElementById('MaxPooling1D').value           = rgbToHex(dynamicValues.colors.MaxPooling1D[0], dynamicValues.colors.MaxPooling1D[1], dynamicValues.colors.MaxPooling1D[2]);
+    document.getElementById('MaxPooling2D').value           = rgbToHex(dynamicValues.colors.MaxPooling2D[0], dynamicValues.colors.MaxPooling2D[1], dynamicValues.colors.MaxPooling2D[2]);
+    document.getElementById('MaxPooling3D').value           = rgbToHex(dynamicValues.colors.MaxPooling3D[0], dynamicValues.colors.MaxPooling3D[1], dynamicValues.colors.MaxPooling3D[2]);
+    document.getElementById('AveragePooling1D').value       = rgbToHex(dynamicValues.colors.AveragePooling1D[0], dynamicValues.colors.AveragePooling1D[1], dynamicValues.colors.AveragePooling1D[2]);
+    document.getElementById('AveragePooling2D').value       = rgbToHex(dynamicValues.colors.AveragePooling2D[0], dynamicValues.colors.AveragePooling2D[1], dynamicValues.colors.AveragePooling2D[2]);
+    document.getElementById('AveragePooling3D').value       = rgbToHex(dynamicValues.colors.AveragePooling3D[0], dynamicValues.colors.AveragePooling3D[1], dynamicValues.colors.AveragePooling3D[2]);
+    document.getElementById('GlobalMaxPooling1D').value     = rgbToHex(dynamicValues.colors.GlobalMaxPooling1D[0], dynamicValues.colors.GlobalMaxPooling1D[1], dynamicValues.colors.GlobalMaxPooling1D[2]);
+    document.getElementById('GlobalMaxPooling2D').value     = rgbToHex(dynamicValues.colors.GlobalMaxPooling2D[0], dynamicValues.colors.GlobalMaxPooling2D[1], dynamicValues.colors.GlobalMaxPooling2D[2]);
+    document.getElementById('GlobalMaxPooling3D').value     = rgbToHex(dynamicValues.colors.GlobalMaxPooling3D[0], dynamicValues.colors.GlobalMaxPooling3D[1], dynamicValues.colors.GlobalMaxPooling3D[2]);
+    document.getElementById('GlobalAveragePooling1D').value = rgbToHex(dynamicValues.colors.GlobalAveragePooling1D[0], dynamicValues.colors.GlobalAveragePooling1D[1], dynamicValues.colors.GlobalAveragePooling1D[2]);
+    document.getElementById('GlobalAveragePooling2D').value = rgbToHex(dynamicValues.colors.GlobalAveragePooling2D[0], dynamicValues.colors.GlobalAveragePooling2D[1], dynamicValues.colors.GlobalAveragePooling2D[2]);
+    document.getElementById('GlobalAveragePooling3D').value = rgbToHex(dynamicValues.colors.GlobalAveragePooling3D[0], dynamicValues.colors.GlobalAveragePooling3D[1], dynamicValues.colors.GlobalAveragePooling3D[2]);
+    document.getElementById('Reshape').value                = rgbToHex(dynamicValues.colors.Reshape[0], dynamicValues.colors.Reshape[1], dynamicValues.colors.Reshape[2]);
+    document.getElementById('Default').value                = rgbToHex(dynamicValues.colors.Default[0], dynamicValues.colors.Default[1], dynamicValues.colors.Default[2]);
+    document.getElementById('Block').value                  = rgbToHex(dynamicValues.colors.Block[0], dynamicValues.colors.Block[1], dynamicValues.colors.Block[2]);
+    document.getElementById('Selected').value               = rgbToHex(dynamicValues.colors.Selected[0], dynamicValues.colors.Selected[1], dynamicValues.colors.Selected[2]);
+}
+
 function resetColors() {
     resetConv1D();
     resetConv2D();

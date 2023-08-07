@@ -9,6 +9,16 @@ class Block {
         }
 
         this.name = "";
+        this.color = dynamicValues.colors.Block;
+    }
+
+    setColor(color){
+        if(color.length === 3)
+            this.color = [...color];
+    }
+
+    getColor(){
+        return this.color;
     }
 
     setName(name){

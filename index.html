@@ -10,17 +10,17 @@
     <script src="https://kit.fontawesome.com/298fd45b46.js" crossorigin="anonymous"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="sketch.js"></script>
-    <script src="default_values.js"></script>
-    <script src="Objects/Layer.js"></script>
-    <script src="Objects/Block.js"></script>
-    <script src="utils.js"></script>
-    <script src="colorSettings.js"></script>
-    <script src="layerPosition.js"></script>
-    <script src="utils_graphics.js"></script>
-    <script src="drawingArrows.js"></script>
-    <script src="drawingLayers.js"></script>
-    <link href="style.css" rel="stylesheet" type="text/css">
+    <script src="Scripts/sketch.js"></script>
+    <script src="Scripts/default_values.js"></script>
+    <script src="Scripts/Objects/Layer.js"></script>
+    <script src="Scripts/Objects/Block.js"></script>
+    <script src="Scripts/utils.js"></script>
+    <script src="Scripts/colorSettings.js"></script>
+    <script src="Scripts/layerPosition.js"></script>
+    <script src="Scripts/utils_graphics.js"></script>
+    <script src="Scripts/drawingArrows.js"></script>
+    <script src="Scripts/drawingLayers.js"></script>
+    <link href="Scripts/style.css" rel="stylesheet" type="text/css">
 
 </head>
 
@@ -61,7 +61,7 @@
                     <fieldset id="upload-settings-file">
                         <form>
                             <label id="inputSettingsFileLabel" class="button-12" style="display: inline;">
-                                <input type="file" id="settings-file" name="settings-file" accept=".json"/>
+                                <input type="file" id="settings-file" name="settings-file" accept=".json" />
                                 <i class="fa fa-cloud-upload"></i>
                                 <p id="settingsFileLabel" style="display: inline; font-size: 14px;">Settings File</p>
                             </label>
@@ -70,7 +70,9 @@
                         <a class="button-12" href="template.json" download="package.json">
                             <i class="fa fa-cloud-download"></i>
                             Template
-                        </a>
+                        </a><br>
+                        <p style="font-size: 10px;">Note: Only the data (tags) contained in the template file will be
+                            considered!</p>
                     </fieldset>
 
                     <fieldset>
@@ -103,13 +105,15 @@
                         <legend>Arrow</legend>
                         <form>
                             <label for="arrowWidth">Width</label>
-                            <input type="number" class="fieldsetInput" step="0.1" id="arrowWidth" name="arrowWidth" value="0.4">
+                            <input type="number" class="fieldsetInput" step="0.1" id="arrowWidth" name="arrowWidth"
+                                value="0.4">
 
                             <label for="arrowHeight">Height</label>
                             <input type="number" class="fieldsetInput" id="arrowHeight" name="arrowHeight" value="3">
 
                             <label for="arrowPointRadius">Radius</label>
-                            <input type="number" class="fieldsetInput" step="0.1" id="arrowPointRadius" name="arrowPointRadius" value="1.5"><br>
+                            <input type="number" class="fieldsetInput" step="0.1" id="arrowPointRadius"
+                                name="arrowPointRadius" value="1.5"><br>
 
                             <input type="reset" class="button-12" value="Reset">
                         </form>
@@ -119,13 +123,16 @@
                         <legend>Sensitivity</legend>
                         <form>
                             <label for="sensitivityX">X</label>
-                            <input type="number" class="fieldsetInput" step="0.0001" id="sensitivityX" name="sensitivityX" value="1">
+                            <input type="number" class="fieldsetInput" step="0.0001" id="sensitivityX"
+                                name="sensitivityX" value="1">
 
                             <label for="sensitivityY">Y</label>
-                            <input type="number" class="fieldsetInput" step="0.0001" id="sensitivityY" name="sensitivityY" value="1">
+                            <input type="number" class="fieldsetInput" step="0.0001" id="sensitivityY"
+                                name="sensitivityY" value="1">
 
                             <label for="sensitivityZ">Z</label>
-                            <input type="number" class="fieldsetInput" step="0.0001" id="sensitivityZ" name="sensitivityZ" value="0.01"><br>
+                            <input type="number" class="fieldsetInput" step="0.0001" id="sensitivityZ"
+                                name="sensitivityZ" value="0.01"><br>
 
                             <input type="reset" class="button-12" value="Reset">
                         </form>
@@ -133,7 +140,8 @@
 
                     <form>
                         <label for="dimensionType">Layers dimensions:</label>
-                        <select class="settingsFormSelect" name="dimensionType" id="dimensionType" onchange="layersChanged = true;">
+                        <select class="settingsFormSelect" name="dimensionType" id="dimensionType"
+                            onchange="layersChanged = true;">
                             <option>Exponential</option>
                             <option>Real</option>
                             <option>Linear</option>
@@ -143,16 +151,31 @@
                     </form>
 
                     <form>
-                        <label for="defaultSpaceBetweenLayers">Space between layers:</label>
-                        <input type="number" class="settingsFormInput" id="defaultSpaceBetweenLayers" name="defaultSpaceBetweenLayers" value="10">
+                        <label for="maxLength">Max layer length:</label>
+                        <input type="number" class="settingsFormInput" id="maxLength" name="maxLength" value="400">
 
                         <input type="reset" class="button-12" value="Reset"><br>
                     </form>
 
                     <form>
-                        <label for="defaultLateralSpaceBetweenLayers">Lateral space between layers:</label>
-                        <input type="number" class="settingsFormInput" id="defaultLateralSpaceBetweenLayers" name="defaultLateralSpaceBetweenLayers"
+                        <label for="maxWidth">Max layer width/height:</label>
+                        <input type="number" class="settingsFormInput" id="maxWidth" name="maxWidth" value="200">
+
+                        <input type="reset" class="button-12" value="Reset"><br>
+                    </form>
+
+                    <form>
+                        <label for="spaceBetweenLayers">Space between layers:</label>
+                        <input type="number" class="settingsFormInput" id="spaceBetweenLayers" name="spaceBetweenLayers"
                             value="10">
+
+                        <input type="reset" class="button-12" value="Reset"><br>
+                    </form>
+
+                    <form>
+                        <label for="lateralSpaceBetweenLayers">Lateral space between layers:</label>
+                        <input type="number" class="settingsFormInput" id="lateralSpaceBetweenLayers"
+                            name="lateralSpaceBetweenLayers" value="10">
 
                         <input type="reset" class="button-12" value="Reset"><br>
                     </form>
@@ -171,6 +194,20 @@
             </div>
             <button class="button-12" type="submit" id="saveSettings">Save</button>
             <button class="button-12" id="settingsCloseButton">Close</button>
+        </div>
+
+        <div id="blockPopup">
+            <h2>Settings</h2>
+            <div id="blockDiv">
+                <form id="blockForm">
+                    <label for="blockName">Block name:</label>
+                    <input type="text" id="blockName" name="blockName">
+                    <label for="blockColor">Block color:</label>
+                    <input type="color" id="blockColor" name="blockColor" value="#000000">
+                </form>
+            </div>
+            <button class="button-12" type="submit" id="saveBlock">Save</button>
+            <button class="button-12" id="cancelBlock">Cancel</button>
         </div>
 
 

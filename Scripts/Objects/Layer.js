@@ -80,7 +80,7 @@ class Layer {
 
         switch (typeOfDimension.value) {
             case "Exponential":
-                layerShape = this.shape;
+                layerShape = [...this.shape];
                 break;
             case "Real":
                 // layerShape = this.outputShape;
@@ -111,6 +111,15 @@ class Layer {
             layerShape[1] = dynamicValues.minZY;
             layerShape[2] = dynamicValues.minZY;
         }
+
+        if(layerShape[0] > dynamicValues.maxX)
+            layerShape[0] = dynamicValues.maxX;
+
+        if(layerShape[1] > dynamicValues.maxZY)
+            layerShape[1] = dynamicValues.maxZY;
+
+        if(layerShape[2] > dynamicValues.maxZY)
+            layerShape[2] = dynamicValues.maxZY;
 
         return layerShape;
     }

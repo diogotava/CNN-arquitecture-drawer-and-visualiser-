@@ -31,7 +31,7 @@ picked = 0
 
 mode = False
 
-layersNotToDraw = ["LeakyReLU"]
+layersNotToDraw = []
 layersNotToConsider = layersNotToDraw + ['Activation', 'BatchNormalization']
 # layers = []
 

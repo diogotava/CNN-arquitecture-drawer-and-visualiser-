@@ -22,7 +22,7 @@ function drawLayer(layer, i, array) {
             if (layer.shouldBeBlock) {
                 let endBlockLayer = getEndBlockLayer(array, layer.id);
                 id = endBlockLayer !== undefined ? endBlockLayer.id + 1 : -1;
-                color = dynamicValues.colors.Block;
+                color = getBlockColor(array, layer.id);
             }
             mTexture(color[0], color[1], color[2]);
             mBox(id, shape[0], shape[1], shape[2]);

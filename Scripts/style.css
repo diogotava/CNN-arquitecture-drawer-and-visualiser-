@@ -175,6 +175,7 @@ fieldset legend {
 }
 
 #settingsPopup,
+#blockPopup,
 #settingsColorsPopup,
 #paragraphs {
     display: none;

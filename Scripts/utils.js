@@ -41,31 +41,21 @@ function getLayerId() {
 function selectBlock() {
     let layerId = getLayerId();
     if (layerId !== -1) {
-        let isEndBlock = isTheEndOfBlock(layerId);
         if (dynamicValues.bPressed) {
             if (isLayerPossibleToBeInBlock(layerId, block[0], false)) {
                 block = new Block(block[0], layerId);
-                // if (layerId < block[0]) {
-                //     block[1] = block[0];
-                //     block[0] = layerId;
-                // } else
-                //     block[1] = layerId;
 
                 if (!dynamicValues.blocks.some(obj => obj.isEqual(block))) {
-                    if (confirm("End of block selected!\nDo you want to name the block?")) {
-                        let nameOfBlock = prompt("Please enter the block name!", "");
-                        block.setName(nameOfBlock);
-                    }
-                    dynamicValues.blocks.push(block);
+                    let blockPopup = document.getElementById("blockPopup");
+                    blockPopup.style.display = 'block';
                 } else {
                     alert("ERROR: It's not possible to select this layer as end of block!")
                 }
-                layersChanged = true;
             } else {
                 alert("ERROR: It's not possible to select this layer as end of block!");
+                block = [];
             }
             dynamicValues.bPressed = false;
-            block = [];
         } else {
             if (isLayerPossibleToBeInBlock(layerId)) {
                 block[0] = layerId;
@@ -145,7 +135,7 @@ function selectedText() {
         selectedH2.elt.hidden = false;
         typeP.elt.hidden = false;
         // TODO: remove id
-        let blockName = dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.endLayer === selectedLayer.id)].name;
+        let blockName = dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.endLayer === selectedLayer.id)].getName();
         blockName = blockName === "" ? "(Block without name.)" : blockName;
         selectedH2.html("Selected block: " + selectedLayer.id.toString() + " " + blockName);
         typeP.html("<b>Type:</b> Block");
@@ -153,10 +143,10 @@ function selectedText() {
         paragraphs.style.display = 'block';
         paragraphs.style.left = mouseX.toString() + 'px';
         let height = 0;
-        if( mouseY - 7 - paragraphs.offsetHeight < 0 ){
-            height = paragraphs.offsetHeight/2
+        if (mouseY - 7 - paragraphs.offsetHeight < 0) {
+            height = paragraphs.offsetHeight / 2
         } else {
-            height =  mouseY - 7 - paragraphs.offsetHeight/2;
+            height = mouseY - 7 - paragraphs.offsetHeight / 2;
         }
         paragraphs.style.top = (height).toString() + 'px';
 
@@ -209,11 +199,11 @@ function selectedText() {
         paragraphs.style.left = mouseX.toString() + 'px';
 
         let height = 0;
-        if( mouseY - 7 - paragraphs.offsetHeight < 0 ){
-            height = mouseY + 7 + paragraphs.offsetHeight/2;
+        if (mouseY - 7 - paragraphs.offsetHeight < 0) {
+            height = mouseY + 7 + paragraphs.offsetHeight / 2;
             paragraphs.className = 'bubble-top';
         } else {
-            height =  mouseY - 7 - paragraphs.offsetHeight/2;
+            height = mouseY - 7 - paragraphs.offsetHeight / 2;
             paragraphs.className = 'bubble-bottom';
         }
         paragraphs.style.top = height.toString() + 'px';
@@ -258,7 +248,7 @@ function getAllNextLayers(layer, array) {
     return layersReturn;
 }
 
-function settingsBehaviour(){
+function settingsBehaviour() {
     const saveSettingsButton = document.getElementById('saveSettings');
     const settingsCloseButton = document.getElementById('settingsCloseButton');
     const settingsPopup = document.getElementById('settingsPopup');
@@ -280,7 +270,7 @@ function settingsBehaviour(){
     });
 }
 
-function buttonsBehaviour(){
+function buttonsBehaviour() {
     const uploadForm = document.getElementById('upload-form');
     const uploadSettingsFileButton = document.getElementById('buttonUploadSettingsFile');
 
@@ -335,6 +325,22 @@ function buttonsBehaviour(){
         reader.readAsText(file);
 
     });
+    const saveBlockButton = document.getElementById('saveBlock');
+    const cancelBlockButton = document.getElementById('cancelBlock');
+    const blockPopup = document.getElementById('blockPopup');
+    saveBlockButton.addEventListener('click', () => {
+        block.setName(document.getElementById('blockName').value);
+        let color = document.getElementById('blockColor').value;
+        block.setColor([parseInt(color.substring(1, 3), 16), parseInt(color.substring(3, 5), 16), parseInt(color.substring(5, 7), 16)]);
+        dynamicValues.blocks.push(block);
+        layersChanged = true;
+        block = [];
+        blockPopup.style.display = 'none';
+    });
+    cancelBlockButton.addEventListener('click', () => {
+        block = [];
+        blockPopup.style.display = 'none';
+    });
 
     const settingsButton = document.getElementById('settingsButton');
     const settingsPopup = document.getElementById('settingsPopup');
@@ -383,10 +389,85 @@ function equalsCheck(a, b) {
     return JSON.stringify(a) === JSON.stringify(b);
 }
 
-function parseSettingsJson(data){
-    try{
+function parseSettingsJson(data) {
+    try {
+        dynamicValues.camX = !isNaN(data.camX) ? data.camX : 0;
+        dynamicValues.camY = !isNaN(data.camY) ? data.camY : 0;
+        dynamicValues.camZ = !isNaN(data.camZ) ? data.camZ : 0;
+        dynamicValues.lookX = !isNaN(data.lookX) ? data.lookX : 0;
+        dynamicValues.lookY = !isNaN(data.lookY) ? data.lookY : 0;
+        dynamicValues.lookZ = !isNaN(data.lookZ) ? data.lookZ : 0;
+        dynamicValues.colors.Conv1D = data.colors.Conv1D;
+        dynamicValues.colors.Conv2D = data.colors.Conv2D;
+        dynamicValues.colors.Conv3D = data.colors.Conv3D;
+        dynamicValues.colors.Dense = data.colors.Dense;
+        dynamicValues.colors.Flatten = data.colors.Flatten;
+        dynamicValues.colors.Dropout = data.colors.Dropout;
+        dynamicValues.colors.InputLayer = data.colors.InputLayer;
+        dynamicValues.colors.Concatenate = data.colors.Concatenate;
+        dynamicValues.colors.Add = data.colors.Add;
+        dynamicValues.colors.LSTM = data.colors.LSTM;
+        dynamicValues.colors.GRU = data.colors.GRU;
+        dynamicValues.colors.SimpleRNN = data.colors.SimpleRNN;
+        dynamicValues.colors.TimeDistributed = data.colors.TimeDistributed;
+        dynamicValues.colors.Bidirectional = data.colors.Bidirectional;
+        dynamicValues.colors.ConvLSTM1D = data.colors.ConvLSTM1D;
+        dynamicValues.colors.ConvLSTM2D = data.colors.ConvLSTM2D;
+        dynamicValues.colors.ConvLSTM3D = data.colors.ConvLSTM3D;
+        dynamicValues.colors.BaseRNN = data.colors.BaseRNN;
+        dynamicValues.colors.MaxPooling1D = data.colors.MaxPooling1D;
+        dynamicValues.colors.MaxPooling2D = data.colors.MaxPooling2D;
+        dynamicValues.colors.MaxPooling3D = data.colors.MaxPooling3D;
+        dynamicValues.colors.AveragePooling1D = data.colors.AveragePooling1D;
+        dynamicValues.colors.AveragePooling2D = data.colors.AveragePooling2D;
+        dynamicValues.colors.AveragePooling3D = data.colors.AveragePooling3D;
+        dynamicValues.colors.GlobalMaxPooling1D = data.colors.GlobalMaxPooling1D;
+        dynamicValues.colors.GlobalMaxPooling2D = data.colors.GlobalMaxPooling2D;
+        dynamicValues.colors.GlobalMaxPooling3D = data.colors.GlobalMaxPooling3D;
+        dynamicValues.colors.GlobalAveragePooling1D = data.colors.GlobalAveragePooling1D;
+        dynamicValues.colors.GlobalAveragePooling2D = data.colors.GlobalAveragePooling2D;
+        dynamicValues.colors.GlobalAveragePooling3D = data.colors.GlobalAveragePooling3D;
+        dynamicValues.colors.Reshape = data.colors.Reshape;
+        dynamicValues.colors.Default = data.colors.Default;
+        dynamicValues.colors.Block = data.colors.Block;
+        dynamicValues.colors.Selected = data.colors.Selected;
+        dynamicValues.arrowWidth = data.arrowWidth;
+        dynamicValues.arrowHeight = data.arrowHeight;
+        dynamicValues.arrowPointRadius = data.arrowPointRadius;
+        dynamicValues.sensitivityX = data.sensitivityX;
+        dynamicValues.sensitivityY = data.sensitivityY;
+        dynamicValues.sensitivityZ = data.sensitivityZ;
+        dynamicValues.defaultSpaceBetweenLayers = data.defaultSpaceBetweenLayers;
+        dynamicValues.defaultLateralSpaceBetweenLayers = data.defaultLateralSpaceBetweenLayers;
+        dynamicValues.blockSize = data.blockSize;
 
-    }catch (e){
+        updateShownValues();
+        for (let i = 0; i < data.blocks.length; i++) {
+            let blockData = data.blocks[i];
+            let initialLayer = layers.find(item => item.name === blockData.initialLayerName);
+            let endLayer = layers.find(item => item.name === blockData.endLayerName);
+            if (initialLayer === undefined || endLayer === undefined) {
+                continue;
+            }
+            let blockName = blockData.name;
+            let blockColor = blockData.color;
+
+            if (!isLayerPossibleToBeInBlock(initialLayer.id) || !isLayerPossibleToBeInBlock(endLayer.id, initialLayer.id, false)) {
+                continue;
+            }
+
+            let block = new Block(initialLayer.id, endLayer.id);
+            block.setName(blockName);
+            block.setColor(blockColor);
+
+            if (!dynamicValues.blocks.some(obj => obj.isEqual(block))) {
+                dynamicValues.blocks.push(block);
+            }
+
+            layersChanged = true;
+        }
+
+    } catch (e) {
         alert("ERROR! Settings File does not have the correct format.")
     }
 }

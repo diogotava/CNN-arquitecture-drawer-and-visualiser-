@@ -69,6 +69,7 @@ class Layer:
         self.output_shape = get_shapes(layer, False, True)
         self.invertedShape = layer.invertedShape
         self.computed_position = False
+        self.layers = None
 
         self.previous_y_position = 0
         if hasattr(layer, "data_format"):

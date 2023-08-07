@@ -12,7 +12,7 @@ function mCreateCanvas(windowWidth, windowHeight, WEBGL) {
 
 function mBox(id, shapeX, shapeY, shapeZ) {
     smooth();
-    strokeWeight(2);
+    strokeWeight(1);
     box(shapeX, shapeY, shapeZ);
 
     mPage.fill((id >> 16) & 0xFF, (id >> 8) & 0xF, id & 0xFF);

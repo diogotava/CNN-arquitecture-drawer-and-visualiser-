@@ -1,3 +1,5 @@
+recursiveLayerTypes = ["LSTM", "GRU", "SimpleRNN", "TimeDistributed", "Bidirectional", "ConvLSTM1D", "ConvLSTM2D", "ConvLSTM3D", "BaseRNN"];
+
 function drawArrow(halfShape, height) {
     translate(halfShape + (height / 2) - dynamicValues.arrowHeight / 2, 0, 0);
 
@@ -125,8 +127,7 @@ function drawArrowForArrow(layer, array) {
 }
 
 function drawArrowRecursiveLayer(layer) {
-    if (layer.type !== "LSTM" && layer.type !== "GRU" && layer.type !== "SimpleRNN" && layer.type !== "TimeDistributed" && layer.type !== "Bidirectional"
-        && layer.type !== "ConvLSTM1D" && layer.type !== "ConvLSTM2D" && layer.type !== "ConvLSTM3D" && layer.type !== "BaseRNN") {
+    if (!recursiveLayerTypes.includes(layer.type)) {
         return;
     }
     let color = [...dynamicValues.colors[layer.type]];
