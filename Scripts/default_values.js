@@ -51,7 +51,7 @@ function resetDynamicValues() {
         "sensitivityY": Number(document.getElementById('sensitivityY').defaultValue),
         "sensitivityZ": Number(document.getElementById('sensitivityZ').defaultValue),
         "minX": 5,
-        "minZY": 5,
+        "minZY": 2,
         "maxX": Number(document.getElementById('maxLength').defaultValue),
         "maxZY": Number(document.getElementById('maxWidth').defaultValue),
         "minWindowSize": 400,

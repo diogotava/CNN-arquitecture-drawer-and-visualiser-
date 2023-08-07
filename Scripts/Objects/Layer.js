@@ -10,7 +10,7 @@ class Layer {
         if (copy) {
             this.selected = layer.selected;
             this.centerPosition = layer.centerPosition;
-            this.shape = layer.shape;
+            this.shape = [...layer.shape];
             this.prevLayers = layer.prevLayers;
             this.nextLayers = layer.nextLayers;
             this.activation = layer.activation;
@@ -26,9 +26,15 @@ class Layer {
             this.centerPosition = [0, 0, 0];
             if (layer.type === "Dense" && layer.shape[0] === dynamicValues.minX && layer.shape[1] === dynamicValues.minZY)
                 this.shape = [layer.shape[0], layer.shape[2], layer.shape[1]];
-            else
-                this.shape = layer.shape;
-
+            else {
+                this.shape = [...layer.shape];
+                if (this.shape[0] >= dynamicValues.minX * 2)
+                    this.shape[0] = this.shape[0] / Math.log(this.shape[0])
+                if (this.shape[1] >= dynamicValues.minZY * 2)
+                    this.shape[1] = this.shape[1] / Math.log(this.shape[1])
+                if (this.shape[2] >= dynamicValues.minZY * 2)
+                    this.shape[2] = this.shape[2] / Math.log(this.shape[2])
+            }
             this.prevLayers = layer.previous_layers;
             this.nextLayers = layer.next_layers;
             this.activation = null;
@@ -112,14 +118,9 @@ class Layer {
             layerShape[2] = dynamicValues.minZY;
         }
 
-        if(layerShape[0] > dynamicValues.maxX)
-            layerShape[0] = dynamicValues.maxX;
-
-        if(layerShape[1] > dynamicValues.maxZY)
-            layerShape[1] = dynamicValues.maxZY;
-
-        if(layerShape[2] > dynamicValues.maxZY)
-            layerShape[2] = dynamicValues.maxZY;
+        layerShape[0] = Math.min(Math.max(layerShape[0], dynamicValues.minX), dynamicValues.maxX);
+        layerShape[1] = Math.min(Math.max(layerShape[1], dynamicValues.minZY), dynamicValues.maxZY);
+        layerShape[2] = Math.min(Math.max(layerShape[2], dynamicValues.minZY), dynamicValues.maxZY);
 
         return layerShape;
     }

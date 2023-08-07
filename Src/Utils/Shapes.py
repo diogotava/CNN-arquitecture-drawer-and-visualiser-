@@ -1,11 +1,3 @@
-import numpy as np
-
-min_x = 5
-min_zy = 5
-max_zy = 400
-max_x = 400
-
-
 def isClass(layer, class_type):
     if not hasattr(layer, "type"):
         return layer.__class__.__name__ == class_type
@@ -85,7 +77,7 @@ def get_shape(shape, inverted):
     one_dim_orientation = 'z'
 
     if shape == [None]:
-        return [min_x, min_zy, min_zy]
+        return []
     shape = [element for element in shape if element is not None]
     if len(shape) == 1:
         if one_dim_orientation in ['x', 'y', 'z']:
@@ -106,16 +98,9 @@ def get_shape(shape, inverted):
         index_y = 0
         index_z = 1
 
-    if shape[index_x] >= min_x * 2:
-        shape[index_x] = shape[index_x] / np.log(shape[index_x])
-    if shape[index_y] >= min_zy * 2:
-        shape[index_y] = shape[index_y] / np.log(shape[index_y])
-    if shape[index_z] >= min_zy * 2:
-        shape[index_z] = shape[index_z] / np.log(shape[index_z])
-
     shape_return = shape.copy()
-    shape_return[0] = min(max(shape[index_x], min_x), max_x)
-    shape_return[1] = min(max(shape[index_y], min_zy), max_zy)
-    shape_return[2] = min(max(shape[index_z], min_zy), max_zy)
+    shape_return[0] = shape[index_x]
+    shape_return[1] = shape[index_y]
+    shape_return[2] = shape[index_z]
 
     return shape_return
