@@ -305,7 +305,6 @@ function buttonsBehaviour() {
                 alert("Was not possible to load the model selected!")
                 console.error(error);
             });
-        // resetDynamicValues();
     });
 
     uploadSettingsFileButton.addEventListener('click', (event) => {

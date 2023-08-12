@@ -1,4 +1,3 @@
-from Src.Utils.DrawShapes import *
 from Src.Utils.Values import layersNotToConsider
 from Src.Utils.Shapes import get_shapes
 
