@@ -5,7 +5,7 @@ from Src.Utils.Values import layersNotToDraw
 activation_layers = ['ReLU', 'Softmax', 'LeakyReLU', 'PReLU', 'ELU', 'ThresholdedReLU']
 
 
-def create_layer(layer_type, layer_model, prev_layer):
+def create_layer(layer_type, layer_model, prev_layer, model_inside_model, model_name):
     shape = get_shapes(layer_model)[0]
     layer = None
     if layer_type not in layersNotToDraw:
@@ -18,6 +18,6 @@ def create_layer(layer_type, layer_model, prev_layer):
         elif layer_type in activation_layers:
             prev_layer.activation = layer_type
         else:
-            layer = Layer(shape, layer_model)
+            layer = Layer(shape, layer_model, model_inside_model, model_name)
 
     return layer

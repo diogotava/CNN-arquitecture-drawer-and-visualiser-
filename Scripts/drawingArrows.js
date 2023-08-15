@@ -131,7 +131,7 @@ function drawArrowRecursiveLayer(layer) {
         return;
     }
     let color = [...dynamicValues.colors[layer.type]];
-    color[1] = 150
+
     push();
 
     translate((layer.getShape()[0] / 2 + (dynamicValues.defaultSpaceBetweenLayers - 0.5) / 4), 0, 1);
@@ -168,16 +168,16 @@ function drawArrowRecursiveLayer(layer) {
     cylinder(dynamicValues.arrowWidth, layer.getShape()[2] / 2 + 1);
     pop();
 
-    translate((dynamicValues.defaultSpaceBetweenLayers - 0.5) / 4 - 0.25, 0, -(layer.getShape()[2] / 2 + 1) / 2);
+    translate((dynamicValues.defaultSpaceBetweenLayers - 0.5) / 4 - 0.5, 0, -(layer.getShape()[2] / 2 + 1) / 2);
 
     push();
     angleMode(DEGREES);
     rotateZ(90);
     fill(color);
-    cylinder(dynamicValues.arrowWidth, (dynamicValues.defaultSpaceBetweenLayers - 0.5) / 2 - 0.5);
+    cylinder(dynamicValues.arrowWidth, (dynamicValues.defaultSpaceBetweenLayers - 0.5) / 2 - 0.7);
     pop();
 
-    translate(((dynamicValues.defaultSpaceBetweenLayers + 0.5) / 4) - dynamicValues.arrowHeight / 2 - 0.1, 0, 0);
+    translate(((dynamicValues.defaultSpaceBetweenLayers + 0.5) / 4) - dynamicValues.arrowHeight / 2 + 0.25, 0, 0);
 
     rotateZ(-90);
     fill(color);

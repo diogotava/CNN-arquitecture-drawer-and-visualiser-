@@ -19,7 +19,13 @@ def get_layers(layer, layers, prev=False):
         layer_to_fill = [e for e in layers if e.name == layer_of_layer.name]
         if len(layer_to_fill) > 1:
             print("ERROR!!")
-        layers_to_fill.append(layer_to_fill[0].id)
+        if len(layer_to_fill) > 0 and layer_to_fill[0].type != "Sequential" and layer_to_fill[0].type != "Functional":
+            layers_to_fill.append(layer_to_fill[0].id)
+        elif(prev):
+            layers_to_fill.append(layer.id - 1)
+            layers[layer.id - 1].next_layers.append(layer.id)
+        else:
+            layers_to_fill.append(layer.id + 1)
 
     if prev:
         layer.previous_layers = layers_to_fill
@@ -36,9 +42,8 @@ def get_prev_layers(layer, layers):
     get_layers(layer, layers, True)
 
 
-def create_layers(model):
+def create_layers(model, index = 0, model_inside_model = False, model_name = None):
     layers = []
-    index = 0
     prev_layer = None
     for layer_index, layer_to_save in enumerate(model.layers):
         l = [e for e in layers if e.name == layer_to_save.name]
@@ -52,33 +57,47 @@ def create_layers(model):
                     if len(layer_to_fill) > 1:
                         print("ERROR!!")
                     elif len(layer_to_fill) == 0:
-                        prev_layer = create_layer(layer_of_layer.__class__.__name__, layer_of_layer, prev_layer)
+                        prev_layer = create_layer(layer_of_layer.__class__.__name__, layer_of_layer, prev_layer, model_inside_model, model_name)
                         if prev_layer is not None:
-                            prev_layer.setId(index)
-                            layers.append(prev_layer)
-                            index += 1
-                            prev_layer = prev_layer
                             try:
                                 if layer_to_save.layers:
-                                    prev_layer.layers = create_layers(layer_to_save)
+                                    prev_layer.layers, index = create_layers(layer_to_save, index, True, prev_layer.name)
+                                    for i, l in enumerate(prev_layer.layers):
+                                        if i == 0:
+                                            for prev_l in prev_layer.previous_layers:
+                                                target_index = layers[prev_l].next_layers.index(prev_layer.id)
+                                                layers[prev_l].next_layers[target_index] = l.id
+                                        layers.append(l)
+                                    prev_l = l
                             except AttributeError:
-                                pass
+                                prev_layer.setId(index)
+                                layers.append(prev_layer)
+                                index += 1
+                                prev_layer = prev_layer
+
         if len(l) == 0:
-            layer = create_layer(layer_to_save.__class__.__name__, layer_to_save, prev_layer)
+            layer = create_layer(layer_to_save.__class__.__name__, layer_to_save, prev_layer, model_inside_model, model_name)
             if layer is not None:
-                layer.setId(index)
-                layers.append(layer)
-                index += 1
-                prev_layer = layer
                 try:
                     if layer_to_save.layers:
-                        layer.layers = create_layers(layer_to_save)
+                        layer.layers, index = create_layers(layer_to_save, index, True, layer.name)
+                        for i, l in enumerate(layer.layers):
+                            if i == 0:
+                                for prev_l in layer.previous_layers:
+                                    target_index = layers[prev_l].next_layers.index(layer.id)
+                                    layers[prev_l].next_layers[target_index] = l.id
+                            layers.append(l)
+                        prev_l = l
                 except AttributeError:
-                    pass
+                    layer.setId(index)
+                    layers.append(layer)
+                    index += 1
+                    prev_layer = layer
+
     for layer in layers:
         get_next_layers(layer, layers)
         get_prev_layers(layer, layers)
         if layer.type == "Add":
             layer.shape = get_shapes(layer, False, False, layers)[0]
 
-    return layers
+    return layers, index

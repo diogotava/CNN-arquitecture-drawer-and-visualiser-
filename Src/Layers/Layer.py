@@ -51,7 +51,7 @@ def get_prev_layer(inbound_nodes):
 
 class Layer:
 
-    def __init__(self, shape, layer):
+    def __init__(self, shape, layer, model_inside_model, model_name):
 
         self.selected = False
         self.lateral_space_between_layers = 10
@@ -69,6 +69,8 @@ class Layer:
         self.invertedShape = layer.invertedShape
         self.computed_position = False
         self.layers = None
+        self.model_inside_model = model_inside_model
+        self.model_name = model_name
 
         self.previous_y_position = 0
         if hasattr(layer, "data_format"):

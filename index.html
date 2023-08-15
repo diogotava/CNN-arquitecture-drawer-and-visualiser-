@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neural network visualizer</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
     <script src="https://kit.fontawesome.com/298fd45b46.js" crossorigin="anonymous"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -131,10 +131,37 @@
                                 name="sensitivityY" value="1">
 
                             <label for="sensitivityZ">Z</label>
-                            <input type="number" class="fieldsetInput" step="0.0001" id="sensitivityZ"
-                                name="sensitivityZ" value="0.01"><br>
+                            <input type="number" class="fieldsetInput" step="0.01" id="sensitivityZ" name="sensitivityZ"
+                                value="0.11"><br>
 
                             <input type="reset" class="button-12" value="Reset">
+                        </form>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Layer Length</legend>
+                        <form>
+                            <label for="minLength">Min:</label>
+                            <input type="number" class="fieldsetInput" id="minLength" name="minLength" value="5">
+
+                            <label for="maxLength">Max:</label>
+                            <input type="number" class="fieldsetInput" id="maxLength" name="maxLength" value="400">
+
+                            <input type="reset" class="button-12" value="Reset"><br>
+                        </form>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Layer Width/Height</legend>
+
+                        <form>
+                            <label for="minWidth">Min:</label>
+                            <input type="number" class="fieldsetInput" id="minWidth" name="minWidth" value="2">
+
+                            <label for="maxWidth">Max:</label>
+                            <input type="number" class="fieldsetInput" id="maxWidth" name="maxWidth" value="200">
+
+                            <input type="reset" class="button-12" value="Reset"><br>
                         </form>
                     </fieldset>
 
@@ -148,20 +175,6 @@
                         </select>
 
                         <input type="reset" class="button-12" value="Reset">
-                    </form>
-
-                    <form>
-                        <label for="maxLength">Max layer length:</label>
-                        <input type="number" class="settingsFormInput" id="maxLength" name="maxLength" value="400">
-
-                        <input type="reset" class="button-12" value="Reset"><br>
-                    </form>
-
-                    <form>
-                        <label for="maxWidth">Max layer width/height:</label>
-                        <input type="number" class="settingsFormInput" id="maxWidth" name="maxWidth" value="200">
-
-                        <input type="reset" class="button-12" value="Reset"><br>
                     </form>
 
                     <form>

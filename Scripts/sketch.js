@@ -8,7 +8,7 @@ function setup() {
     const element1Width = document.getElementById('column1').offsetWidth;
     let w = parseInt(windowWidth - element1Width, 10);
     let h = parseInt(windowHeight, 10);
-    mCreateCanvas(w, h, WEBGL);
+    mCreateCanvas(w, h);
     mPerspective();
 
     buttonsBehaviour();
@@ -23,18 +23,18 @@ function draw() {
     else if (settingsPopup.style.display === 'block')
         mOrbitControl(dynamicValues.sensitivityX, dynamicValues.sensitivityY, 0);
     const cam = _renderer._curCamera;
-    if (Math.round(cam.eyeX) !== Math.round(dynamicValues.camX) ||
-        Math.round(cam.eyeY) !== Math.round(dynamicValues.camY) ||
-        Math.round(cam.eyeZ) !== Math.round(dynamicValues.camZ) ||
-        Math.round(cam.centerX) !== Math.round(dynamicValues.lookX) ||
-        Math.round(cam.centerY) !== Math.round(dynamicValues.lookY) ||
-        Math.round(cam.centerZ) !== Math.round(dynamicValues.lookZ)) {
-        dynamicValues.camX = !isNaN(Number(cam.eyeX)) ? Number(cam.eyeX) : 0;
-        dynamicValues.camY = !isNaN(Number(cam.eyeY)) ? Number(cam.eyeY) : 0;
-        dynamicValues.camZ = !isNaN(Number(cam.eyeZ)) ? Number(cam.eyeZ) : 0;
-        dynamicValues.lookX = !isNaN(Number(cam.centerX)) ? Number(cam.centerX) : 0;
-        dynamicValues.lookY = !isNaN(Number(cam.centerY)) ? Number(cam.centerY) : 0;
-        dynamicValues.lookZ = !isNaN(Number(cam.centerZ)) ? Number(cam.centerZ) : 0;
+    if (parseFloat(cam.eyeX) !== parseFloat(dynamicValues.camX) ||
+        parseFloat(cam.eyeY) !== parseFloat(dynamicValues.camY) ||
+        parseFloat(cam.eyeZ) !== parseFloat(dynamicValues.camZ) ||
+        parseFloat(cam.centerX) !== parseFloat(dynamicValues.lookX) ||
+        parseFloat(cam.centerY) !== parseFloat(dynamicValues.lookY) ||
+        parseFloat(cam.centerZ) !== parseFloat(dynamicValues.lookZ)) {
+        dynamicValues.camX = !isNaN(parseFloat(cam.eyeX)) ? parseFloat(cam.eyeX) : 0;
+        dynamicValues.camY = !isNaN(parseFloat(cam.eyeY)) ? parseFloat(cam.eyeY) : 0;
+        dynamicValues.camZ = !isNaN(parseFloat(cam.eyeZ)) ? parseFloat(cam.eyeZ) : 0;
+        dynamicValues.lookX = !isNaN(parseFloat(cam.centerX)) ? parseFloat(cam.centerX) : 0;
+        dynamicValues.lookY = !isNaN(parseFloat(cam.centerY)) ? parseFloat(cam.centerY) : 0;
+        dynamicValues.lookZ = !isNaN(parseFloat(cam.centerZ)) ? parseFloat(cam.centerZ) : 0;
         updateCameraShownValues();
     }
 

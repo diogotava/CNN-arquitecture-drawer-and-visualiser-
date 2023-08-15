@@ -10,7 +10,7 @@ function isTheEndOfBlock(layerId) {
     return dynamicValues.blocks.some((block) => block.endLayer === layerId);
 }
 
-function getBlockColor(layers, layerId){
+function getBlockColor(layerId) {
     if (isTheBeginningOfBlock(layerId))
         return dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.initialLayer === layerId)].getColor();
     else
@@ -176,10 +176,12 @@ function getYPosition(layer, layers) {
 function getXPosition(layer, layers) {
     let xPosition = 0;
 
-    if (layer.prevLayers.length === 1) {
+    if (layer.prevLayers.length === 1 && (layers[layer.prevLayers[0]].type != "Sequential" && layers[layer.prevLayers[0]].type != "Functional")) {
         xPosition = layers[layer.prevLayers[indexX]].centerPosition[indexX] + layers[layer.prevLayers[indexX]].getShape()[indexX] / 2;
     } else if (layer.prevLayers.length > 1) {
         xPosition = getMaxXPositionOfPrevLayers(layer.prevLayers, layers);
+    } else if (layer.model_inside_model || layer.prevLayers.length === 1 && (layers[layer.prevLayers[0]].type == "Sequential" || layers[layer.prevLayers[0]].type == "Functional")) {
+        xPosition = layers[layer.id - 1].centerPosition[indexX] + layers[layer.id - 1].getShape()[indexX] / 2;
     }
 
     return xPosition;
@@ -193,7 +195,7 @@ function getLayersPosition(layers) {
 
 function getLayerPosition(layer, layers) {
     let isBeginningBlock = isTheBeginningOfBlock(layer.id);
-    let endBlockLayer =  getEndBlockLayer(layers, layer.id);
+    let endBlockLayer = getEndBlockLayer(layers, layer.id);
     let isInsideBlock = layer.isLayerInsideBlock();
 
     let xPosition = getXPosition(layer, layers);

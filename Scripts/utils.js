@@ -30,12 +30,9 @@ function selectLayer() {
 }
 
 function getLayerId() {
-    let gl = mPage.elt.getContext('webgl');
-    let pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
-    gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-    let index = 4 * ((gl.drawingBufferHeight - mouseY) * gl.drawingBufferWidth + mouseX);
+    let pixels = mPage.get(mouseX, mouseY);
 
-    return (pixels[index] << 16 | pixels[index + 1] << 8 | pixels[index + 2]) - 1;
+    return (pixels[0] << 16 | pixels[1] << 8 | pixels[2]) - 1;
 }
 
 function selectBlock() {
@@ -80,6 +77,7 @@ function removeBlock() {
         let isEndBlock = isTheEndOfBlock(layerId);
         if (isEndBlock) {
             let indexOfBlock = dynamicValues.blocks.findIndex(block => block.endLayer === layerId);
+            layers[dynamicValues.blocks[indexOfBlock].initialLayer].shouldBeBlock = false;
             dynamicValues.blocks.splice(indexOfBlock, 1);
             alert("Block removed!");
             layersChanged = true;
@@ -270,6 +268,30 @@ function settingsBehaviour() {
     });
 }
 
+function model_inside_model(layers) {
+    let layer;
+    for (let index = 0; index < layers.length; index++) {
+        if (layers[index].model_inside_model && !layers[index].prevLayers.some((elem) => layers[elem].model_inside_model)) {
+            layer = layers[index];
+            break;
+        }
+    }
+    if (layer == null)
+        return;
+    layer.shouldBeBlock = true;
+    for (let i = layer.id; i < layers.length; i++) {
+        if (!layers[i].model_inside_model) {
+            let block = new Block(layer.id, layers[i - 1].id);
+            block.setName(layer.model_name);
+
+            if (!dynamicValues.blocks.some(obj => obj.isEqual(block))) {
+                dynamicValues.blocks.push(block);
+            }
+            return;
+        } else
+            layers[i].shouldBeDrawn = false;
+    }
+}
 function buttonsBehaviour() {
     const uploadForm = document.getElementById('upload-form');
     const uploadSettingsFileButton = document.getElementById('buttonUploadSettingsFile');
@@ -294,8 +316,12 @@ function buttonsBehaviour() {
                 layers = [];
                 for (let jsonLayer of data) {
                     let layer = new Layer(jsonLayer)
+
                     layers.push(layer)
                 }
+
+                model_inside_model(layers);
+
                 layers_backup = layers.map(obj => obj.copy());
                 layersChanged = true;
                 loader.style.display = 'none';
@@ -351,7 +377,33 @@ function buttonsBehaviour() {
     const exportImageButton = document.getElementById('exportImage');
 
     exportImageButton.addEventListener('click', () => {
-        saveCanvas('myCanvas', 'png');
+        saveFrames('myCanvas', 'png', 1, 1, data => {
+            let jsonData = getLayerColors();
+            const dataURL = drawingContext.canvas.toDataURL('image/png');
+
+            const formData = new FormData();
+            formData.append('image', dataURL);
+            formData.append('json', JSON.stringify(jsonData))
+
+            fetch("http://127.0.0.1:5000/process_image", {
+                method: "POST",
+                body: formData
+            }).then(response => response.json())  // parse response as JSON
+                .then(data => {
+                    // handle the JSON response here
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = 'data:image/png;base64,' + data.image;
+                    downloadLink.download = 'network.png';
+                    downloadLink.textContent = 'Network image';
+
+                    downloadLink.click();
+                })
+                .catch(error => {
+                    loader.style.display = 'none';
+                    alert("Was not possible to generate the image!")
+                    console.error(error);
+                });
+        });
     })
 
     const fileInput = document.getElementById('model-file');
@@ -373,6 +425,22 @@ function buttonsBehaviour() {
 
     settingsBehaviour();
     settingsColorsBehaviour();
+}
+
+function getLayerColors() {
+    let colors = {};
+    for (layer of layers)
+        if (!colors.hasOwnProperty(layer.type))
+            if (dynamicValues.colors[layer.type])
+                colors[layer.type] = dynamicValues.colors[layer.type];
+            else
+                colors[layer.type] = dynamicValues.colors["Default"];
+    for (block of dynamicValues.blocks) {
+        if (!color.hasOwnProperty(block.name))
+            colors[block.name] = block.color;
+    }
+
+    return colors;
 }
 
 function componentToHex(c) {

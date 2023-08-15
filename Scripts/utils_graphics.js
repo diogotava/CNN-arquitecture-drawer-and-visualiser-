@@ -1,12 +1,10 @@
 let mPage;
 let canvas;
 
-function mCreateCanvas(windowWidth, windowHeight, WEBGL) {
+function mCreateCanvas(windowWidth, windowHeight) {
     canvas = createCanvas(windowWidth, windowHeight, WEBGL);
-    pixelDensity(1);
     canvas.parent('column2');
     mPage = createGraphics(width, height, WEBGL);
-    mPage.pixelDensity(1);
     mPage.parent('column2');
 }
 
@@ -31,9 +29,7 @@ function mResizeCanvas() {
     let w = parseInt(windowWidth - element1Width, 10);
     let h = parseInt(windowHeight, 10);
     resizeCanvas(w, h);
-    pixelDensity(1);
     mPage.resizeCanvas(w, h);
-    mPage.pixelDensity(1);
 }
 
 function mResetMatrix() {
@@ -47,8 +43,8 @@ function mCamera() {
 }
 
 function mOrtho() {
-    ortho(-width / 2, width / 2, height / 2, -height / 2, 0.01, 10000);
-    mPage.ortho(-width / 2, width / 2, height / 2, -height / 2, 0.01, 10000);
+    ortho(-width / 2, width / 2, height / 2, -height / 2, 10, 10000);
+    mPage.ortho(-width / 2, width / 2, height / 2, -height / 2, 10, 10000);
 }
 
 function mPerspective() {

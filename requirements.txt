@@ -2,3 +2,4 @@ flask
 zipfile
 tensorflow
 waitress
+pillow

@@ -34,8 +34,8 @@ def get_shapes(layer, input_shape=False, correct_shape=False, layers=None):
         else:
             shape = shape[1:]
 
-        if shouldShapeBeInverted(layer, shape, layers) is not None:
-            inverted = shouldShapeBeInverted(layer, shape, layers)
+        inverted = shouldShapeBeInverted(layer, shape, layers)
+
         if not correct_shape:
             shape_return = [get_shape(shape, inverted)]
         else:
@@ -48,8 +48,7 @@ def get_shapes(layer, input_shape=False, correct_shape=False, layers=None):
         if not hasattr(layer, "type"):
             shape = shape[1:]
 
-        if shouldShapeBeInverted(layer, shape, layers) is not None:
-            inverted = shouldShapeBeInverted(layer, shape, layers)
+        inverted = shouldShapeBeInverted(layer, shape, layers)
 
         if not correct_shape:
             shape_return = [get_shape(shape, inverted)]
@@ -62,8 +61,7 @@ def get_shapes(layer, input_shape=False, correct_shape=False, layers=None):
                 shape = list(shape)
             shape = shape[1:]
 
-            if shouldShapeBeInverted(layer, shape, layers) is not None:
-                inverted = shouldShapeBeInverted(layer, shape, layers)
+            inverted = shouldShapeBeInverted(layer, shape, layers)
 
             if not correct_shape:
                 shape = get_shape(shape, inverted)

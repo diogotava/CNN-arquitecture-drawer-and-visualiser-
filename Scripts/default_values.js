@@ -50,8 +50,8 @@ function resetDynamicValues() {
         "sensitivityX": Number(document.getElementById('sensitivityX').defaultValue),
         "sensitivityY": Number(document.getElementById('sensitivityY').defaultValue),
         "sensitivityZ": Number(document.getElementById('sensitivityZ').defaultValue),
-        "minX": 5,
-        "minZY": 2,
+        "minX": Number(document.getElementById('minLength').defaultValue),
+        "minZY": Number(document.getElementById('minWidth').defaultValue),
         "maxX": Number(document.getElementById('maxLength').defaultValue),
         "maxZY": Number(document.getElementById('maxWidth').defaultValue),
         "minWindowSize": 400,
@@ -74,7 +74,9 @@ function updateValues() {
     dynamicValues.sensitivityX = Number(document.getElementById('sensitivityX').value);
     dynamicValues.sensitivityY = Number(document.getElementById('sensitivityY').value);
     dynamicValues.sensitivityZ = Number(document.getElementById('sensitivityZ').value);
+    dynamicValues.minX = Number(document.getElementById('minLength').value);
     dynamicValues.maxX = Number(document.getElementById('maxLength').value);
+    dynamicValues.minZY = Number(document.getElementById('minWidth').value);
     dynamicValues.maxZY = Number(document.getElementById('maxWidth').value);
     dynamicValues.defaultSpaceBetweenLayers = Number(document.getElementById('spaceBetweenLayers').value);
     document.getElementById('arrowHeight').max = dynamicValues.defaultSpaceBetweenLayers / 2 - 1;
@@ -84,21 +86,21 @@ function updateValues() {
 }
 
 function updateCameraValues() {
-    dynamicValues.camX = !isNaN(Number(document.getElementById('camX').value)) ? Number(document.getElementById('camX').value) : 0;
-    dynamicValues.camY = !isNaN(Number(document.getElementById('camY').value)) ? Number(document.getElementById('camY').value) : 0;
-    dynamicValues.camZ = !isNaN(Number(document.getElementById('camZ').value)) ? Number(document.getElementById('camZ').value) : 0;
-    dynamicValues.lookX = !isNaN(Number(document.getElementById('lookX').value)) ? Number(document.getElementById('lookX').value) : 0;
-    dynamicValues.lookY = !isNaN(Number(document.getElementById('lookY').value)) ? Number(document.getElementById('lookY').value) : 0;
-    dynamicValues.lookZ = !isNaN(Number(document.getElementById('lookZ').value)) ? Number(document.getElementById('lookZ').value) : 0;
+    dynamicValues.camX = !isNaN(parseFloat(document.getElementById('camX').value.replace(",", "."))) ? parseFloat(document.getElementById('camX').value.replace(",", ".")) : 0;
+    dynamicValues.camY = !isNaN(parseFloat(document.getElementById('camY').value.replace(",", "."))) ? parseFloat(document.getElementById('camY').value.replace(",", ".")) : 0;
+    dynamicValues.camZ = !isNaN(parseFloat(document.getElementById('camZ').value.replace(",", "."))) ? parseFloat(document.getElementById('camZ').value.replace(",", ".")) : 0;
+    dynamicValues.lookX = !isNaN(parseFloat(document.getElementById('lookX').value.replace(",", "."))) ? parseFloat(document.getElementById('lookX').value.replace(",", ".")) : 0;
+    dynamicValues.lookY = !isNaN(parseFloat(document.getElementById('lookY').value.replace(",", "."))) ? parseFloat(document.getElementById('lookY').value.replace(",", ".")) : 0;
+    dynamicValues.lookZ = !isNaN(parseFloat(document.getElementById('lookZ').value.replace(",", "."))) ? parseFloat(document.getElementById('lookZ').value.replace(",", ".")) : 0;
 }
 
 function updateCameraShownValues() {
-    document.getElementById('camX').value = !isNaN(Math.round(dynamicValues.camX)) ? Math.round(dynamicValues.camX) : 0;
-    document.getElementById('camY').value = !isNaN(Math.round(dynamicValues.camY)) ? Math.round(dynamicValues.camY) : 0;
-    document.getElementById('camZ').value = !isNaN(Math.round(dynamicValues.camZ)) ? Math.round(dynamicValues.camZ) : 0;
-    document.getElementById('lookX').value = !isNaN(Math.round(dynamicValues.lookX)) ? Math.round(dynamicValues.lookX) : 0;
-    document.getElementById('lookY').value = !isNaN(Math.round(dynamicValues.lookY)) ? Math.round(dynamicValues.lookY) : 0;
-    document.getElementById('lookZ').value = !isNaN(Math.round(dynamicValues.lookZ)) ? Math.round(dynamicValues.lookZ) : 0;
+    document.getElementById('camX').value = !isNaN(dynamicValues.camX) ? dynamicValues.camX : 0;
+    document.getElementById('camY').value = !isNaN(dynamicValues.camY) ? dynamicValues.camY : 0;
+    document.getElementById('camZ').value = !isNaN(dynamicValues.camZ) ? dynamicValues.camZ : 0;
+    document.getElementById('lookX').value = !isNaN(dynamicValues.lookX) ? dynamicValues.lookX : 0;
+    document.getElementById('lookY').value = !isNaN(dynamicValues.lookY) ? dynamicValues.lookY : 0;
+    document.getElementById('lookZ').value = !isNaN(dynamicValues.lookZ) ? dynamicValues.lookZ : 0;
 }
 
 function updateShownValues() {
@@ -110,7 +112,9 @@ function updateShownValues() {
     document.getElementById('sensitivityX').value = dynamicValues.sensitivityX;
     document.getElementById('sensitivityY').value = dynamicValues.sensitivityY;
     document.getElementById('sensitivityZ').value = dynamicValues.sensitivityZ;
+    document.getElementById('minLength').value = dynamicValues.minX;
     document.getElementById('maxLength').value = dynamicValues.maxX;
+    document.getElementById('minWidth').value = dynamicValues.minZY;
     document.getElementById('maxWidth').value = dynamicValues.maxZY;
     document.getElementById('spaceBetweenLayers').value = dynamicValues.defaultSpaceBetweenLayers;
     document.getElementById('lateralSpaceBetweenLayers').value = dynamicValues.defaultLateralSpaceBetweenLayers;

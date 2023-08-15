@@ -18,8 +18,9 @@ class Layer {
             this.outputShape = layer.outputShape;
             this.previousYPosition = layer.previousYPosition;
             this.batchNormalization = layer.batchNormalization;
-            this.shouldBeDrawn = layer.shouldBeDrawn;
-            this.shouldBeBlock = layer.shouldBeBlock;
+            this.layers = layer.layers;
+            this.model_inside_model = layer.model_inside_model;
+            this.model_name = layer.model_name;
 
         } else {
             this.selected = false;
@@ -28,12 +29,6 @@ class Layer {
                 this.shape = [layer.shape[0], layer.shape[2], layer.shape[1]];
             else {
                 this.shape = [...layer.shape];
-                if (this.shape[0] >= dynamicValues.minX * 2)
-                    this.shape[0] = this.shape[0] / Math.log(this.shape[0])
-                if (this.shape[1] >= dynamicValues.minZY * 2)
-                    this.shape[1] = this.shape[1] / Math.log(this.shape[1])
-                if (this.shape[2] >= dynamicValues.minZY * 2)
-                    this.shape[2] = this.shape[2] / Math.log(this.shape[2])
             }
             this.prevLayers = layer.previous_layers;
             this.nextLayers = layer.next_layers;
@@ -42,6 +37,9 @@ class Layer {
             this.outputShape = layer.output_shape;
             this.previousYPosition = 0;
             this.batchNormalization = layer.batch_normalization;
+            this.layers = layer.layers;
+            this.model_inside_model = layer.model_inside_model;
+            this.model_name = layer.model_name;
             this.shouldBeDrawn = true;
             this.shouldBeBlock = false;
             this.isInsideBlock = false;
@@ -87,21 +85,15 @@ class Layer {
         switch (typeOfDimension.value) {
             case "Exponential":
                 layerShape = [...this.shape];
+                if (layerShape[0] >= dynamicValues.minX * 2)
+                    layerShape[0] = layerShape[0] / Math.log(layerShape[0])
+                if (layerShape[1] >= dynamicValues.minZY * 2)
+                    layerShape[1] = layerShape[1] / Math.log(layerShape[1])
+                if (layerShape[2] >= dynamicValues.minZY * 2)
+                    layerShape[2] = layerShape[2] / Math.log(layerShape[2])
                 break;
             case "Real":
-                // layerShape = this.outputShape;
-                let indexX = 0
-                let indexY = 1
-                let indexZ = 2
-
-                if (this.invertedShape) {
-                    indexX = 2
-                    indexY = 0
-                    indexZ = 1
-                }
-                layerShape[0] = this.outputShape[0][indexX];
-                layerShape[1] = this.outputShape[0][indexY];
-                layerShape[2] = this.outputShape[0][indexZ];
+                layerShape = [...this.shape];
                 break;
             case "Linear":
                 layerShape[0] = dynamicValues.minX;
