@@ -45,11 +45,11 @@ function getMaxXPositionOfPrevLayers(prevLayers, layers) {
 
 function getMaxWidth(layer, layers) {
     let layersSeen = []
-    let nextLayers = [...layer.nextLayers];
+    let next_layers = [...layer.nextLayers];
     let maxWidth = layer.getShape()[indexY];
 
-    while (nextLayers.length !== 0) {
-        let nextLayerIndex = nextLayers.shift();
+    while (next_layers.length !== 0) {
+        let nextLayerIndex = next_layers.shift();
         layersSeen.push(nextLayerIndex);
         let nextLayer = layers[nextLayerIndex];
 
@@ -65,18 +65,18 @@ function getMaxWidth(layer, layers) {
                 maxWidth = width;
             }
         } else if (nextLayer.prevLayers.length > 1) {
-            if (nextLayers.length > 0 && nextLayer.nextLayers.some(elem => nextLayers.includes(elem)) && nextLayer.nextLayers.some(elem => !layersSeen.includes(elem))) {
+            if (next_layers.length > 0 && nextLayer.nextLayers.some(elem => next_layers.includes(elem)) && nextLayer.nextLayers.some(elem => !layersSeen.includes(elem))) {
                 layersSeen.pop();
-                if (!layersSeen.includes(layer.id) && !nextLayers.includes(layer.id))
-                    nextLayers.push(layer.id);
+                if (!layersSeen.includes(layer.id) && !next_layers.includes(layer.id))
+                    next_layers.push(layer.id);
             } else
                 return maxWidth;
         } else if (nextLayer.getShape()[indexY] > maxWidth) {
             maxWidth = nextLayer.getShape()[indexY];
         }
         for (let n_layer of nextLayer.nextLayers) {
-            if (!layersSeen.includes(n_layer) && !nextLayers.includes(n_layer))
-                nextLayers.push(n_layer);
+            if (!layersSeen.includes(n_layer) && !next_layers.includes(n_layer))
+                next_layers.push(n_layer);
         }
     }
 
@@ -89,33 +89,35 @@ function getPositionEndLayerBlock(layer, layers, xPosition = null, yPosition = n
     let spaceBetweenLayers = (layer.nextLayers.length > 1) ? 10 : 5;
     if (isBeginningBlock) {
         layer.prevLayers = [beginningLayer.id];
-        // getLayersPosition(layer, layers, xPosition, yPosition);
-    } else
+    } else {
+        layer.setXPositionInternalBlockLayer(xPosition);
         for (const nextLayerIndex of layer.nextLayers) {
             let nextLayer = layers[nextLayerIndex];
             nextLayer.previousYPosition = {
                 id: layer.id,
                 yPosition: layer.centerPosition[indexY]
             };
-            layer.setXPositionInternalBlockLayer(xPosition);
-            // getLayersPosition(nextLayer, layers, xPosition, yPosition, spaceBetweenLayers);
         }
+    }
 }
 
 function getPositionLayersInsideBlock(layer, layers, endBlockLayer, xPosition = null, yPosition = null) {
     layer.shouldBeDrawn = false;
 
-    for (const nextLayerIndex of layer.nextLayers) {
-        let nextLayer = layers[nextLayerIndex];
-        nextLayer.previousYPosition = {
-            id: layer.id,
-            yPosition: layer.centerPosition[indexY]
-        };
-        if (layer.id === endBlockLayer.id) {
-            getPositionEndLayerBlock(layer, layers, xPosition, yPosition);
-        } else {
-            layer.setXPositionInternalBlockLayer(xPosition);
+    if (layer.id === endBlockLayer.id)
+        getPositionEndLayerBlock(layer, layers, xPosition, yPosition);
+    else {
+        layer.setXPositionInternalBlockLayer(xPosition);
+
+        for (const nextLayerIndex of layer.nextLayers) {
+            let nextLayer = layers[nextLayerIndex];
+            nextLayer.previousYPosition = {
+                id: layer.id,
+                yPosition: layer.centerPosition[indexY]
+            };
+
             getPositionLayersInsideBlock(nextLayer, layers, endBlockLayer, xPosition, yPosition);
+
         }
     }
 }
@@ -176,11 +178,11 @@ function getYPosition(layer, layers) {
 function getXPosition(layer, layers) {
     let xPosition = 0;
 
-    if (layer.prevLayers.length === 1 && (layers[layer.prevLayers[0]].type != "Sequential" && layers[layer.prevLayers[0]].type != "Functional")) {
+    if (layer.prevLayers.length === 1) {
         xPosition = layers[layer.prevLayers[indexX]].centerPosition[indexX] + layers[layer.prevLayers[indexX]].getShape()[indexX] / 2;
     } else if (layer.prevLayers.length > 1) {
         xPosition = getMaxXPositionOfPrevLayers(layer.prevLayers, layers);
-    } else if (layer.model_inside_model || layer.prevLayers.length === 1 && (layers[layer.prevLayers[0]].type == "Sequential" || layers[layer.prevLayers[0]].type == "Functional")) {
+    } else if (layer.model_inside_model && layer.id > 0) {
         xPosition = layers[layer.id - 1].centerPosition[indexX] + layers[layer.id - 1].getShape()[indexX] / 2;
     }
 
@@ -209,7 +211,7 @@ function getLayerPosition(layer, layers) {
         layer.setXPositionOfBeginBlockLayer(xPosition)
         for (let nextLayerId of layer.nextLayers) {
             let nextLayer = layers[nextLayerId];
-            getPositionLayersInsideBlock(nextLayer, layers, endBlockLayer, layer.centerPosition[indexX] + layer.getShape()[indexX] / 2, yPosition);
+            getPositionLayersInsideBlock(nextLayer, layers, endBlockLayer, layer.centerPosition[indexX], yPosition);
         }
         if (!isTheBeginningOfBlock(endBlockLayer.id))
             layer.nextLayers = endBlockLayer.nextLayers;

@@ -55,6 +55,7 @@ function resetDynamicValues() {
         "maxX": Number(document.getElementById('maxLength').defaultValue),
         "maxZY": Number(document.getElementById('maxWidth').defaultValue),
         "minWindowSize": 400,
+        "paragraphsWorldCoord": { x: 0, y: 0, z: 0 },
         "blocks": [],
         "defaultSpaceBetweenLayers": Number(document.getElementById('spaceBetweenLayers').defaultValue),
         "defaultLateralSpaceBetweenLayers": Number(document.getElementById('lateralSpaceBetweenLayers').defaultValue),

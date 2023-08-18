@@ -38,6 +38,8 @@ function draw() {
         updateCameraShownValues();
     }
 
+    updateShownLayerInformation();
+
     if (layers.length > 0) {
         if (layersChanged) {
             layers = layers_backup.map(obj => obj.copy());

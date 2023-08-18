@@ -105,7 +105,7 @@ function mousePressed() {
 
 function selectedText() {
     let nothingSelectedH2 = select('#nothing_selected_h2');
-    let paragraphs = document.getElementById("paragraphs");
+    let layerInfo = document.getElementById("layerInfo");
     let selectedH2 = select('#selected_h2');
     let typeP = select('#type');
     let inputShape = select('#input_shape');
@@ -114,7 +114,7 @@ function selectedText() {
     let batchNormalization = select('#batchNormalization');
 
     nothingSelectedH2.elt.hidden = false;
-    paragraphs.style.display = 'none';
+    layerInfo.style.display = 'none';
     selectedH2.elt.hidden = true;
     typeP.elt.hidden = true;
     inputShape.elt.hidden = true;
@@ -122,13 +122,10 @@ function selectedText() {
     activation.elt.hidden = true;
     batchNormalization.elt.hidden = true;
 
-    if (isTheEndOfBlock(dynamicValues.selectedLayerID) || isTheBeginningOfBlock(dynamicValues.selectedLayerID)) {
+    layer_id_for_position = 0
+    if (isTheEndOfBlock(dynamicValues.selectedLayerID)) {
         let selectedLayer = layers[dynamicValues.selectedLayerID];
         nothingSelectedH2.elt.hidden = true;
-
-        paragraphs.style.display = 'block';
-        paragraphs.style.top = mouseY;
-        paragraphs.style.left = mouseX;
 
         selectedH2.elt.hidden = false;
         typeP.elt.hidden = false;
@@ -138,15 +135,8 @@ function selectedText() {
         selectedH2.html("Selected block: " + selectedLayer.id.toString() + " " + blockName);
         typeP.html("<b>Type:</b> Block");
 
-        paragraphs.style.display = 'block';
-        paragraphs.style.left = mouseX.toString() + 'px';
-        let height = 0;
-        if (mouseY - 7 - paragraphs.offsetHeight < 0) {
-            height = paragraphs.offsetHeight / 2
-        } else {
-            height = mouseY - 7 - paragraphs.offsetHeight / 2;
-        }
-        paragraphs.style.top = (height).toString() + 'px';
+        layerInfo.style.display = 'block';
+        layer_id_for_position = selectedLayer.id - 1
 
     } else if (dynamicValues.selectedLayerID !== -1) {
         let selectedLayer = layers[dynamicValues.selectedLayerID];
@@ -193,19 +183,77 @@ function selectedText() {
             batchNormalization.html("<b>Batch normalization filters:</b> " + selectedLayer.batchNormalization);
         }
 
-        paragraphs.style.display = 'block';
-        paragraphs.style.left = mouseX.toString() + 'px';
+        layerInfo.style.display = 'block';
+        layer_id_for_position = selectedLayer.id;
 
-        let height = 0;
-        if (mouseY - 7 - paragraphs.offsetHeight < 0) {
-            height = mouseY + 7 + paragraphs.offsetHeight / 2;
-            paragraphs.className = 'bubble-top';
-        } else {
-            height = mouseY - 7 - paragraphs.offsetHeight / 2;
-            paragraphs.className = 'bubble-bottom';
-        }
-        paragraphs.style.top = height.toString() + 'px';
     }
+    dynamicValues.paragraphsWorldCoord = convertScreenTo3D(layer_id_for_position);
+}
+
+function updateShownLayerInformation() {
+    screenCoordinates = convert3DToScreen(dynamicValues.paragraphsWorldCoord);
+    layerInfo.style.left = screenCoordinates.x.toString() + 'px';
+
+    let distanceFromTop = 0;
+    if (screenCoordinates.y - 7 - layerInfo.offsetHeight < 0) {
+        distanceFromTop = screenCoordinates.y + 7 + layerInfo.offsetHeight / 2;
+        layerInfo.className = 'bubble-top';
+    } else {
+        distanceFromTop = screenCoordinates.y - 7 - layerInfo.offsetHeight / 2;
+        layerInfo.className = 'bubble-bottom';
+    }
+    layerInfo.style.top = distanceFromTop.toString() + 'px';
+}
+function projectionMatrix() {
+    // Create a perspective projection matrix
+    const fov = PI / 3;  // Field of view in radians
+    const aspect = width / height;  // Aspect ratio
+    const near = 10;  // Near clipping plane
+    const far = 10000;  // Far clipping plane
+
+    const projectionMatrix = mat4.create();
+    mat4.perspective(projectionMatrix, fov, aspect, near, far);
+    // Invert the y-coordinate in the projection matrix because webgl has y upwards and screen has it downwards
+    projectionMatrix[5] *= -1;// Modify the value at index 5 (which corresponds to element [1][1] in the matrix)
+    return projectionMatrix;
+}
+
+function viewMatrix() {
+    const cameraPosition = [dynamicValues.camX, dynamicValues.camY, dynamicValues.camZ];
+    const target = [dynamicValues.lookX, dynamicValues.lookY, dynamicValues.lookZ];
+    const up = [0, 1, 0];
+
+    // Create a view matrix
+    const viewMatrix = mat4.create();
+    mat4.lookAt(viewMatrix, cameraPosition, target, up);
+    return viewMatrix;
+}
+
+function convertScreenTo3D(layer_id_for_position) {
+    let worldCoords = [0, 0, 0];
+    if (layer_id_for_position >= 0)
+        worldCoords = layers[layer_id_for_position].centerPosition;
+    return { x: worldCoords[0], y: worldCoords[1], z: worldCoords[2] };
+}
+
+function convert3DToScreen(worldCoordinates) {
+    // Use the view and projection matrices to project 3D coordinates to NDC
+    const worldToClipMatrix = mat4.create();
+    mat4.multiply(worldToClipMatrix, projectionMatrix(), viewMatrix());
+    // mat4.multiply(worldToClipMatrix, worldToClipMatrix, modelMatrix);
+
+    const clipPoint = vec4.create();
+    vec4.transformMat4(clipPoint, [worldCoordinates.x, worldCoordinates.y, worldCoordinates.z, 1], worldToClipMatrix);
+
+    // Convert clip space coordinates to NDC
+    const ndcX = clipPoint[0] / clipPoint[3];
+    const ndcY = clipPoint[1] / clipPoint[3];
+
+    // Convert NDC to screen coordinates
+    const screenX = (ndcX + 1) * width / 2;
+    const screenY = (1 - ndcY) * height / 2;
+
+    return { x: screenX, y: screenY };
 }
 
 function getAllPreviousLayers(layer, array) {
@@ -269,29 +317,33 @@ function settingsBehaviour() {
 }
 
 function model_inside_model(layers) {
-    let layer;
+    let models_begining_layer = [];
     for (let index = 0; index < layers.length; index++) {
-        if (layers[index].model_inside_model && !layers[index].prevLayers.some((elem) => layers[elem].model_inside_model)) {
-            layer = layers[index];
-            break;
+        if (layers[index].model_inside_model && !layers[index].prevLayers.some((elem) => layers[elem].model_inside_model && layers[elem].model_name == layers[index].model_name)) {
+            models_begining_layer.push(layers[index]);
         }
     }
-    if (layer == null)
+    if (models_begining_layer.length == 0)
         return;
-    layer.shouldBeBlock = true;
-    for (let i = layer.id; i < layers.length; i++) {
-        if (!layers[i].model_inside_model) {
-            let block = new Block(layer.id, layers[i - 1].id);
-            block.setName(layer.model_name);
+    for (layer of models_begining_layer) {
+        layer.shouldBeBlock = true;
+        for (let i = layer.id + 1; i < layers.length; i++) {
+            if (layers[i].model_name != layer.model_name || i == layers.length - 1) {
+                let block = new Block(layer.id, layers[i].id);
+                block.setName(layer.model_name);
 
-            if (!dynamicValues.blocks.some(obj => obj.isEqual(block))) {
-                dynamicValues.blocks.push(block);
+                if (!dynamicValues.blocks.some(obj => obj.isEqual(block))) {
+                    dynamicValues.blocks.push(block);
+                }
+                break;
+            } else {
+                layers[i].shouldBeDrawn = false;
+                layers[i].isInsideBlock = true;
             }
-            return;
-        } else
-            layers[i].shouldBeDrawn = false;
+        }
     }
 }
+
 function buttonsBehaviour() {
     const uploadForm = document.getElementById('upload-form');
     const uploadSettingsFileButton = document.getElementById('buttonUploadSettingsFile');
@@ -319,10 +371,10 @@ function buttonsBehaviour() {
 
                     layers.push(layer)
                 }
+                layers_backup = layers.map(obj => obj.copy());
 
                 model_inside_model(layers);
 
-                layers_backup = layers.map(obj => obj.copy());
                 layersChanged = true;
                 loader.style.display = 'none';
             })
@@ -430,7 +482,7 @@ function buttonsBehaviour() {
 function getLayerColors() {
     let colors = {};
     for (layer of layers)
-        if (!colors.hasOwnProperty(layer.type))
+        if (!colors.hasOwnProperty(layer.type) && !(layer.isInsideBlock || layer.shouldBeBlock))
             if (dynamicValues.colors[layer.type])
                 colors[layer.type] = dynamicValues.colors[layer.type];
             else
@@ -464,51 +516,26 @@ function parseSettingsJson(data) {
         dynamicValues.lookX = !isNaN(data.lookX) ? data.lookX : 0;
         dynamicValues.lookY = !isNaN(data.lookY) ? data.lookY : 0;
         dynamicValues.lookZ = !isNaN(data.lookZ) ? data.lookZ : 0;
-        dynamicValues.colors.Conv1D = data.colors.Conv1D;
-        dynamicValues.colors.Conv2D = data.colors.Conv2D;
-        dynamicValues.colors.Conv3D = data.colors.Conv3D;
-        dynamicValues.colors.Dense = data.colors.Dense;
-        dynamicValues.colors.Flatten = data.colors.Flatten;
-        dynamicValues.colors.Dropout = data.colors.Dropout;
-        dynamicValues.colors.InputLayer = data.colors.InputLayer;
-        dynamicValues.colors.Concatenate = data.colors.Concatenate;
-        dynamicValues.colors.Add = data.colors.Add;
-        dynamicValues.colors.LSTM = data.colors.LSTM;
-        dynamicValues.colors.GRU = data.colors.GRU;
-        dynamicValues.colors.SimpleRNN = data.colors.SimpleRNN;
-        dynamicValues.colors.TimeDistributed = data.colors.TimeDistributed;
-        dynamicValues.colors.Bidirectional = data.colors.Bidirectional;
-        dynamicValues.colors.ConvLSTM1D = data.colors.ConvLSTM1D;
-        dynamicValues.colors.ConvLSTM2D = data.colors.ConvLSTM2D;
-        dynamicValues.colors.ConvLSTM3D = data.colors.ConvLSTM3D;
-        dynamicValues.colors.BaseRNN = data.colors.BaseRNN;
-        dynamicValues.colors.MaxPooling1D = data.colors.MaxPooling1D;
-        dynamicValues.colors.MaxPooling2D = data.colors.MaxPooling2D;
-        dynamicValues.colors.MaxPooling3D = data.colors.MaxPooling3D;
-        dynamicValues.colors.AveragePooling1D = data.colors.AveragePooling1D;
-        dynamicValues.colors.AveragePooling2D = data.colors.AveragePooling2D;
-        dynamicValues.colors.AveragePooling3D = data.colors.AveragePooling3D;
-        dynamicValues.colors.GlobalMaxPooling1D = data.colors.GlobalMaxPooling1D;
-        dynamicValues.colors.GlobalMaxPooling2D = data.colors.GlobalMaxPooling2D;
-        dynamicValues.colors.GlobalMaxPooling3D = data.colors.GlobalMaxPooling3D;
-        dynamicValues.colors.GlobalAveragePooling1D = data.colors.GlobalAveragePooling1D;
-        dynamicValues.colors.GlobalAveragePooling2D = data.colors.GlobalAveragePooling2D;
-        dynamicValues.colors.GlobalAveragePooling3D = data.colors.GlobalAveragePooling3D;
-        dynamicValues.colors.Reshape = data.colors.Reshape;
-        dynamicValues.colors.Default = data.colors.Default;
-        dynamicValues.colors.Block = data.colors.Block;
-        dynamicValues.colors.Selected = data.colors.Selected;
+        for (color of data.colors) {
+            dynamicValues.colors[Object.keys(color)[0]] = color[Object.keys(color)[0]];
+        }
         dynamicValues.arrowWidth = data.arrowWidth;
         dynamicValues.arrowHeight = data.arrowHeight;
         dynamicValues.arrowPointRadius = data.arrowPointRadius;
         dynamicValues.sensitivityX = data.sensitivityX;
         dynamicValues.sensitivityY = data.sensitivityY;
         dynamicValues.sensitivityZ = data.sensitivityZ;
+        dynamicValues.minX = data.minX;
+        dynamicValues.minZY = data.minZY;
+        dynamicValues.maxX = data.maxX;
+        dynamicValues.maxZY = data.maxZY;
         dynamicValues.defaultSpaceBetweenLayers = data.defaultSpaceBetweenLayers;
         dynamicValues.defaultLateralSpaceBetweenLayers = data.defaultLateralSpaceBetweenLayers;
         dynamicValues.blockSize = data.blockSize;
 
         updateShownValues();
+        dynamicValues.blocks = []
+        layers = layers_backup.map(obj => obj.copy());
         for (let i = 0; i < data.blocks.length; i++) {
             let blockData = data.blocks[i];
             let initialLayer = layers.find(item => item.name === blockData.initialLayerName);

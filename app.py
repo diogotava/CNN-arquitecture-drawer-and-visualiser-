@@ -8,7 +8,7 @@ import base64
 import re
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from waitress import serve
+# from waitress import serve
 from Src.Utils.Utils import *
 
 app = Flask(__name__)
@@ -20,7 +20,8 @@ def process_file():
     file = request.files["model-file"]
     print(f'Received {file.filename}!')
     file.save(file.filename)
-    layers = []
+    model_layers = []
+    directory = False
     try:
         if ".zip" in file.filename:
             with zipfile.ZipFile(file.filename) as zip_file:
@@ -34,7 +35,6 @@ def process_file():
                         model_name = file_of_zip.filename
                 if not name_of_model:
                     model_name = zip_file.filelist[0].filename.split("/")[0] + "/"
-                directory = False
                 zip_file.extractall()
                 if "/" == model_name[-1]:
                     directory = True
@@ -42,18 +42,21 @@ def process_file():
                 model = get_model(model_name)
                 if directory:
                     shutil.rmtree(model_name)
+                    already_removed = True
                 else:
                     os.remove(model_name)
+                    already_removed = True
         else:
             model = get_model(file.filename)
 
-        layers, _ = create_layers(model)
+        model_layers, _ = create_layers(model)
 
-    except:
+    except Exception as e:
+        print(e)
         os.remove(file.filename)
     else:
         layer_json = []
-        for layer in layers:
+        for layer in model_layers:
             l_json = vars(layer)
             try:
                 del l_json['original_model_layer']
@@ -87,38 +90,41 @@ def process_image():
     draw = ImageDraw.Draw(image)
 
     # Choose a font and size
-    font = ImageFont.truetype("arial.ttf", 20)
+    font = ImageFont.truetype("arial.ttf", int((10 * image.width) ** (1/3)))
 
-    initial_x = 35
-    y_position = image.height - 30
-    max_x = image.width - 15
+    spacing = 20
+    pading = 10
 
-    # Calculate background position and size
-    background_x = 0
-    background_y = y_position-10
-    background_width = image.width
-    background_height = 40
-
-    # Draw background
-    draw.rectangle([background_x, background_y, background_x + background_width, background_y + background_height], fill=background_color)
-    x_position = initial_x
     max_height = 0
     for l in data:
         _, _, text_width, text_height = draw.textbbox((0, 0), l, font=font)
         if(text_height > max_height):
             max_height = text_height
+    initial_x = pading + max_height
+    y_position = image.height - max_height-pading
+    max_x = image.width - 15
+
+    # Calculate background position and size
+    background_x = 0
+    background_y = y_position - pading
+    background_width = image.width
+    background_height = max_height + 20
+
+    # Draw background
+    draw.rectangle([background_x, background_y, background_x + background_width, background_y + background_height], fill=background_color)
+    x_position = initial_x
     for layer in data:
         _, _, text_width, text_height = draw.textbbox((0, 0), layer, font=font)
 
         if(x_position + text_width >= max_x):
             x_position = initial_x
-            y_position = y_position - max_height -10
-            draw.rectangle([background_x, background_y - 40, background_x + background_width, background_y - 40 + background_height], fill=background_color)
+            y_position = y_position - max_height - pading
+            draw.rectangle([background_x, background_y - background_height, background_x + background_width, background_y ], fill=background_color)
         # Calculate text size
 
         # Draw square
         square_size = max_height
-        draw.rectangle([x_position - square_size, y_position+20 - square_size, x_position, y_position+20], fill=tuple(data[layer]), outline ="black")
+        draw.rectangle([x_position - square_size, y_position, x_position, y_position + square_size], fill=tuple(data[layer]), outline ="black")
 
         # Define text color
         text_color = (0, 0, 0)  # White
@@ -126,7 +132,7 @@ def process_image():
         # Add text to the image
         draw.text((x_position + 5, y_position), layer, font=font, fill=text_color)
 
-        x_position = x_position + text_width + 35
+        x_position = x_position + text_width + spacing + max_height
 
     image_byte_stream = BytesIO()
     image.save(image_byte_stream, format='PNG')  # You can change the format as needed
@@ -141,5 +147,5 @@ def process_image():
     return jsonify(response)
 
 if __name__ == '__main__':
-    
-    serve(app, host="0.0.0.0", port=5000)
+    # serve(app, host="0.0.0.0", port=5000)
+    app.run(debug=True)

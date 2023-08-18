@@ -90,7 +90,8 @@ a {
     }
 }
 
-.button-12, .button-12_color_reset {
+.button-12,
+.button-12_color_reset {
     margin: 5px;
     padding: 6px 14px;
     font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
@@ -177,7 +178,7 @@ fieldset legend {
 #settingsPopup,
 #blockPopup,
 #settingsColorsPopup,
-#paragraphs {
+#layerInfo {
     display: none;
     position: absolute;
     top: 50%;
@@ -217,7 +218,7 @@ fieldset legend {
     margin-right: 95px;
 }
 
-#paragraphs {
+#layerInfo {
     flex-direction: column;
     justify-content: center;
     align-items: center;

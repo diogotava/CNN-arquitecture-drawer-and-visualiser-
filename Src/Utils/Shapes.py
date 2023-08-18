@@ -72,21 +72,22 @@ def get_shapes(layer, input_shape=False, correct_shape=False, layers=None):
 
 
 def get_shape(shape, inverted):
-    one_dim_orientation = 'z'
-
     if shape == [None]:
         return []
     shape = [element for element in shape if element is not None]
     if len(shape) == 1:
-        if one_dim_orientation in ['x', 'y', 'z']:
-            shape = list((1,) * "xyz".index(one_dim_orientation) + tuple(shape))
-            if not inverted:
-                shape_aux = shape[2]
-                shape[2] = shape[1]
-                shape[1] = shape_aux
-        else:
-            raise ValueError(f"unsupported orientation: {one_dim_orientation}")
+        shape = list((1,) * 3 + tuple(shape))
+        if not inverted:
+            shape_aux = shape[2]
+            shape[2] = shape[1]
+            shape[1] = shape_aux
 
+    elif len(shape) == 2:
+        shape = list(tuple(shape) + (1,) * 1)
+        if not inverted:
+            shape_aux = shape[2]
+            shape[2] = shape[1]
+            shape[1] = shape_aux
     index_x = 0
     index_y = 1
     index_z = 2

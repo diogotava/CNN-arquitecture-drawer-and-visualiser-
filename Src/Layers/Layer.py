@@ -6,10 +6,10 @@ def get_next_layer(outbound_nodes):
     next_layers = []
     if len(outbound_nodes) != 0:
         for out_node in outbound_nodes:
-            layers = out_node.outbound_layer
+            nodes = out_node.outbound_layer
 
-            if type(layers) == list:
-                for layer in layers:
+            if type(nodes) == list:
+                for layer in nodes:
                     if layer.__class__.__name__ not in layersNotToConsider:
                         if layer not in next_layers:
                             next_layers.append(layer)
@@ -17,11 +17,11 @@ def get_next_layer(outbound_nodes):
                         next_layers_of_next = get_next_layer(layer.outbound_nodes)
                         next_layers = next_layers + next_layers_of_next
             else:
-                if layers.__class__.__name__ not in layersNotToConsider:
-                    if layers not in next_layers:
-                        next_layers.append(layers)
+                if nodes.__class__.__name__ not in layersNotToConsider:
+                    if nodes not in next_layers:
+                        next_layers.append(nodes)
                 else:
-                    next_layers = get_next_layer(layers.outbound_nodes)
+                    next_layers = get_next_layer(nodes.outbound_nodes)
 
     return next_layers
 
@@ -30,9 +30,9 @@ def get_prev_layer(inbound_nodes):
     prev_layers = []
     if len(inbound_nodes) != 0:
         for in_node in inbound_nodes:
-            layers = in_node.inbound_layers
-            if type(layers) == list:
-                for layer in layers:
+            nodes = in_node.inbound_layers
+            if type(nodes) == list:
+                for layer in nodes:
                     if layer.__class__.__name__ not in layersNotToConsider:
                         if layer not in prev_layers:
                             prev_layers.append(layer)
@@ -40,11 +40,11 @@ def get_prev_layer(inbound_nodes):
                         prev_layers_of_prev = get_prev_layer(layer.inbound_nodes)
                         prev_layers = prev_layers + prev_layers_of_prev
             else:
-                if layers.__class__.__name__ not in layersNotToConsider:
-                    if layers not in prev_layers:
-                        prev_layers.append(layers)
+                if nodes.__class__.__name__ not in layersNotToConsider:
+                    if nodes not in prev_layers:
+                        prev_layers.append(nodes)
                 else:
-                    prev_layers = get_prev_layer(layers.inbound_nodes)
+                    prev_layers = get_prev_layer(nodes.inbound_nodes)
 
     return prev_layers
 

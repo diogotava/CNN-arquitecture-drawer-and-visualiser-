@@ -7,6 +7,7 @@ class Layer {
         this.activation = layer.activation;
         this.lastNegativeYPosition = 0;
         this.lastPositiveYPosition = 0;
+
         if (copy) {
             this.selected = layer.selected;
             this.centerPosition = layer.centerPosition;
@@ -57,7 +58,7 @@ class Layer {
 
     setXPositionInternalBlockLayer(xPosition) {
         this.shape = [dynamicValues.blockSize, dynamicValues.blockSize, dynamicValues.blockSize];
-        this.centerPosition[0] = xPosition - dynamicValues.blockSize / 2;
+        this.centerPosition[0] = xPosition;
         this.isInsideBlock = true;
     }
 
