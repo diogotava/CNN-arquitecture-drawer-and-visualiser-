@@ -122,7 +122,7 @@ function selectedText() {
     activation.elt.hidden = true;
     batchNormalization.elt.hidden = true;
 
-    layer_id_for_position = 0
+    layer_id_for_position = -1
     if (isTheEndOfBlock(dynamicValues.selectedLayerID)) {
         let selectedLayer = layers[dynamicValues.selectedLayerID];
         nothingSelectedH2.elt.hidden = true;
@@ -187,7 +187,8 @@ function selectedText() {
         layer_id_for_position = selectedLayer.id;
 
     }
-    dynamicValues.paragraphsWorldCoord = convertScreenTo3D(layer_id_for_position);
+    if (layer_id_for_position != -1)
+        dynamicValues.paragraphsWorldCoord = convertScreenTo3D(layer_id_for_position);
 }
 
 function updateShownLayerInformation() {
@@ -366,6 +367,12 @@ function buttonsBehaviour() {
             .then(data => {
                 // handle the JSON response here
                 layers = [];
+                dynamicValues.blocks = [];
+
+                dynamicValues.selectedLayerID = -1;
+
+                selectedText()
+
                 for (let jsonLayer of data) {
                     let layer = new Layer(jsonLayer)
 

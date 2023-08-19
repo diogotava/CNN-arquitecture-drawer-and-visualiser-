@@ -76,7 +76,7 @@ def get_shape(shape, inverted):
         return []
     shape = [element for element in shape if element is not None]
     if len(shape) == 1:
-        shape = list((1,) * 3 + tuple(shape))
+        shape = list((1,) * 2 + tuple(shape))
         if not inverted:
             shape_aux = shape[2]
             shape[2] = shape[1]
