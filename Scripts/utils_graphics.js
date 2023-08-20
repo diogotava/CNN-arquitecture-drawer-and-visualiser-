@@ -25,31 +25,17 @@ function mTranslate() {
 }
 
 function mResizeCanvas() {
-    var element1Width = document.getElementById('column1').offsetWidth;
+    let element1Width = document.getElementById('column1').offsetWidth;
     let w = parseInt(windowWidth - element1Width, 10);
     let h = parseInt(windowHeight, 10);
     resizeCanvas(w, h);
     mPage.resizeCanvas(w, h);
-}
-
-function mResetMatrix() {
-    resetMatrix();
-    mPage.resetMatrix();
+    layersChanged = true;
 }
 
 function mCamera() {
     camera(...[...arguments]);
     mPage.camera(...[...arguments]);
-}
-
-function mOrtho() {
-    ortho(-width / 2, width / 2, height / 2, -height / 2, 10, 10000);
-    mPage.ortho(-width / 2, width / 2, height / 2, -height / 2, 10, 10000);
-}
-
-function mPerspective() {
-    perspective(PI / 3, width / height, 10, 10000);
-    mPage.perspective(PI / 3, width / height, 10, 10000);
 }
 
 function mPush() {

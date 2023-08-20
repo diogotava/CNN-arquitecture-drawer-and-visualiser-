@@ -1,19 +1,19 @@
-def isClass(layer, class_type):
+def is_class(layer, class_type):
     if not hasattr(layer, "type"):
         return layer.__class__.__name__ == class_type
     else:
         return layer.type == class_type
 
 
-def shouldShapeBeInverted(layer, shape, layers):
-    if isClass(layer, "Dense") and len(shape) == 1:
+def should_shape_be_inverted(layer, shape, layers):
+    if is_class(layer, "Dense") and len(shape) == 1:
         return False
-    if isClass(layer, "Add") and len(shape) == 3:
+    if is_class(layer, "Add") and len(shape) == 3:
         if layers is None:
             return False
         else:
-            return shouldShapeBeInverted(layers[layer.previous_layers[0]].original_model_layer, layers[layer.previous_layers[0]].shape,
-                                         layers)
+            return should_shape_be_inverted(layers[layer.previous_layers[0]].original_model_layer, layers[layer.previous_layers[0]].shape,
+                                            layers)
 
     return True
 
@@ -34,7 +34,7 @@ def get_shapes(layer, input_shape=False, correct_shape=False, layers=None):
         else:
             shape = shape[1:]
 
-        inverted = shouldShapeBeInverted(layer, shape, layers)
+        inverted = should_shape_be_inverted(layer, shape, layers)
 
         if not correct_shape:
             shape_return = [get_shape(shape, inverted)]
@@ -48,7 +48,7 @@ def get_shapes(layer, input_shape=False, correct_shape=False, layers=None):
         if not hasattr(layer, "type"):
             shape = shape[1:]
 
-        inverted = shouldShapeBeInverted(layer, shape, layers)
+        inverted = should_shape_be_inverted(layer, shape, layers)
 
         if not correct_shape:
             shape_return = [get_shape(shape, inverted)]
@@ -61,7 +61,7 @@ def get_shapes(layer, input_shape=False, correct_shape=False, layers=None):
                 shape = list(shape)
             shape = shape[1:]
 
-            inverted = shouldShapeBeInverted(layer, shape, layers)
+            inverted = should_shape_be_inverted(layer, shape, layers)
 
             if not correct_shape:
                 shape = get_shape(shape, inverted)

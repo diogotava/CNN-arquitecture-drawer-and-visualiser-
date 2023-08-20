@@ -42,10 +42,8 @@ def process_file():
                 model = get_model(model_name)
                 if directory:
                     shutil.rmtree(model_name)
-                    already_removed = True
                 else:
                     os.remove(model_name)
-                    already_removed = True
         else:
             model = get_model(file.filename)
 
@@ -64,10 +62,10 @@ def process_file():
                 del l_json['computed_position']
             except KeyError:
                 pass
-            if layer.layers != None:
+            if layer.layers is not None:
                 layer_of_layer_json = []
-                for l in layer.layers:
-                    l_o_l_json = vars(l)
+                for layer_of_model in layer.layers:
+                    l_o_l_json = vars(layer_of_model)
                     del l_o_l_json['original_model_layer']
                     del l_o_l_json['previous_y_position']
                     del l_o_l_json['computed_position']
@@ -78,6 +76,7 @@ def process_file():
         os.remove(file.filename)
         response = json.dumps(layer_json)
         return response
+
 
 @app.route('/process_image', methods=['POST'])
 def process_image():
@@ -90,23 +89,23 @@ def process_image():
     draw = ImageDraw.Draw(image)
 
     # Choose a font and size
-    font = ImageFont.truetype("arial.ttf", int((10 * image.width) ** (1/3)))
+    font = ImageFont.truetype("arial.ttf", int((10 * image.width) ** (1 / 3)))
 
     spacing = 20
-    pading = 10
+    padding = 10
 
     max_height = 0
-    for l in data:
-        _, _, text_width, text_height = draw.textbbox((0, 0), l, font=font)
-        if(text_height > max_height):
+    for layer in data:
+        _, _, text_width, text_height = draw.textbbox((0, 0), layer, font=font)
+        if text_height > max_height:
             max_height = text_height
-    initial_x = pading + max_height
-    y_position = image.height - max_height-pading
+    initial_x = padding + max_height
+    y_position = image.height - max_height - padding
     max_x = image.width - 15
 
     # Calculate background position and size
     background_x = 0
-    background_y = y_position - pading
+    background_y = y_position - padding
     background_width = image.width
     background_height = max_height + 20
 
@@ -116,15 +115,17 @@ def process_image():
     for layer in data:
         _, _, text_width, text_height = draw.textbbox((0, 0), layer, font=font)
 
-        if(x_position + text_width >= max_x):
+        if x_position + text_width >= max_x:
             x_position = initial_x
-            y_position = y_position - max_height - pading
-            draw.rectangle([background_x, background_y - background_height, background_x + background_width, background_y ], fill=background_color)
+            y_position = y_position - max_height - padding
+            draw.rectangle([background_x, background_y - background_height, background_x + background_width, background_y],
+                           fill=background_color)
         # Calculate text size
 
         # Draw square
         square_size = max_height
-        draw.rectangle([x_position - square_size, y_position, x_position, y_position + square_size], fill=tuple(data[layer]), outline ="black")
+        draw.rectangle([x_position - square_size, y_position, x_position, y_position + square_size], fill=tuple(data[layer]),
+                       outline="black")
 
         # Define text color
         text_color = (0, 0, 0)  # White
@@ -145,6 +146,7 @@ def process_image():
     }
     print('Sent Image!')
     return jsonify(response)
+
 
 if __name__ == '__main__':
     # serve(app, host="0.0.0.0", port=5000)

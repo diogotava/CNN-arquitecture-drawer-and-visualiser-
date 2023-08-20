@@ -122,7 +122,7 @@ function selectedText() {
     activation.elt.hidden = true;
     batchNormalization.elt.hidden = true;
 
-    layer_id_for_position = -1
+    let layer_id_for_position = -1
     if (isTheEndOfBlock(dynamicValues.selectedLayerID)) {
         let selectedLayer = layers[dynamicValues.selectedLayerID];
         nothingSelectedH2.elt.hidden = true;
@@ -187,15 +187,16 @@ function selectedText() {
         layer_id_for_position = selectedLayer.id;
 
     }
-    if (layer_id_for_position != -1)
+    if (layer_id_for_position !== -1)
         dynamicValues.paragraphsWorldCoord = convertScreenTo3D(layer_id_for_position);
 }
 
 function updateShownLayerInformation() {
-    screenCoordinates = convert3DToScreen(dynamicValues.paragraphsWorldCoord);
+    let screenCoordinates = convert3DToScreen(dynamicValues.paragraphsWorldCoords);
+    let layerInfo = document.getElementById("layerInfo");
     layerInfo.style.left = screenCoordinates.x.toString() + 'px';
 
-    let distanceFromTop = 0;
+    let distanceFromTop;
     if (screenCoordinates.y - 7 - layerInfo.offsetHeight < 0) {
         distanceFromTop = screenCoordinates.y + 7 + layerInfo.offsetHeight / 2;
         layerInfo.className = 'bubble-top';
@@ -214,7 +215,7 @@ function projectionMatrix() {
 
     const projectionMatrix = mat4.create();
     mat4.perspective(projectionMatrix, fov, aspect, near, far);
-    // Invert the y-coordinate in the projection matrix because webgl has y upwards and screen has it downwards
+    // Invert the y-coordinate in the projection matrix because webgl has y upwards and screen has y downwards
     projectionMatrix[5] *= -1;// Modify the value at index 5 (which corresponds to element [1][1] in the matrix)
     return projectionMatrix;
 }
@@ -318,18 +319,18 @@ function settingsBehaviour() {
 }
 
 function model_inside_model(layers) {
-    let models_begining_layer = [];
+    let models_beginning_layer = [];
     for (let index = 0; index < layers.length; index++) {
-        if (layers[index].model_inside_model && !layers[index].prevLayers.some((elem) => layers[elem].model_inside_model && layers[elem].model_name == layers[index].model_name)) {
-            models_begining_layer.push(layers[index]);
+        if (layers[index].model_inside_model && !layers[index].prevLayers.some((elem) => layers[elem].model_inside_model && layers[elem].model_name === layers[index].model_name)) {
+            models_beginning_layer.push(layers[index]);
         }
     }
-    if (models_begining_layer.length == 0)
+    if (models_beginning_layer.length === 0)
         return;
-    for (layer of models_begining_layer) {
+    for (layer of models_beginning_layer) {
         layer.shouldBeBlock = true;
         for (let i = layer.id + 1; i < layers.length; i++) {
-            if (layers[i].model_name != layer.model_name || i == layers.length - 1) {
+            if (layers[i].model_name !== layer.model_name || i === layers.length - 1) {
                 let block = new Block(layer.id, layers[i].id);
                 block.setName(layer.model_name);
 
@@ -436,7 +437,7 @@ function buttonsBehaviour() {
     const exportImageButton = document.getElementById('exportImage');
 
     exportImageButton.addEventListener('click', () => {
-        saveFrames('myCanvas', 'png', 1, 1, data => {
+        saveFrames('myCanvas', 'png', 1, 1, () => {
             let jsonData = getLayerColors();
             const dataURL = drawingContext.canvas.toDataURL('image/png');
 
@@ -503,7 +504,7 @@ function getLayerColors() {
 }
 
 function componentToHex(c) {
-    var hex = c.toString(16);
+    let hex = c.toString(16);
     return hex.length === 1 ? "0" + hex : hex;
 }
 

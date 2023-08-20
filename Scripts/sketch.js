@@ -9,7 +9,6 @@ function setup() {
     let w = parseInt(windowWidth - element1Width, 10);
     let h = parseInt(windowHeight, 10);
     mCreateCanvas(w, h);
-    mPerspective();
 
     buttonsBehaviour();
 }

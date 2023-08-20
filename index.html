@@ -8,7 +8,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
     <script src="https://kit.fontawesome.com/298fd45b46.js" crossorigin="anonymous"></script>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="Scripts/sketch.js"></script>
     <script src="Scripts/default_values.js"></script>
@@ -20,6 +19,9 @@
     <script src="Scripts/utils_graphics.js"></script>
     <script src="Scripts/drawingArrows.js"></script>
     <script src="Scripts/drawingLayers.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"
+        integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ=="
+        crossorigin="anonymous" defer></script>
     <link href="Scripts/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -44,7 +46,7 @@
 
         <h2 id="nothing_selected_h2">Nothing Selected!</h2>
 
-        <div id="paragraphs" class="bubble-bottom">
+        <div id="layerInfo" class="bubble-bottom">
             <h2 id="selected_h2" hidden><b>Selected layer:</b> </h2>
             <p id="type" hidden><b>Type: </b></p>
             <p id="input_shape" hidden><b>Input shape: </b></p>
@@ -67,11 +69,11 @@
                             </label>
                             <button class="button-12" id="buttonUploadSettingsFile" type="submit">Upload</button>
                         </form>
-                        <a class="button-12" href="template.json" download="package.json">
+                        <a class="button-12" href="Scripts/template.json" download="template.json">
                             <i class="fa fa-cloud-download"></i>
                             Template
                         </a><br>
-                        <p style="font-size: 10px;">Note: Only the data (tags) contained in the template file will be
+                        <p style="font-size: 10px;">Note: Only the data (tags) contained in the template file (except layer colors that can be added more) will be
                             considered!</p>
                     </fieldset>
 
@@ -86,8 +88,9 @@
 
                             <label for="camZ">Z</label>
                             <input type="number" class="fieldsetInput" step="1" id="camZ" name="camZ" value="400"><br>
-
-                            <legend>Look position</legend>
+                        </form>
+                        <legend>Look position</legend>
+                        <form>
                             <label for="lookX">X</label>
                             <input type="number" class="fieldsetInput" step="1" id="lookX" name="lookX" value="500">
 
@@ -202,7 +205,7 @@
 
                     <button class="button-12" id="settingsColorsButton">Open layer color Settings</button>
 
-                    <input type="reset" class="button-12" value="Reset" value="Reset">
+                    <input type="reset" class="button-12" value="Reset">
                 </form>
             </div>
             <button class="button-12" type="submit" id="saveSettings">Save</button>
@@ -225,7 +228,7 @@
 
 
         <div id="settingsColorsPopup">
-            <h2>Layers Colors Settings</h2>
+            <h2>Layers Color Settings</h2>
             <div class="checkbox-wrapper-14">
                 <label for="resetPrevious" style="margin-right: 5px;">Reset to the default color</label>
                 <input id="resetPrevious" type="checkbox" class="switch">
@@ -334,7 +337,7 @@
                     </fieldset>
 
                     <fieldset>
-                        <legend>Convolutional</legend>
+                        <legend>Convolutional / Convolutional Transpose</legend>
 
                         <div class="checkbox-wrapper-14">
                             <input id="s1-15" type="checkbox" class="switch" onchange="allConvSameColor();">

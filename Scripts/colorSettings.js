@@ -115,7 +115,7 @@ function settingsColorsBehaviour() {
     const resetBidirectionalButton = document.getElementById('resetBidirectional');
     resetBidirectionalButton.addEventListener('click', (event) => {
         event.preventDefault();
-        resetBidiretional();
+        resetBidirectional();
     });
 
     const resetBaseRNNButton = document.getElementById('resetBaseRNN');
@@ -434,7 +434,7 @@ function resetColors() {
     resetGRU();
     resetSimpleRNN();
     resetTimeDistributed();
-    resetBidiretional();
+    resetBidirectional();
     resetConvLSTM1D();
     resetConvLSTM2D();
     resetConvLSTM3D();
@@ -597,7 +597,7 @@ function resetTimeDistributed() {
     }
 }
 
-function resetBidiretional() {
+function resetBidirectional() {
     let bidirectionalColor;
     let resetPrevious = document.getElementById('resetPrevious').checked;
     if (resetPrevious) {

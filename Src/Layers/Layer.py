@@ -53,6 +53,7 @@ class Layer:
 
     def __init__(self, shape, layer, model_inside_model, model_name):
 
+        self.id = None
         self.selected = False
         self.lateral_space_between_layers = 10
         self.space_between_layers = 5
@@ -79,16 +80,15 @@ class Layer:
             self.activation = layer.activation.__name__
         except AttributeError:
             self.activation = None
-        pass
 
-    def setId(self, id):
-        self.id = id
+    def set_id(self, identifier):
+        self.id = identifier
 
-    def setXPosition(self, x_position):
+    def set_x_position(self, x_position):
         self.center_position[0] = x_position + (self.shape[0]/2) + self.space_between_layers
 
-    def setYPosition(self, y_position):
+    def set_y_position(self, y_position):
         self.center_position[2] = y_position
 
-    def getYPosition(self):
+    def get_y_position(self):
         return self.center_position[2]

@@ -1,6 +1,5 @@
 let indexX = 0;
 let indexY = 2;
-let indexZ = 1;
 
 function isTheBeginningOfBlock(layerId) {
     return dynamicValues.blocks.some((block) => block.initialLayer === layerId);
@@ -83,10 +82,9 @@ function getMaxWidth(layer, layers) {
     return maxWidth;
 }
 
-function getPositionEndLayerBlock(layer, layers, xPosition = null, yPosition = null) {
+function getPositionEndLayerBlock(layer, layers, xPosition = null) {
     let isBeginningBlock = isTheBeginningOfBlock(layer.id);
     let beginningLayer = getBeginningBlockLayer(layers, layer.id);
-    let spaceBetweenLayers = (layer.nextLayers.length > 1) ? 10 : 5;
     if (isBeginningBlock) {
         layer.prevLayers = [beginningLayer.id];
     } else {
@@ -105,7 +103,7 @@ function getPositionLayersInsideBlock(layer, layers, endBlockLayer, xPosition = 
     layer.shouldBeDrawn = false;
 
     if (layer.id === endBlockLayer.id)
-        getPositionEndLayerBlock(layer, layers, xPosition, yPosition);
+        getPositionEndLayerBlock(layer, layers, xPosition);
     else {
         layer.setXPositionInternalBlockLayer(xPosition);
 
@@ -154,7 +152,7 @@ function getYPosition(layer, layers) {
         layer.previousYPosition = { id: layer.id, yPosition: yPosition };
     }
     if (layer.nextLayers.length > 1) {
-        let prevYPos = {};
+        let prevYPos;
         if (yPosition === layer.previousYPosition.yPosition) {
             prevYPos = layer.previousYPosition;
         } else {

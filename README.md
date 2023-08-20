@@ -1,1 +1,1 @@
-# CNN-arquitecture-drawer-and-visualiser-
+# CNN-architecture-drawer-and-visualiser-
