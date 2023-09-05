@@ -61,3 +61,9 @@ function mOrbitControl(sensitivityX = 1, sensitivityY = 1, sensitivityZ = 0.01) 
     orbitControl(sensitivityX, sensitivityY, sensitivityZ);
     mPage.orbitControl(sensitivityX, sensitivityY, sensitivityZ);
 }
+
+function getLayerId() {
+    let pixels = mPage.get(mouseX, mouseY);
+
+    return (pixels[0] << 16 | pixels[1] << 8 | pixels[2]) - 1;
+}
