@@ -10,13 +10,13 @@ function mCreateCanvas(windowWidth, windowHeight) {
 
 function mBox(id, shapeX, shapeY, shapeZ) {
     smooth();
-    strokeWeight(1);
+    strokeWeight(0.75);
     box(shapeX, shapeY, shapeZ);
 
     mPage.fill((id >> 16) & 0xFF, (id >> 8) & 0xF, id & 0xFF);
     mPage.noStroke();
     mPage.box(shapeX, shapeY, shapeZ);
-    strokeWeight(1);
+    strokeWeight(0.75);
 }
 
 function mTranslate() {
@@ -60,4 +60,10 @@ function mTexture() {
 function mOrbitControl(sensitivityX = 1, sensitivityY = 1, sensitivityZ = 0.01) {
     orbitControl(sensitivityX, sensitivityY, sensitivityZ);
     mPage.orbitControl(sensitivityX, sensitivityY, sensitivityZ);
+}
+
+function getLayerId() {
+    let pixels = mPage.get(mouseX, mouseY);
+
+    return (pixels[0] << 16 | pixels[1] << 8 | pixels[2]) - 1;
 }
