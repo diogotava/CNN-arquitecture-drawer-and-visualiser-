@@ -109,21 +109,12 @@ function updateCameraShownValues() {
 function updateShownValues() {
     updateCameraShownValues();
     updateColorsShownValues();
-    document.getElementById('arrowWidth').value = dynamicValues.arrowWidth;
-    document.getElementById('arrowHeight').value = dynamicValues.arrowHeight;
-    document.getElementById('arrowPointRadius').value = dynamicValues.arrowPointRadius;
-    document.getElementById('sensitivityX').value = dynamicValues.sensitivityX;
-    document.getElementById('sensitivityY').value = dynamicValues.sensitivityY;
-    document.getElementById('sensitivityZ').value = dynamicValues.sensitivityZ;
-    document.getElementById('minLength').value = dynamicValues.minLength;
-    document.getElementById('maxLength').value = dynamicValues.maxLength;
-    document.getElementById('minWidth').value = dynamicValues.minWidth;
-    document.getElementById('maxWidth').value = dynamicValues.maxWidth;
-    document.getElementById('strokeWeight').value = dynamicValues.strokeWeight;
+    let keys = ['arrowWidth', 'arrowHeight', 'arrowPointRadius', 'sensitivityX', 'sensitivityY', 'sensitivityZ', 'minLength', 'maxLength', 'minWidth', 'maxWidth', 'strokeWeight', 'spaceBetweenLayers', 'lateralSpaceBetweenLayers', 'blockSize']
+
+    keys.forEach(key => {
+        document.getElementById(key).value = dynamicValues[key];
+    });
     updateRangeValue();
-    document.getElementById('spaceBetweenLayers').value = dynamicValues.spaceBetweenLayers;
-    document.getElementById('lateralSpaceBetweenLayers').value = dynamicValues.lateralSpaceBetweenLayers;
-    document.getElementById('blockSize').value = dynamicValues.blockSize;
 }
 
 function resetValues() {

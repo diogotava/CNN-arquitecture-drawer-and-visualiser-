@@ -87,16 +87,18 @@ function getPositionEndLayerBlock(layer, layers, xPosition = null) {
     let beginningLayer = getBeginningBlockLayer(layers, layer.id);
     if (isBeginningBlock) {
         layer.prevLayers = [beginningLayer.id];
-    } else {
-        layer.setXPositionInternalBlockLayer(xPosition);
-        for (const nextLayerIndex of layer.nextLayers) {
-            let nextLayer = layers[nextLayerIndex];
-            nextLayer.previousYPosition = {
-                id: layer.id,
-                yPosition: layer.centerPosition[indexY]
-            };
-        }
+        return
     }
+
+    layer.setXPositionInternalBlockLayer(xPosition);
+    for (const nextLayerIndex of layer.nextLayers) {
+        let nextLayer = layers[nextLayerIndex];
+        nextLayer.previousYPosition = {
+            id: layer.id,
+            yPosition: layer.centerPosition[indexY]
+        };
+    }
+
 }
 
 function getPositionLayersInsideBlock(layer, layers, endBlockLayer, xPosition = null, yPosition = null) {
