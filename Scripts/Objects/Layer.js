@@ -26,7 +26,7 @@ class Layer {
         } else {
             this.selected = false;
             this.centerPosition = [0, 0, 0];
-            if (layer.type === "Dense" && layer.shape[0] === dynamicValues.minX && layer.shape[1] === dynamicValues.minZY)
+            if (layer.type === "Dense" && layer.shape[0] === dynamicValues.minLength && layer.shape[1] === dynamicValues.minWidth)
                 this.shape = [layer.shape[0], layer.shape[2], layer.shape[1]];
             else {
                 this.shape = [...layer.shape];
@@ -48,12 +48,12 @@ class Layer {
     }
 
     setXPosition(xPosition) {
-        this.centerPosition[0] = xPosition + (this.getShape()[0] / 2) + dynamicValues.defaultSpaceBetweenLayers;
+        this.centerPosition[0] = xPosition + (this.getShape()[0] / 2) + dynamicValues.spaceBetweenLayers;
     }
 
     setXPositionOfBeginBlockLayer(xPosition) {
         this.shape = [dynamicValues.blockSize, dynamicValues.blockSize, dynamicValues.blockSize];
-        this.centerPosition[0] = xPosition + (this.getShape()[0] / 2) + dynamicValues.defaultSpaceBetweenLayers;
+        this.centerPosition[0] = xPosition + (this.getShape()[0] / 2) + dynamicValues.spaceBetweenLayers;
     }
 
     setXPositionInternalBlockLayer(xPosition) {
@@ -86,34 +86,34 @@ class Layer {
         switch (typeOfDimension.value) {
             case "Exponential":
                 layerShape = [...this.shape];
-                if (layerShape[0] >= dynamicValues.minX * 2)
+                if (layerShape[0] >= dynamicValues.minLength * 2)
                     layerShape[0] = layerShape[0] / Math.log(layerShape[0])
-                if (layerShape[1] >= dynamicValues.minZY * 2)
+                if (layerShape[1] >= dynamicValues.minWidth * 2)
                     layerShape[1] = layerShape[1] / Math.log(layerShape[1])
-                if (layerShape[2] >= dynamicValues.minZY * 2)
+                if (layerShape[2] >= dynamicValues.minWidth * 2)
                     layerShape[2] = layerShape[2] / Math.log(layerShape[2])
                 break;
             case "Real":
                 layerShape = [...this.shape];
                 break;
             case "Linear":
-                layerShape[0] = dynamicValues.minX;
-                layerShape[1] = dynamicValues.minZY;
-                layerShape[2] = dynamicValues.minZY;
+                layerShape[0] = dynamicValues.minLength;
+                layerShape[1] = dynamicValues.minWidth;
+                layerShape[2] = dynamicValues.minWidth;
                 break;
             default:
                 break;
         }
 
         if (layerShape.length === 0) {
-            layerShape[0] = dynamicValues.minX;
-            layerShape[1] = dynamicValues.minZY;
-            layerShape[2] = dynamicValues.minZY;
+            layerShape[0] = dynamicValues.minLength;
+            layerShape[1] = dynamicValues.minWidth;
+            layerShape[2] = dynamicValues.minWidth;
         }
 
-        layerShape[0] = Math.min(Math.max(layerShape[0], dynamicValues.minX), dynamicValues.maxX);
-        layerShape[1] = Math.min(Math.max(layerShape[1], dynamicValues.minZY), dynamicValues.maxZY);
-        layerShape[2] = Math.min(Math.max(layerShape[2], dynamicValues.minZY), dynamicValues.maxZY);
+        layerShape[0] = Math.min(Math.max(layerShape[0], dynamicValues.minLength), dynamicValues.maxLength);
+        layerShape[1] = Math.min(Math.max(layerShape[1], dynamicValues.minWidth), dynamicValues.maxWidth);
+        layerShape[2] = Math.min(Math.max(layerShape[2], dynamicValues.minWidth), dynamicValues.maxWidth);
 
         return layerShape;
     }

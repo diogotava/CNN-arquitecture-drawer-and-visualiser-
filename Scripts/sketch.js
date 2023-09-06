@@ -22,20 +22,14 @@ function draw() {
     else if (settingsPopup.style.display === 'block')
         mOrbitControl(dynamicValues.sensitivityX, dynamicValues.sensitivityY, 0);
     const cam = _renderer._curCamera;
-    if (parseFloat(cam.eyeX) !== parseFloat(dynamicValues.camX) ||
-        parseFloat(cam.eyeY) !== parseFloat(dynamicValues.camY) ||
-        parseFloat(cam.eyeZ) !== parseFloat(dynamicValues.camZ) ||
-        parseFloat(cam.centerX) !== parseFloat(dynamicValues.lookX) ||
-        parseFloat(cam.centerY) !== parseFloat(dynamicValues.lookY) ||
-        parseFloat(cam.centerZ) !== parseFloat(dynamicValues.lookZ)) {
-        dynamicValues.camX = !isNaN(parseFloat(cam.eyeX)) ? parseFloat(cam.eyeX) : 0;
-        dynamicValues.camY = !isNaN(parseFloat(cam.eyeY)) ? parseFloat(cam.eyeY) : 0;
-        dynamicValues.camZ = !isNaN(parseFloat(cam.eyeZ)) ? parseFloat(cam.eyeZ) : 0;
-        dynamicValues.lookX = !isNaN(parseFloat(cam.centerX)) ? parseFloat(cam.centerX) : 0;
-        dynamicValues.lookY = !isNaN(parseFloat(cam.centerY)) ? parseFloat(cam.centerY) : 0;
-        dynamicValues.lookZ = !isNaN(parseFloat(cam.centerZ)) ? parseFloat(cam.centerZ) : 0;
-        updateCameraShownValues();
-    }
+    let keysDynamicValues = ['camX', 'camY', 'camZ', 'lookX', 'lookY', 'lookZ'];
+    let keysCam = ['eyeX', 'eyeY', 'eyeZ', 'centerX', 'centerY', 'centerZ'];
+    keysDynamicValues.forEach((key, index) => {
+        if (parseFloat(cam[keysCam[index]]) !== parseFloat(dynamicValues[key])) {
+            dynamicValues[key] = !isNaN(parseFloat(cam[keysCam[index]])) ? parseFloat(cam[keysCam[index]]) : 0;
+            updateCameraShownValues();
+        }
+    })
 
     updateShownLayerInformation();
 

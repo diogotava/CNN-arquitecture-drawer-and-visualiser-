@@ -10,6 +10,22 @@ body {
     overflow: hidden;
 }
 
+ul {
+    list-style-type: none;
+}
+
+#strokeWeightValue {
+    font-size: 14px;
+    display: inline-block;
+    white-space: nowrap;
+    width: 30px;
+    text-align: center;
+}
+
+input[type="range"] {
+    width: 65px;
+}
+
 canvas {
     display: block;
 }
@@ -132,12 +148,8 @@ label {
     font-size: 14px;
 }
 
-label {}
-
 fieldset {
     margin: 10px;
-    /* margin-left: 10px; */
-    /* margin-right: 10px; */
 }
 
 fieldset .colors {
@@ -227,7 +239,7 @@ input[type=color] {
 
 .colorLabel {
     display: inline-block;
-    width: 150px;
+    width: 250px;
     text-align: left;
     color: antiquewhite;
 }

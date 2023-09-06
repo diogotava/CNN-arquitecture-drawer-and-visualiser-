@@ -10,13 +10,13 @@ function mCreateCanvas(windowWidth, windowHeight) {
 
 function mBox(id, shapeX, shapeY, shapeZ) {
     smooth();
-    strokeWeight(0.75);
+    strokeWeight(dynamicValues.strokeWeight);
     box(shapeX, shapeY, shapeZ);
 
     mPage.fill((id >> 16) & 0xFF, (id >> 8) & 0xF, id & 0xFF);
     mPage.noStroke();
     mPage.box(shapeX, shapeY, shapeZ);
-    strokeWeight(0.75);
+    strokeWeight(dynamicValues.strokeWeight);
 }
 
 function mTranslate() {

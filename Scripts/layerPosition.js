@@ -30,16 +30,16 @@ function getBeginningBlockLayer(layers, layerId) {
         return undefined;
 }
 
-function getMaxXPositionOfPrevLayers(prevLayers, layers) {
-    let maxX = 0;
+function getmaxLengthPositionOfPrevLayers(prevLayers, layers) {
+    let maxLength = 0;
     let layer;
     for (let prevLayer of prevLayers) {
         layer = layers[prevLayer];
         let xPosition = layer.centerPosition[indexX] + layer.getShape()[indexX] / 2;
-        if (xPosition > maxX)
-            maxX = xPosition;
+        if (xPosition > maxLength)
+            maxLength = xPosition;
     }
-    return maxX;
+    return maxLength;
 }
 
 function getMaxWidth(layer, layers) {
@@ -55,7 +55,7 @@ function getMaxWidth(layer, layers) {
         if (nextLayer.prevLayers.length === 1 && nextLayer.nextLayers.length > 1) {
             let width = 0;
             for (let n_layer of nextLayer.nextLayers) {
-                width += getMaxWidth(layers[n_layer], layers) + dynamicValues.defaultLateralSpaceBetweenLayers;
+                width += getMaxWidth(layers[n_layer], layers) + dynamicValues.lateralSpaceBetweenLayers;
             }
             if (nextLayer.getShape()[indexY] > maxWidth) {
                 maxWidth = nextLayer.getShape()[indexY];
@@ -132,12 +132,12 @@ function getYPosition(layer, layers) {
             let maxWidth = getMaxWidth(layer, layers);
 
             if (index + 1 <= halfOfNextLayersOfPreviousLayer) {
-                let halfPreviousLayerShape = previousLayer.lastNegativeYPosition === 0 ? Math.max(previousLayer.getShape()[indexY] / 2, dynamicValues.defaultLateralSpaceBetweenLayers / 2) : dynamicValues.defaultLateralSpaceBetweenLayers;
+                let halfPreviousLayerShape = previousLayer.lastNegativeYPosition === 0 ? Math.max(previousLayer.getShape()[indexY] / 2, dynamicValues.lateralSpaceBetweenLayers / 2) : dynamicValues.lateralSpaceBetweenLayers;
                 yPosition = yPosition - (previousLayer.lastNegativeYPosition + halfPreviousLayerShape + maxWidth / 2);
 
                 previousLayer.lastNegativeYPosition = -(yPosition - maxWidth / 2);
             } else {
-                let halfPreviousLayerShape = previousLayer.lastPositiveYPosition === 0 ? Math.max(previousLayer.getShape()[indexY] / 2, dynamicValues.defaultLateralSpaceBetweenLayers / 2) : dynamicValues.defaultLateralSpaceBetweenLayers;
+                let halfPreviousLayerShape = previousLayer.lastPositiveYPosition === 0 ? Math.max(previousLayer.getShape()[indexY] / 2, dynamicValues.lateralSpaceBetweenLayers / 2) : dynamicValues.lateralSpaceBetweenLayers;
                 yPosition = yPosition + previousLayer.lastPositiveYPosition + halfPreviousLayerShape + maxWidth / 2;
 
                 previousLayer.lastPositiveYPosition = yPosition + maxWidth / 2;
@@ -179,7 +179,7 @@ function getXPosition(layer, layers) {
     if (layer.prevLayers.length === 1) {
         xPosition = layers[layer.prevLayers[indexX]].centerPosition[indexX] + layers[layer.prevLayers[indexX]].getShape()[indexX] / 2;
     } else if (layer.prevLayers.length > 1) {
-        xPosition = getMaxXPositionOfPrevLayers(layer.prevLayers, layers);
+        xPosition = getmaxLengthPositionOfPrevLayers(layer.prevLayers, layers);
     } else if (layer.model_inside_model && layer.id > 0) {
         xPosition = layers[layer.id - 1].centerPosition[indexX] + layers[layer.id - 1].getShape()[indexX] / 2;
     }

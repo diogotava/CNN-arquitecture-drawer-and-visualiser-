@@ -1,4 +1,46 @@
 let dynamicValues;
+let defaultColors = {
+    "Conv1D": [10, 255, 0],
+    "Conv2D": [0, 255, 0],
+    "Conv3D": [0, 255, 0],
+    "Dense": [255, 0, 0],
+    "Flatten": [255, 0, 255],
+    "Dropout": [0, 255, 255],
+    "InputLayer": [255, 255, 0],
+    "Concatenate": [128, 255, 255],
+    "Add": [170, 200, 255],
+    "LSTM": [255, 0, 150],
+    "GRU": [255, 0, 150],
+    "SimpleRNN": [255, 0, 150],
+    "TimeDistributed": [255, 0, 150],
+    "Bidirectional": [255, 0, 150],
+    "ConvLSTM1D": [255, 0, 150],
+    "ConvLSTM2D": [255, 0, 150],
+    "ConvLSTM3D": [255, 0, 150],
+    "BaseRNN": [255, 0, 150],
+    "MaxPooling1D": [50, 50, 150],
+    "MaxPooling2D": [50, 50, 150],
+    "MaxPooling3D": [50, 50, 150],
+    "AveragePooling1D": [50, 50, 150],
+    "AveragePooling2D": [50, 50, 150],
+    "AveragePooling3D": [50, 50, 150],
+    "GlobalMaxPooling1D": [50, 50, 150],
+    "GlobalMaxPooling2D": [50, 50, 150],
+    "GlobalMaxPooling3D": [50, 50, 150],
+    "GlobalAveragePooling1D": [50, 50, 150],
+    "GlobalAveragePooling2D": [50, 50, 150],
+    "GlobalAveragePooling3D": [50, 50, 150],
+    "MultiHeadAttention": [200, 0, 0],
+    "LayerNormalization": [200, 0, 200],
+    "TFOpLambda": [150, 150, 200],
+    "Reshape": [250, 128, 0],
+    "Default": [128, 128, 128],
+    "Block": [0, 0, 0],
+    "Selected": [0, 0, 255],
+    "Conv1DTranspose": [0, 150, 0],
+    "Conv2DTranspose": [0, 150, 0],
+    "Conv3DTranspose": [0, 150, 0],
+};
 
 function resetDynamicValues() {
     dynamicValues = {
@@ -8,57 +50,23 @@ function resetDynamicValues() {
         "lookX": Number(document.getElementById('lookX').defaultValue),
         "lookY": Number(document.getElementById('lookY').defaultValue),
         "lookZ": Number(document.getElementById('lookZ').defaultValue),
-        "colors": {
-            "Conv1D": [],
-            "Conv2D": [],
-            "Conv3D": [],
-            "Dense": [],
-            "Flatten": [],
-            "Dropout": [],
-            "InputLayer": [],
-            "Concatenate": [],
-            "Add": [],
-            "LSTM": [],
-            "GRU": [],
-            "SimpleRNN": [],
-            "TimeDistributed": [],
-            "Bidirectional": [],
-            "ConvLSTM1D": [],
-            "ConvLSTM2D": [],
-            "ConvLSTM3D": [],
-            "BaseRNN": [],
-            "MaxPooling1D": [],
-            "MaxPooling2D": [],
-            "MaxPooling3D": [],
-            "AveragePooling1D": [],
-            "AveragePooling2D": [],
-            "AveragePooling3D": [],
-            "GlobalMaxPooling1D": [],
-            "GlobalMaxPooling2D": [],
-            "GlobalMaxPooling3D": [],
-            "GlobalAveragePooling1D": [],
-            "GlobalAveragePooling2D": [],
-            "GlobalAveragePooling3D": [],
-            "Reshape": [],
-            "Default": [],
-            "Block": [],
-            "Selected": []
-        },
+        "colors": { ...defaultColors },
         "arrowWidth": Number(document.getElementById('arrowWidth').defaultValue),
         "arrowHeight": Number(document.getElementById('arrowHeight').defaultValue),
         "arrowPointRadius": Number(document.getElementById('arrowPointRadius').defaultValue),
         "sensitivityX": Number(document.getElementById('sensitivityX').defaultValue),
         "sensitivityY": Number(document.getElementById('sensitivityY').defaultValue),
         "sensitivityZ": Number(document.getElementById('sensitivityZ').defaultValue),
-        "minX": Number(document.getElementById('minLength').defaultValue),
-        "minZY": Number(document.getElementById('minWidth').defaultValue),
-        "maxX": Number(document.getElementById('maxLength').defaultValue),
-        "maxZY": Number(document.getElementById('maxWidth').defaultValue),
+        "minLength": Number(document.getElementById('minLength').defaultValue),
+        "minWidth": Number(document.getElementById('minWidth').defaultValue),
+        "maxLength": Number(document.getElementById('maxLength').defaultValue),
+        "maxWidth": Number(document.getElementById('maxWidth').defaultValue),
+        "strokeWeight": Number(document.getElementById('strokeWeight').defaultValue),
         "minWindowSize": 400,
         "paragraphsWorldCoords": { x: 0, y: 0, z: 0 },
         "blocks": [],
-        "defaultSpaceBetweenLayers": Number(document.getElementById('spaceBetweenLayers').defaultValue),
-        "defaultLateralSpaceBetweenLayers": Number(document.getElementById('lateralSpaceBetweenLayers').defaultValue),
+        "spaceBetweenLayers": Number(document.getElementById('spaceBetweenLayers').defaultValue),
+        "lateralSpaceBetweenLayers": Number(document.getElementById('lateralSpaceBetweenLayers').defaultValue),
         "blockSize": Number(document.getElementById('blockSize').defaultValue),
         "selectedLayerID": -1,
         "bPressed": false
@@ -66,42 +74,36 @@ function resetDynamicValues() {
     resetValues();
 }
 
+function updateRangeValue() {
+    document.getElementById('strokeWeightValue').innerHTML = Number(document.getElementById('strokeWeight').value);
+}
 function updateValues() {
     updateCameraValues();
     updateColors();
-    dynamicValues.arrowWidth = Number(document.getElementById('arrowWidth').value);
-    dynamicValues.arrowHeight = Number(document.getElementById('arrowHeight').value);
-    dynamicValues.arrowPointRadius = Number(document.getElementById('arrowPointRadius').value);
-    dynamicValues.sensitivityX = Number(document.getElementById('sensitivityX').value);
-    dynamicValues.sensitivityY = Number(document.getElementById('sensitivityY').value);
-    dynamicValues.sensitivityZ = Number(document.getElementById('sensitivityZ').value);
-    dynamicValues.minX = Number(document.getElementById('minLength').value);
-    dynamicValues.maxX = Number(document.getElementById('maxLength').value);
-    dynamicValues.minZY = Number(document.getElementById('minWidth').value);
-    dynamicValues.maxZY = Number(document.getElementById('maxWidth').value);
-    dynamicValues.defaultSpaceBetweenLayers = Number(document.getElementById('spaceBetweenLayers').value);
-    document.getElementById('arrowHeight').max = dynamicValues.defaultSpaceBetweenLayers / 2 - 1;
-    dynamicValues.defaultLateralSpaceBetweenLayers = Number(document.getElementById('lateralSpaceBetweenLayers').value);
-    dynamicValues.blockSize = Number(document.getElementById('blockSize').value);
+    let keys = ['arrowWidth', 'arrowHeight', 'arrowPointRadius', 'sensitivityX', 'sensitivityY', 'sensitivityZ', 'minLength', 'maxLength', 'minWidth', 'maxWidth', 'strokeWeight', 'spaceBetweenLayers', 'lateralSpaceBetweenLayers', 'blockSize']
+
+    keys.forEach(key => {
+        dynamicValues[key] = Number(document.getElementById(key).value);
+    });
+    updateRangeValue();
+    document.getElementById('arrowHeight').max = dynamicValues.spaceBetweenLayers / 2 - 1;
     layersChanged = true;
 }
 
 function updateCameraValues() {
-    dynamicValues.camX = !isNaN(parseFloat(document.getElementById('camX').value.replace(",", "."))) ? parseFloat(document.getElementById('camX').value.replace(",", ".")) : 0;
-    dynamicValues.camY = !isNaN(parseFloat(document.getElementById('camY').value.replace(",", "."))) ? parseFloat(document.getElementById('camY').value.replace(",", ".")) : 0;
-    dynamicValues.camZ = !isNaN(parseFloat(document.getElementById('camZ').value.replace(",", "."))) ? parseFloat(document.getElementById('camZ').value.replace(",", ".")) : 0;
-    dynamicValues.lookX = !isNaN(parseFloat(document.getElementById('lookX').value.replace(",", "."))) ? parseFloat(document.getElementById('lookX').value.replace(",", ".")) : 0;
-    dynamicValues.lookY = !isNaN(parseFloat(document.getElementById('lookY').value.replace(",", "."))) ? parseFloat(document.getElementById('lookY').value.replace(",", ".")) : 0;
-    dynamicValues.lookZ = !isNaN(parseFloat(document.getElementById('lookZ').value.replace(",", "."))) ? parseFloat(document.getElementById('lookZ').value.replace(",", ".")) : 0;
+    let keys = ['camX', 'camY', 'camZ', 'lookX', 'lookY', 'lookZ']
+
+    keys.forEach(key => {
+        dynamicValues[key] = !isNaN(parseFloat(document.getElementById(key).value.replace(",", "."))) ? parseFloat(document.getElementById(key).value.replace(",", ".")) : 0;
+    });
 }
 
 function updateCameraShownValues() {
-    document.getElementById('camX').value = !isNaN(dynamicValues.camX) ? dynamicValues.camX : 0;
-    document.getElementById('camY').value = !isNaN(dynamicValues.camY) ? dynamicValues.camY : 0;
-    document.getElementById('camZ').value = !isNaN(dynamicValues.camZ) ? dynamicValues.camZ : 0;
-    document.getElementById('lookX').value = !isNaN(dynamicValues.lookX) ? dynamicValues.lookX : 0;
-    document.getElementById('lookY').value = !isNaN(dynamicValues.lookY) ? dynamicValues.lookY : 0;
-    document.getElementById('lookZ').value = !isNaN(dynamicValues.lookZ) ? dynamicValues.lookZ : 0;
+    let keys = ['camX', 'camY', 'camZ', 'lookX', 'lookY', 'lookZ']
+
+    keys.forEach(key => {
+        document.getElementById(key).value = !isNaN(dynamicValues[key]) ? dynamicValues[key] : 0;
+    });
 }
 
 function updateShownValues() {
@@ -113,16 +115,17 @@ function updateShownValues() {
     document.getElementById('sensitivityX').value = dynamicValues.sensitivityX;
     document.getElementById('sensitivityY').value = dynamicValues.sensitivityY;
     document.getElementById('sensitivityZ').value = dynamicValues.sensitivityZ;
-    document.getElementById('minLength').value = dynamicValues.minX;
-    document.getElementById('maxLength').value = dynamicValues.maxX;
-    document.getElementById('minWidth').value = dynamicValues.minZY;
-    document.getElementById('maxWidth').value = dynamicValues.maxZY;
-    document.getElementById('spaceBetweenLayers').value = dynamicValues.defaultSpaceBetweenLayers;
-    document.getElementById('lateralSpaceBetweenLayers').value = dynamicValues.defaultLateralSpaceBetweenLayers;
+    document.getElementById('minLength').value = dynamicValues.minLength;
+    document.getElementById('maxLength').value = dynamicValues.maxLength;
+    document.getElementById('minWidth').value = dynamicValues.minWidth;
+    document.getElementById('maxWidth').value = dynamicValues.maxWidth;
+    document.getElementById('strokeWeight').value = dynamicValues.strokeWeight;
+    updateRangeValue();
+    document.getElementById('spaceBetweenLayers').value = dynamicValues.spaceBetweenLayers;
+    document.getElementById('lateralSpaceBetweenLayers').value = dynamicValues.lateralSpaceBetweenLayers;
     document.getElementById('blockSize').value = dynamicValues.blockSize;
 }
 
 function resetValues() {
-    resetColors();
     updateShownValues();
 }

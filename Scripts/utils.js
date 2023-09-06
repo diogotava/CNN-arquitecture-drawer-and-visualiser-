@@ -360,7 +360,7 @@ function parseSettingsJson(data) {
 
         updateShownValues();
         dynamicValues.blocks = []
-        layers = layers_backup.map(obj => obj.copy());
+
         for (let i = 0; i < newValues.blocks.length; i++) {
             let blockData = newValues.blocks[i];
             let initialLayer = layers.find(item => item.name === blockData.initialLayerName);
