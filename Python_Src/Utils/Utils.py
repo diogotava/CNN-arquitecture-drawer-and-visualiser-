@@ -1,12 +1,10 @@
 from tensorflow.keras.models import load_model
 
-from Src.Layers.LayerDrawer import *
+from Python_Src.Layers.LayerDrawer import *
 
 
 def get_model(model_file):
-    model = load_model(model_file)
-
-    return model
+    return load_model(model_file)
 
 
 def get_layers(layer, layers, layers_of_layer, prev=False):
@@ -15,14 +13,23 @@ def get_layers(layer, layers, layers_of_layer, prev=False):
     for layer_of_layer in layers_of_layer:
         # gets the correspondent layer to the next_layer
         layer_to_fill = [e for e in layers if e.name == layer_of_layer.name]
+
         if len(layer_to_fill) > 1:
             print("ERROR!!")
-        if len(layer_to_fill) > 0 and layer_to_fill[0].type != "Sequential" and layer_to_fill[0].type != "Functional":
+
+        if len(layer_to_fill) == 0:
+            continue
+
+        if layer_to_fill[0].type != "Sequential" and layer_to_fill[0].type != "Functional":
             layers_to_fill.append(layer_to_fill[0].id)
-        elif prev:
+            continue
+
+        # If the layer to fill is actually a model get the first layer of the model if the next layer is wanted
+        # or the previous layer of the model if the previous is what is pretended
+        if prev:
             layers_to_fill.append(layer.id - 1)
-        else:
-            layers_to_fill.append(layer.id + 1)
+
+        layers_to_fill.append(layer.id + 1)
 
     return layers_to_fill
 
@@ -32,6 +39,7 @@ def get_nodes(layers, models, nodes_of_layer):
 
     for layer_node in nodes_of_layer:
         # gets the correspondent node to the next_layer
+        # It is verified in the layers array and the models array because a layer can actually be a model
         layer_to_fill = [e for e in layers if e.name == layer_node.name]
         model_to_fill = [e for e in models if e.name == layer_node.name]
         if len(layer_to_fill) > 1 or len(model_to_fill) > 1:
@@ -81,6 +89,38 @@ def get_prev_nodes_model(model, models, layers):
     model.layers[0].previous_layers = nodes
 
 
+def create_previous_layers_of_first_layer(model_previous_layers, index, model_inside_model, model_name, prev_layer, layers, models):
+    for layer_of_layer in model_previous_layers:
+
+        layer_to_fill = [e for e in layers if e.name == layer_of_layer.name]
+        if len(layer_to_fill) > 1:
+            print("ERROR!!")
+            continue
+        if len(layer_to_fill) == 1:
+            continue
+
+        previous_layer = create_layer(layer_of_layer.__class__.__name__, layer_of_layer, prev_layer, model_inside_model,
+                                      model_name)
+        index, prev_layer, layers, models = add_layer_to_layers(previous_layer, index, prev_layer, layer_of_layer, models, layers)
+
+    return index, layers, prev_layer, models
+
+
+def add_layer_to_layers(layer, index, prev_layer, layer_to_save, models, layers):
+    if layer is not None:
+        layer.set_id(index)
+        try:
+            if layer_to_save.layers:
+                layer.layers, index = create_layers(layer_to_save, index, prev_layer, True, layer.name, layers, models)
+                models.append(layer)
+        except AttributeError:
+            layers.append(layer)
+            index += 1
+            prev_layer = layer
+
+    return index, prev_layer, layers, models
+
+
 def create_layers(model, initial_index=0, prev_layer=None, model_inside_model=False, model_name=None, layers=None, models=None):
     if layers is None:
         layers = []
@@ -94,38 +134,13 @@ def create_layers(model, initial_index=0, prev_layer=None, model_inside_model=Fa
         if layer_index == 0:
             model_previous_layers = get_prev_layer(layer_to_save.inbound_nodes)
             if len(model_previous_layers) > 0:
-                for layer_of_layer in model_previous_layers:
-
-                    layer_to_fill = [e for e in layers if e.name == layer_of_layer.name]
-                    if len(layer_to_fill) > 1:
-                        print("ERROR!!")
-                    elif len(layer_to_fill) == 0:
-                        prev_layer = create_layer(layer_of_layer.__class__.__name__, layer_of_layer, prev_layer, model_inside_model,
-                                                  model_name)
-                        if prev_layer is not None:
-                            prev_layer.set_id(index)
-                            try:
-                                if layer_to_save.layers:
-                                    prev_layer.layers, index = create_layers(layer_to_save, index, prev_layer, True, prev_layer.name,
-                                                                             layers, models)
-                                    models.append(prev_layer)
-                            except AttributeError:
-                                layers.append(prev_layer)
-                                index += 1
-                                prev_layer = prev_layer
+                index, layers, prev_layer, models = create_previous_layers_of_first_layer(model_previous_layers, index, model_inside_model,
+                                                                                  model_name, prev_layer, layers, models)
 
         if len(saved_layer) == 0:
             layer = create_layer(layer_to_save.__class__.__name__, layer_to_save, prev_layer, model_inside_model, model_name)
-            if layer is not None:
-                layer.set_id(index)
-                try:
-                    if layer_to_save.layers:
-                        layer.layers, index = create_layers(layer_to_save, index, prev_layer, True, layer.name, layers, models)
-                        models.append(layer)
-                except AttributeError:
-                    layers.append(layer)
-                    index += 1
-                    prev_layer = layer
+            index, prev_layer, layers, models = add_layer_to_layers(layer, index, prev_layer, layer_to_save, models, layers)
+
         elif len(saved_layer) == 1 and saved_layer[0].id == 0 and model_inside_model:
             saved_layer_id = saved_layer[0].id
             layer = create_layer(layer_to_save.__class__.__name__, layer_to_save, prev_layer, model_inside_model, model_name)

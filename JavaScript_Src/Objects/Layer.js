@@ -7,6 +7,8 @@ class Layer {
         this.activation = layer.activation;
         this.lastNegativeYPosition = 0;
         this.lastPositiveYPosition = 0;
+        this.model_inside_model = layer.model_inside_model;
+        this.model_name = layer.model_name;
 
         if (copy) {
             this.selected = layer.selected;
@@ -20,8 +22,6 @@ class Layer {
             this.previousYPosition = layer.previousYPosition;
             this.batchNormalization = layer.batchNormalization;
             this.layers = layer.layers;
-            this.model_inside_model = layer.model_inside_model;
-            this.model_name = layer.model_name;
 
         } else {
             this.selected = false;
@@ -33,14 +33,11 @@ class Layer {
             }
             this.prevLayers = layer.previous_layers;
             this.nextLayers = layer.next_layers;
-            this.activation = null;
             this.inputShape = layer.input_shape;
             this.outputShape = layer.output_shape;
             this.previousYPosition = 0;
             this.batchNormalization = layer.batch_normalization;
             this.layers = layer.layers;
-            this.model_inside_model = layer.model_inside_model;
-            this.model_name = layer.model_name;
             this.shouldBeDrawn = true;
             this.shouldBeBlock = false;
             this.isInsideBlock = false;

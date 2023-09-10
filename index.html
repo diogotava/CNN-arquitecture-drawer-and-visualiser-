@@ -9,21 +9,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
     <script src="https://kit.fontawesome.com/298fd45b46.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="Scripts/sketch.js"></script>
-    <script src="Scripts/default_values.js"></script>
-    <script src="Scripts/Objects/Layer.js"></script>
-    <script src="Scripts/Objects/Block.js"></script>
-    <script src="Scripts/utils.js"></script>
-    <script src="Scripts/ui.js"></script>
-    <script src="Scripts/colorSettings.js"></script>
-    <script src="Scripts/layerPosition.js"></script>
-    <script src="Scripts/utils_graphics.js"></script>
-    <script src="Scripts/drawingArrows.js"></script>
-    <script src="Scripts/drawingLayers.js"></script>
+    <script src="JavaScript_Src/sketch.js"></script>
+    <script src="JavaScript_Src/Utils/default_values.js"></script>
+    <script src="JavaScript_Src/Objects/Layer.js"></script>
+    <script src="JavaScript_Src/Objects/Block.js"></script>
+    <script src="JavaScript_Src/Utils/utils.js"></script>
+    <script src="JavaScript_Src/Utils/ui.js"></script>
+    <script src="JavaScript_Src/Utils/colorSettings.js"></script>
+    <script src="JavaScript_Src/Utils/layerPosition.js"></script>
+    <script src="JavaScript_Src/Utils/utils_graphics.js"></script>
+    <script src="JavaScript_Src/Utils/drawingArrows.js"></script>
+    <script src="JavaScript_Src/Utils/drawingLayers.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"
         integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ=="
         crossorigin="anonymous" defer></script>
-    <link href="Scripts/style.css" rel="stylesheet" type="text/css">
+    <link href="JavaScript_Src/Style/style.css" rel="stylesheet" type="text/css">
 
 </head>
 
@@ -70,7 +70,7 @@
                             </label>
                             <button class="button-12" id="buttonUploadSettingsFile" type="submit">Upload</button>
                         </form>
-                        <a class="button-12" href="Scripts/template.json" download="template.json">
+                        <a class="button-12" href="template.json" download="template.json">
                             <i class="fa fa-cloud-download"></i>
                             Template
                         </a><br>
@@ -251,282 +251,6 @@
             <div id="settingsColorsDiv">
                 <form id="settingsColorsForm">
                     <ul id="color-list"></ul>
-                    <!-- <form>
-                        <label class="colorLabel" for="Dense">Dense:</label>
-                        <input type="color" id="Dense" name="Dense" value="#ff0000">
-                        <button class="button-12" id="resetDense">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="Flatten">Flatten:</label>
-                        <input type="color" id="Flatten" name="Flatten" value="#ff00ff">
-                        <button class="button-12" id="resetFlatten">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="Dropout">Dropout:</label>
-                        <input type="color" id="Dropout" name="Dropout" value="#00FFFF">
-                        <button class="button-12" id="resetDropout">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="Input">Input:</label>
-                        <input type="color" id="Input" name="Input" value="#FFFF00">
-                        <button class="button-12" id="resetInput">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="Concatenate">Concatenate:</label>
-                        <input type="color" id="Concatenate" name="Concatenate" value="#80FFFF">
-                        <button class="button-12" id="resetConcatenate">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="Add">Add:</label>
-                        <input type="color" id="Add" name="Add" value="#AAC8FF">
-                        <button class="button-12" id="resetAdd">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="LSTM">LSTM:</label>
-                        <input type="color" id="LSTM" name="LSTM" value="#FF0096">
-                        <button class="button-12" id="resetLSTM">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="GRU">GRU:</label>
-                        <input type="color" id="GRU" name="GRU" value="#FF0096">
-                        <button class="button-12" id="resetGRU">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="SimpleRNN">SimpleRNN:</label>
-                        <input type="color" id="SimpleRNN" name="SimpleRNN" value="#FF0096">
-                        <button class="button-12" id="resetSimpleRNN">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="TimeDistributed">TimeDistributed:</label>
-                        <input type="color" id="TimeDistributed" name="TimeDistributed" value="#FF0096">
-                        <button class="button-12" id="resetTimeDistributed">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="Bidirectional">Bidirectional:</label>
-                        <input type="color" id="Bidirectional" name="Bidirectional" value="#FF0096">
-                        <button class="button-12" id="resetBidirectional">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="BaseRNN">BaseRNN:</label>
-                        <input type="color" id="BaseRNN" name="BaseRNN" value="#FF0096">
-                        <button class="button-12" id="resetBaseRNN">Reset</button>
-                    </form>
-
-                    <fieldset>
-                        <legend>Convolutional LSTM</legend>
-
-                        <div class="checkbox-wrapper-14">
-                            <input id="s1-14" type="checkbox" class="switch" onchange="allConvLSTMSameColor();">
-                            <label for="s1-14">All with the same color</label>
-                        </div>
-                        <div id="colorsConvLSTM" class="colors">
-                            <form id="ConvLSTMColor1">
-                                <label id="ConvLSTM1DLabel" for="ConvLSTM1D">1D:</label>
-                                <input type="color" id="ConvLSTM1D" name="ConvLSTM1D" value="#FF0096"><br>
-                                <button class="button-12" id="resetConvLSTM1D">Reset</button>
-                            </form>
-
-                            <form id="ConvLSTMColor2">
-                                <label for="ConvLSTM2D">2D:</label>
-                                <input type="color" id="ConvLSTM2D" name="ConvLSTM2D" value="#FF0096"><br>
-                                <button class="button-12" id="resetConvLSTM2D">Reset</button>
-                            </form>
-
-                            <form id="ConvLSTMColor3">
-                                <label for="ConvLSTM3D">3D:</label>
-                                <input type="color" id="ConvLSTM3D" name="ConvLSTM3D" value="#FF0096"><br>
-                                <button class="button-12" id="resetConvLSTM3D">Reset</button>
-                            </form>
-                        </div>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend>Convolutional / Convolutional Transpose</legend>
-
-                        <div class="checkbox-wrapper-14">
-                            <input id="s1-15" type="checkbox" class="switch" onchange="allConvSameColor();">
-                            <label for="s1-15">All with the same color</label>
-                        </div>
-
-                        <div id="colorsConv" class="colors">
-                            <form id="ConvColor1">
-                                <label id="Conv1DLabel" for="Conv1D">1D:</label>
-                                <input type="color" id="Conv1D" name="Conv1D" value="#00ff00"><br>
-                                <button class="button-12" id="resetConv1D">Reset</button>
-                            </form>
-
-                            <form id="ConvColor2">
-                                <label for="Conv2D">2D:</label>
-                                <input type="color" id="Conv2D" name="Conv2D" value="#00ff00"><br>
-                                <button class="button-12" id="resetConv2D">Reset</button>
-                            </form>
-
-                            <form id="ConvColor3">
-                                <label for="Conv3D">3D:</label>
-                                <input type="color" id="Conv3D" name="Conv3D" value="#00ff00"><br>
-                                <button class="button-12" id="resetConv3D">Reset</button>
-                            </form>
-                        </div>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend>Max pooling</legend>
-
-                        <div class="checkbox-wrapper-14">
-                            <input id="s1-16" type="checkbox" class="switch" onchange="allMaxPoolingSameColor();">
-                            <label for="s1-16">All with the same color</label>
-                        </div>
-
-                        <div id="colorsMaxPooling" class="colors">
-                            <form id="MaxPoolingColor1">
-                                <label id="MaxPooling1DLabel" for="MaxPooling1D">1D:</label>
-                                <input type="color" id="MaxPooling1D" name="MaxPooling1D" value="#323296"><br>
-                                <button class="button-12" id="resetMaxPooling1D">Reset</button>
-                            </form>
-
-                            <form id="MaxPoolingColor2">
-                                <label for="MaxPooling2D">2D:</label>
-                                <input type="color" id="MaxPooling2D" name="MaxPooling2D" value="#323296"><br>
-                                <button class="button-12" id="resetMaxPooling2D">Reset</button>
-                            </form>
-
-                            <form id="MaxPoolingColor3">
-                                <label for="MaxPooling3D">3D:</label>
-                                <input type="color" id="MaxPooling3D" name="MaxPooling3D" value="#323296"><br>
-                                <button class="button-12" id="resetMaxPooling3D">Reset</button>
-                            </form>
-                        </div>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend>Average pooling</legend>
-
-                        <div class="checkbox-wrapper-14">
-                            <input id="s1-17" type="checkbox" class="switch" onchange="allAveragePoolingSameColor();">
-                            <label for="s1-17">All with the same color</label>
-                        </div>
-
-                        <div id="colorsAveragePooling" class="colors">
-                            <form id="AveragePoolingColor1">
-                                <label id="AveragePooling1DLabel" for="AveragePooling1D">1D:</label>
-                                <input type="color" id="AveragePooling1D" name="AveragePooling1D" value="#323296"><br>
-                                <button class="button-12" id="resetAveragePooling1D">Reset</button>
-                            </form>
-
-                            <form id="AveragePoolingColor2">
-                                <label for="AveragePooling2D">2D:</label>
-                                <input type="color" id="AveragePooling2D" name="AveragePooling2D" value="#323296"><br>
-                                <button class="button-12" id="resetAveragePooling2D">Reset</button>
-                            </form>
-
-                            <form id="AveragePoolingColor3">
-                                <label for="AveragePooling3D">3D:</label>
-                                <input type="color" id="AveragePooling3D" name="AveragePooling3D" value="#323296"><br>
-                                <button class="button-12" id="resetAveragePooling3D">Reset</button>
-                            </form>
-                        </div>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend>Global max pooling</legend>
-
-                        <div class="checkbox-wrapper-14">
-                            <input id="s1-18" type="checkbox" class="switch" onchange="allGlobalMaxPoolingSameColor();">
-                            <label for="s1-18">All with the same color</label>
-                        </div>
-
-                        <div id="colorsGlobalMaxPooling" class="colors">
-                            <form id="GlobalMaxPoolingColor1">
-                                <label id="GlobalMaxPooling1DLabel" for="GlobalMaxPooling1D">1D:</label>
-                                <input type="color" id="GlobalMaxPooling1D" name="GlobalMaxPooling1D"
-                                    value="#323296"><br>
-                                <button class="button-12" id="resetGlobalMaxPooling1D">Reset</button>
-                            </form>
-
-                            <form id="GlobalMaxPoolingColor2">
-                                <label for="GlobalMaxPooling2D">2D:</label>
-                                <input type="color" id="GlobalMaxPooling2D" name="GlobalMaxPooling2D"
-                                    value="#323296"><br>
-                                <button class="button-12" id="resetGlobalMaxPooling2D">Reset</button>
-                            </form>
-
-                            <form id="GlobalMaxPoolingColor3">
-                                <label for="GlobalMaxPooling3D">3D:</label>
-                                <input type="color" id="GlobalMaxPooling3D" name="GlobalMaxPooling3D"
-                                    value="#323296"><br>
-                                <button class="button-12" id="resetGlobalMaxPooling3D">Reset</button>
-                            </form>
-                        </div>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend>Global average pooling</legend>
-
-                        <div class="checkbox-wrapper-14">
-                            <input id="s1-19" type="checkbox" class="switch"
-                                onchange="allGlobalAveragePoolingSameColor();">
-                            <label for="s1-19">All with the same color</label>
-                        </div>
-
-                        <div id="colorsGlobalAveragePooling" class="colors">
-                            <form id="GlobalAveragePoolingColor1">
-                                <label id="GlobalAveragePooling1DLabel" for="GlobalAveragePooling1D">1D:</label>
-                                <input type="color" id="GlobalAveragePooling1D" name="GlobalAveragePooling1D"
-                                    value="#323296"><br>
-                                <button class="button-12" id="resetGlobalAveragePooling1D">Reset</button>
-                            </form>
-
-                            <form id="GlobalAveragePoolingColor2">
-                                <label for="GlobalAveragePooling2D">2D:</label>
-                                <input type="color" id="GlobalAveragePooling2D" name="GlobalAveragePooling2D"
-                                    value="#323296"><br>
-                                <button class="button-12" id="resetGlobalAveragePooling2D">Reset</button>
-                            </form>
-
-                            <form id="GlobalAveragePoolingColor3">
-                                <label for="GlobalAveragePooling3D">3D:</label>
-                                <input type="color" id="GlobalAveragePooling3D" name="GlobalAveragePooling3D"
-                                    value="#323296"><br>
-                                <button class="button-12" id="resetGlobalAveragePooling3D">Reset</button>
-                            </form>
-                        </div>
-                    </fieldset>
-
-                    <form>
-                        <label class="colorLabel" for="Reshape">Reshape:</label>
-                        <input type="color" id="Reshape" name="Reshape" value="#FA8000">
-                        <button class="button-12" id="resetReshape">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="Default">Default:</label>
-                        <input type="color" id="Default" name="Default" value="#808080">
-                        <button class="button-12" id="resetDefault">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="Block">Block:</label>
-                        <input type="color" id="Block" name="Block" value="#000000">
-                        <button class="button-12" id="resetBlock">Reset</button>
-                    </form>
-
-                    <form>
-                        <label class="colorLabel" for="Selected">Selected:</label>
-                        <input type="color" id="Selected" name="Selected" value="#0000FF">
-                        <button class="button-12" id="resetSelected">Reset</button>
-                    </form> -->
-
                 </form>
             </div>
             <button class="button-12" id="settingsColorsSaveButton" type="submit">Save</button>

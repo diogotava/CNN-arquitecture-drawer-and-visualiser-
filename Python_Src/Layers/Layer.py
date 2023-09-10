@@ -1,5 +1,5 @@
-from Src.Utils.Values import layersNotToConsider
-from Src.Utils.Shapes import get_shapes
+from Python_Src.Utils.Values import layersNotToConsider
+from Python_Src.Utils.Shapes import get_shapes
 
 
 def get_next_layer(outbound_nodes):
@@ -54,10 +54,6 @@ class Layer:
     def __init__(self, shape, layer, model_inside_model, model_name):
 
         self.id = None
-        self.selected = False
-        self.lateral_space_between_layers = 10
-        self.space_between_layers = 5
-        self.center_position = [0, 0, 0]
         self.name = layer.name
         self.shape = shape
         self.original_model_layer = layer
@@ -68,12 +64,10 @@ class Layer:
         self.input_shape = get_shapes(layer, True, True)
         self.output_shape = get_shapes(layer, False, True)
         self.invertedShape = layer.invertedShape
-        self.computed_position = False
         self.layers = None
         self.model_inside_model = model_inside_model
         self.model_name = model_name
 
-        self.previous_y_position = 0
         if hasattr(layer, "data_format"):
             self.data_format = layer.data_format
         try:
@@ -83,12 +77,3 @@ class Layer:
 
     def set_id(self, identifier):
         self.id = identifier
-
-    def set_x_position(self, x_position):
-        self.center_position[0] = x_position + (self.shape[0]/2) + self.space_between_layers
-
-    def set_y_position(self, y_position):
-        self.center_position[2] = y_position
-
-    def get_y_position(self):
-        return self.center_position[2]

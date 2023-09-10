@@ -9,7 +9,7 @@ import re
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 # from waitress import serve
-from Src.Utils.Utils import *
+from Python_Src.Utils.Utils import *
 
 app = Flask(__name__)
 CORS(app)
@@ -25,25 +25,29 @@ def process_file():
     try:
         if ".zip" in file.filename:
             with zipfile.ZipFile(file.filename) as zip_file:
-                model_name = ""
+                model_file_name = ""
                 name_of_model = False
+                # Varify if zip file contains a unique file like a .h5 file
                 for file_of_zip in zip_file.filelist:
                     path_layers = file_of_zip.filename.split("/")
-                    num_layers = len(path_layers)
-                    if num_layers == 1:
+                    num_path_layers = len(path_layers)
+                    if num_path_layers == 1:
                         name_of_model = True
-                        model_name = file_of_zip.filename
+                        model_file_name = file_of_zip.filename
+                # If the zip does not contain this file, it is a directory
+                # so make de model file name the name of that directory
                 if not name_of_model:
-                    model_name = zip_file.filelist[0].filename.split("/")[0] + "/"
-                zip_file.extractall()
-                if "/" == model_name[-1]:
                     directory = True
-                    model_name = model_name[:-1]
-                model = get_model(model_name)
+                    model_file_name = zip_file.filelist[0].filename.split("/")[0]
+
+                zip_file.extractall()
+
+                model = get_model(model_file_name)
+                # If the content of the zipfile was a directory remove the directory and all its content
                 if directory:
-                    shutil.rmtree(model_name)
+                    shutil.rmtree(model_file_name)
                 else:
-                    os.remove(model_name)
+                    os.remove(model_file_name)
         else:
             model = get_model(file.filename)
 
@@ -57,18 +61,16 @@ def process_file():
         for layer in model_layers:
             l_json = vars(layer)
             try:
+                # Remove the information of the layers that is no
                 del l_json['original_model_layer']
-                del l_json['previous_y_position']
-                del l_json['computed_position']
             except KeyError:
                 pass
             if layer.layers is not None:
+                # If the layer is actually a model, insert its layers in the json
                 layer_of_layer_json = []
                 for layer_of_model in layer.layers:
                     l_o_l_json = vars(layer_of_model)
                     del l_o_l_json['original_model_layer']
-                    del l_o_l_json['previous_y_position']
-                    del l_o_l_json['computed_position']
                     layer_of_layer_json.append(l_o_l_json)
                 l_json['layers'] = layer_of_layer_json
             layer_json.append(l_json)

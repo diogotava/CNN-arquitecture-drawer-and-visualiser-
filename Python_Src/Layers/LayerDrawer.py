@@ -1,6 +1,6 @@
-from Src.Layers.Layer import *
-from Src.Utils.Shapes import get_shapes
-from Src.Utils.Values import layersNotToDraw
+from Python_Src.Layers.Layer import *
+from Python_Src.Utils.Shapes import get_shapes
+from Python_Src.Utils.Values import layersNotToDraw
 
 activation_layers = ['ReLU', 'Softmax', 'LeakyReLU', 'PReLU', 'ELU', 'ThresholdedReLU']
 
