@@ -197,13 +197,13 @@ fieldset legend {
 }
 
 #settingsDiv {
-    max-height: 50vh;
+    max-height: 70vh;
     overflow-y: auto;
 }
 
 #settingsColorsDiv {
     overflow-y: auto;
-    max-height: 50vh;
+    max-height: 70vh;
 }
 
 #layerInfo {

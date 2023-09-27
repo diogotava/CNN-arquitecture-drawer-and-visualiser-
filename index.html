@@ -34,7 +34,7 @@
         <div class="loader" id="loader"></div>
         <form id="upload-form">
             <label id="inputLabel" class="button-12">
-                <input type="file" id="model-file" name="model-file" />
+                <input type="file" id="model-file" name="model-file" accept=".h5, .zip" />
                 <i class="fa fa-cloud-upload"></i>
                 <p id="modelFileLabel"><b>Choose Model File</b></p>
             </label><br>
@@ -75,7 +75,7 @@
                             Template
                         </a><br>
                         <p style="font-size: 10px;">Note: Only the data (tags) contained in the template file (except
-                            layer colors that can be added more) will be
+                            layer colors and blocks that can be added) will be
                             considered!</p>
                     </fieldset>
 
@@ -108,24 +108,6 @@
                     </fieldset>
 
                     <fieldset>
-                        <legend>Arrow</legend>
-                        <form>
-                            <label for="arrowWidth">Width</label>
-                            <input type="number" class="fieldsetInput" step="0.1" id="arrowWidth" name="arrowWidth"
-                                value="0.4">
-
-                            <label for="arrowHeight">Height</label>
-                            <input type="number" class="fieldsetInput" id="arrowHeight" name="arrowHeight" value="3">
-
-                            <label for="arrowPointRadius">Radius</label>
-                            <input type="number" class="fieldsetInput" step="0.1" id="arrowPointRadius"
-                                name="arrowPointRadius" value="1.5"><br>
-
-                            <input type="reset" class="button-12" value="Reset">
-                        </form>
-                    </fieldset>
-
-                    <fieldset>
                         <legend>Sensitivity</legend>
                         <form>
                             <label for="sensitivityX">X</label>
@@ -139,6 +121,24 @@
                             <label for="sensitivityZ">Z</label>
                             <input type="number" class="fieldsetInput" step="0.01" id="sensitivityZ" name="sensitivityZ"
                                 value="0.11"><br>
+
+                            <input type="reset" class="button-12" value="Reset">
+                        </form>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Arrow</legend>
+                        <form>
+                            <label for="arrowWidth">Width</label>
+                            <input type="number" class="fieldsetInput" step="0.1" id="arrowWidth" name="arrowWidth"
+                                value="0.4">
+
+                            <label for="arrowHeight">Height</label>
+                            <input type="number" class="fieldsetInput" id="arrowHeight" name="arrowHeight" value="3">
+
+                            <label for="arrowPointRadius">Radius</label>
+                            <input type="number" class="fieldsetInput" step="0.1" id="arrowPointRadius"
+                                name="arrowPointRadius" value="1.5"><br>
 
                             <input type="reset" class="button-12" value="Reset">
                         </form>
