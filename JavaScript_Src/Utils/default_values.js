@@ -69,7 +69,8 @@ function resetDynamicValues() {
         "lateralSpaceBetweenLayers": Number(document.getElementById('lateralSpaceBetweenLayers').defaultValue),
         "blockSize": Number(document.getElementById('blockSize').defaultValue),
         "selectedLayerID": -1,
-        "bPressed": false
+        "bPressed": false,
+        "initialBlockId": 510
     };
     resetValues();
 }

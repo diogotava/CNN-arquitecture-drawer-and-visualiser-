@@ -1,5 +1,6 @@
 let indexX = 0;
 let indexY = 2;
+let largestXPosition = 0;
 
 function isTheBeginningOfBlock(layerId) {
     return dynamicValues.blocks.some((block) => block.initialLayer === layerId);
@@ -42,7 +43,7 @@ function getmaxLengthPositionOfPrevLayers(prevLayers, layers) {
     return maxLength;
 }
 
-function getMaxWidth(layer, layers) {
+function getMaxWidth(layer, layers, endLayerId = null) {
     let layersSeen = []
     let next_layers = [...layer.nextLayers];
     let maxWidth = layer.getShape()[indexY];
@@ -64,7 +65,7 @@ function getMaxWidth(layer, layers) {
                 maxWidth = width;
             }
         } else if (nextLayer.prevLayers.length > 1) {
-            if (next_layers.length > 0 && nextLayer.nextLayers.some(elem => next_layers.includes(elem)) && nextLayer.nextLayers.some(elem => !layersSeen.includes(elem))) {
+            if (next_layers.length > 0 && nextLayer.prevLayers.some(elem => next_layers.includes(elem)) && nextLayer.prevLayers.some(elem => !layersSeen.includes(elem))) {
                 layersSeen.pop();
                 if (!layersSeen.includes(layer.id) && !next_layers.includes(layer.id))
                     next_layers.push(layer.id);
@@ -73,6 +74,8 @@ function getMaxWidth(layer, layers) {
         } else if (nextLayer.getShape()[indexY] > maxWidth) {
             maxWidth = nextLayer.getShape()[indexY];
         }
+        if (endLayerId === nextLayer.id)
+            continue;
         for (let n_layer of nextLayer.nextLayers) {
             if (!layersSeen.includes(n_layer) && !next_layers.includes(n_layer))
                 next_layers.push(n_layer);
@@ -99,27 +102,6 @@ function getPositionEndLayerBlock(layer, layers, xPosition = null) {
         };
     }
 
-}
-
-function getPositionLayersInsideBlock(layer, layers, endBlockLayer, xPosition = null, yPosition = null) {
-    layer.shouldBeDrawn = false;
-
-    if (layer.id === endBlockLayer.id)
-        getPositionEndLayerBlock(layer, layers, xPosition);
-    else {
-        layer.setXPositionInternalBlockLayer(xPosition);
-
-        for (const nextLayerIndex of layer.nextLayers) {
-            let nextLayer = layers[nextLayerIndex];
-            nextLayer.previousYPosition = {
-                id: layer.id,
-                yPosition: layer.centerPosition[indexY]
-            };
-
-            getPositionLayersInsideBlock(nextLayer, layers, endBlockLayer, xPosition, yPosition);
-
-        }
-    }
 }
 
 function getYPosition(layer, layers) {
@@ -192,6 +174,29 @@ function getXPosition(layer, layers) {
 function getLayersPosition(layers) {
     for (let layer of layers) {
         getLayerPosition(layer, layers)
+        if (layer.centerPosition[0] + layer.getShape[0] > largestXPosition)
+            largestXPosition = layer.centerPosition[0] + layer.getShape[0];
+    }
+}
+
+function getPositionLayersInsideBlock(layer, layers, endBlockLayer, xPosition = null, yPosition = null) {
+    layer.shouldBeDrawn = false;
+
+    if (layer.id === endBlockLayer.id)
+        getPositionEndLayerBlock(layer, layers, xPosition);
+    else {
+        layer.setXPositionInternalBlockLayer(xPosition);
+
+        for (const nextLayerIndex of layer.nextLayers) {
+            let nextLayer = layers[nextLayerIndex];
+            nextLayer.previousYPosition = {
+                id: layer.id,
+                yPosition: layer.centerPosition[indexY]
+            };
+
+            getPositionLayersInsideBlock(nextLayer, layers, endBlockLayer, xPosition, yPosition);
+
+        }
     }
 }
 
@@ -208,6 +213,12 @@ function getLayerPosition(layer, layers) {
     layer.shouldBeDrawn = true;
     if (isBeginningBlock) {
         layer.shouldBeBlock = true;
+        let indexOfBlock = dynamicValues.blocks.findIndex(block => block.initialLayer === layer.id);
+        if (dynamicValues.blocks[indexOfBlock].drawInterior) {
+            layer.setXPosition(xPosition);
+            layer.setYPosition(yPosition);
+            return;
+        }
         layer.setXPositionOfBeginBlockLayer(xPosition)
         for (let nextLayerId of layer.nextLayers) {
             let nextLayer = layers[nextLayerId];

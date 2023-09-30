@@ -1,31 +1,33 @@
 class Block {
     constructor(initialLayer, endLayer) {
-        if(initialLayer < endLayer){
+        if (initialLayer < endLayer) {
             this.initialLayer = initialLayer;
             this.endLayer = endLayer;
-        }else{
+        } else {
             this.initialLayer = endLayer;
             this.endLayer = initialLayer;
         }
 
         this.name = "";
         this.color = dynamicValues.colors.Block;
+        this.drawInterior = false;
+        this.centerX = 0;
     }
 
-    setColor(color){
-        if(color.length === 3)
+    setColor(color) {
+        if (color.length === 3)
             this.color = [...color];
     }
 
-    getColor(){
+    getColor() {
         return this.color;
     }
 
-    setName(name){
+    setName(name) {
         this.name = name;
     }
 
-    getName(){
+    getName() {
         return this.name;
     }
 

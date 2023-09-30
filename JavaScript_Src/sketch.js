@@ -38,6 +38,7 @@ function draw() {
             layers = layers_backup.map(obj => obj.copy());
             getLayersPosition(layers);
             layersChanged = false;
+            selectedText();
         }
         layers.forEach(drawLayer);
     }

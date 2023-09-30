@@ -1,4 +1,4 @@
-from Python_Src.Utils.Values import layersNotToConsider
+from Python_Src.Utils.Values import layersNotToConsider, activation_layers
 from Python_Src.Utils.Shapes import get_shapes
 
 
@@ -10,14 +10,14 @@ def get_next_layer(outbound_nodes):
 
             if type(nodes) == list:
                 for layer in nodes:
-                    if layer.__class__.__name__ not in layersNotToConsider:
+                    if layer.__class__.__name__ not in layersNotToConsider and nodes.__class__.__name__ not in activation_layers:
                         if layer not in next_layers:
                             next_layers.append(layer)
                     else:
                         next_layers_of_next = get_next_layer(layer.outbound_nodes)
                         next_layers = next_layers + next_layers_of_next
             else:
-                if nodes.__class__.__name__ not in layersNotToConsider:
+                if nodes.__class__.__name__ not in layersNotToConsider and nodes.__class__.__name__ not in activation_layers:
                     if nodes not in next_layers:
                         next_layers.append(nodes)
                 else:
@@ -33,14 +33,14 @@ def get_prev_layer(inbound_nodes):
             nodes = in_node.inbound_layers
             if type(nodes) == list:
                 for layer in nodes:
-                    if layer.__class__.__name__ not in layersNotToConsider:
+                    if layer.__class__.__name__ not in layersNotToConsider and nodes.__class__.__name__ not in activation_layers:
                         if layer not in prev_layers:
                             prev_layers.append(layer)
                     else:
                         prev_layers_of_prev = get_prev_layer(layer.inbound_nodes)
                         prev_layers = prev_layers + prev_layers_of_prev
             else:
-                if nodes.__class__.__name__ not in layersNotToConsider:
+                if nodes.__class__.__name__ not in layersNotToConsider and nodes.__class__.__name__ not in activation_layers:
                     if nodes not in prev_layers:
                         prev_layers.append(nodes)
                 else:

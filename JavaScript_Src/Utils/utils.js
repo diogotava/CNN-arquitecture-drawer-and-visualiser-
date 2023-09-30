@@ -18,12 +18,13 @@ function isLayerPossibleToBeInBlock(layerId, otherLayerId = -1, beginningLayer =
 function selectLayer() {
     let id = getLayerId();
     if (id !== -1) {
-        if (dynamicValues.selectedLayerID !== -1)
+        if (dynamicValues.selectedLayerID !== -1 && dynamicValues.selectedLayerID < dynamicValues.initialBlockId)
             layers[dynamicValues.selectedLayerID].selected = false;
-        layers[id].selected = true;
+        if (id < dynamicValues.initialBlockId)
+            layers[id].selected = true;
         dynamicValues.selectedLayerID = id;
     } else {
-        if (dynamicValues.selectedLayerID !== -1)
+        if (dynamicValues.selectedLayerID !== -1 && dynamicValues.selectedLayerID < dynamicValues.initialBlockId)
             layers[dynamicValues.selectedLayerID].selected = false;
         dynamicValues.selectedLayerID = -1;
     }
@@ -75,16 +76,57 @@ function removeBlock() {
     if (layerId === -1) return
 
     let isEndBlock = isTheEndOfBlock(layerId);
+    let isBeginBlock = isTheBeginningOfBlock(layerId);
+    let indexOfBlock = -1;
     if (isEndBlock) {
-        let indexOfBlock = dynamicValues.blocks.findIndex(block => block.endLayer === layerId);
-        layers[dynamicValues.blocks[indexOfBlock].initialLayer].shouldBeBlock = false;
-        dynamicValues.blocks.splice(indexOfBlock, 1);
-        alert("Block removed!");
-        layersChanged = true;
+        indexOfBlock = dynamicValues.blocks.findIndex(block => block.endLayer === layerId);
+
+    } else if (isBeginBlock) {
+        indexOfBlock = dynamicValues.blocks.findIndex(block => block.initialLayer === layerId);
+
+    } else if (layerId >= dynamicValues.initialBlockId) {
+        indexOfBlock = dynamicValues.blocks.findIndex(block => block.initialLayer === layerId - dynamicValues.initialBlockId);
+
+    } else {
+        alert("ERROR: Layer selected is not a block!");
+        return;
+    }
+
+    layers[dynamicValues.blocks[indexOfBlock].initialLayer].shouldBeBlock = false;
+    dynamicValues.blocks.splice(indexOfBlock, 1);
+    alert("Block removed!");
+    layersChanged = true;
+
+}
+
+function openBlock() {
+    let layerId = getLayerId();
+
+    if (layerId === -1) return
+
+    let isEndBlock = isTheEndOfBlock(layerId);
+    let isBeginBlock = isTheBeginningOfBlock(layerId);
+    let indexOfBlock;
+    if (isEndBlock && isBeginBlock) {
+        alert("ERROR: Layer selected is in 2 blocks select the block pretended!")
+        return
+    }
+
+    if (isEndBlock) {
+        indexOfBlock = dynamicValues.blocks.findIndex(block => block.endLayer === layerId);
+
+    } else if (isBeginBlock) {
+        indexOfBlock = dynamicValues.blocks.findIndex(block => block.initialLayer === layerId);
+
+    } else if (layerId >= dynamicValues.initialBlockId) {
+        indexOfBlock = dynamicValues.blocks.findIndex(block => block.initialLayer === layerId - dynamicValues.initialBlockId);
+
     } else {
         alert("ERROR: Layer selected is not a block!")
     }
 
+    dynamicValues.blocks[indexOfBlock].drawInterior = !dynamicValues.blocks[indexOfBlock].drawInterior;
+    layersChanged = true;
 }
 
 function keyPressed() {
@@ -94,6 +136,8 @@ function keyPressed() {
         selectBlock();
     } else if (keyIsDown(82)) { //r
         removeBlock();
+    } else if (keyIsDown(86)) { //v
+        openBlock();
     }
 }
 
@@ -136,21 +180,26 @@ function selectedText() {
     activation.elt.hidden = true;
     batchNormalization.elt.hidden = true;
 
-    let layer_id_for_position = -1
-    if (isTheEndOfBlock(dynamicValues.selectedLayerID)) {
-        let selectedLayer = layers[dynamicValues.selectedLayerID];
+    let isSelectedLayerBlock = dynamicValues.selectedLayerID >= dynamicValues.initialBlockId;
+
+    if (isSelectedLayerBlock) {
+        let selectedLayer = layers[dynamicValues.selectedLayerID - dynamicValues.initialBlockId];
+
+        let block = dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.initialLayer === selectedLayer.id)];
+        let initialBlockLayer = layers[block.initialLayer];
         nothingSelectedH2.elt.hidden = true;
 
         selectedH2.elt.hidden = false;
         typeP.elt.hidden = false;
         // TODO: remove id
-        let blockName = dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.endLayer === selectedLayer.id)].getName();
+        let blockName = block.getName();
         blockName = blockName === "" ? "(Block without name.)" : blockName;
         selectedH2.html("Selected block: " + selectedLayer.id.toString() + " " + blockName);
         typeP.html("<b>Type:</b> Block");
 
         layerInfo.style.display = 'block';
-        layer_id_for_position = selectedLayer.id - 1
+
+        dynamicValues.paragraphsWorldCoords = isSelectedLayerBlock && block.drawInterior ? { x: block.centerX, y: 0, z: 0 } : convertScreenTo3D(initialBlockLayer.id);
 
     } else if (dynamicValues.selectedLayerID !== -1) {
         let selectedLayer = layers[dynamicValues.selectedLayerID];
@@ -182,11 +231,9 @@ function selectedText() {
         }
 
         layerInfo.style.display = 'block';
-        layer_id_for_position = selectedLayer.id;
 
+        dynamicValues.paragraphsWorldCoords = convertScreenTo3D(selectedLayer.id);
     }
-    if (layer_id_for_position !== -1)
-        dynamicValues.paragraphsWorldCoords = convertScreenTo3D(layer_id_for_position);
 }
 
 function updateShownLayerInformation() {
@@ -230,10 +277,10 @@ function viewMatrix() {
     return viewMatrix;
 }
 
-function convertScreenTo3D(layer_id_for_position) {
+function convertScreenTo3D(layerIdForPosition) {
     let worldCoords = [0, 0, 0];
-    if (layer_id_for_position >= 0)
-        worldCoords = layers[layer_id_for_position].centerPosition;
+    if (layerIdForPosition >= 0)
+        worldCoords = layers[layerIdForPosition].centerPosition;
     return { x: worldCoords[0], y: worldCoords[1], z: worldCoords[2] };
 }
 
@@ -360,6 +407,7 @@ function parseSettingsJson(data) {
 
         updateShownValues();
         dynamicValues.blocks = []
+        layers = layers_backup.map(obj => obj.copy());
 
         for (let i = 0; i < newValues.blocks.length; i++) {
             let blockData = newValues.blocks[i];
