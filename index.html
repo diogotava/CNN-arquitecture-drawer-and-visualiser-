@@ -41,7 +41,7 @@
             <button class="button-12" type="submit">Upload</button>
         </form>
         <div>
-            <button class="button-12" id="exportImage">Export Image</button>
+            <button class="button-12" id="exportImagePreview">Export Image</button>
             <button class="button-12" id="settingsButton">Open Settings</button>
         </div>
 
@@ -56,6 +56,17 @@
             <p hidden id="batchNormalization"><b>Batch normalization: </b></p>
         </div>
 
+        <div id="exportImagePreviewImages">
+            <h2>Images preview</h2>
+
+            <img id="imageToExport" src=""><br>
+            <button class="button-12" onclick="showNextImage()">Next Image</button>
+
+            <div id="exportImageButtos">
+                <button class="button-12" type="submit" id="exportImage">Export</button>
+                <button class="button-12" id="cancelExportImage">Cancel</button>
+            </div>
+        </div>
 
         <div id="settingsPopup">
             <h2>Settings</h2>

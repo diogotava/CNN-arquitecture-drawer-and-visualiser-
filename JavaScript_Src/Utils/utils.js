@@ -371,9 +371,9 @@ function model_inside_model(layers) {
     }
 }
 
-function getLayerColors() {
+function getLayerColors(layersToVerify) {
     let colors = {};
-    for (layer of layers)
+    for (layer of layersToVerify)
         if (!colors.hasOwnProperty(layer.type) && !(layer.isInsideBlock || layer.shouldBeBlock))
             colors[layer.type] = dynamicValues.colors[layer.type] ? dynamicValues.colors[layer.type] : dynamicValues.colors["Default"];
 
@@ -383,6 +383,14 @@ function getLayerColors() {
     }
 
     return colors;
+}
+
+function getMaxXPosition() {
+    if (layers.length == 0)
+        return 0;
+    let layer = layers[layers.length - 1];
+
+    return layer.centerPosition[0] + layer.shape[0];
 }
 
 function componentToHex(c) {

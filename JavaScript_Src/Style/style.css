@@ -186,6 +186,24 @@ fieldset legend {
     border-radius: 5px;
 }
 
+#exportImagePreviewImages {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: fit-content;
+    padding: 10px;
+    background-color: rgb(80, 80, 80);
+    border: 1px solid #1c1c1c;
+    border-radius: 5px;
+}
+
+#imageToExport {
+    max-width: 90vw;
+    max-height: 70vh;
+}
+
 #settingsPopup {
     max-height: 90vh;
     min-height: 50vh;

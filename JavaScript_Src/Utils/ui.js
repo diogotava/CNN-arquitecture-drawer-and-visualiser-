@@ -1,3 +1,6 @@
+let images = [];
+let index = 0;
+
 function buttonUploadModelBehavior() {
     const uploadForm = document.getElementById('upload-form');
 
@@ -99,38 +102,73 @@ function buttonOpenSettingsBehavior() {
     });
 }
 
+function buttonExportImagePreviewBehavior() {
+    const exportImagePreviewButton = document.getElementById('exportImagePreview');
+    const exportImagePreview = document.getElementById('exportImagePreviewImages');
+    exportImagePreviewButton.addEventListener('click', () => {
+        images = [];
+        exportImagePreview.style.display = 'block';
+        let jsonData = getLayerColors(layers);
+        const dataURL = mExportImageCanvas.canvas.toDataURL('image/png');
+        const formData = new FormData();
+        formData.append('image', dataURL);
+        formData.append('json', JSON.stringify(jsonData))
+
+        fetch("http://127.0.0.1:5000/process_image", {
+            method: "POST",
+            body: formData
+        }).then(response => response.json())  // parse response as JSON
+            .then(data => {
+                // handle the JSON response here
+                images.push({ from: "model", data: 'data:image/png;base64,' + data.image });
+                document.getElementById("imageToExport").src = images[0].data;
+            })
+            .catch(error => {
+                loader.style.display = 'none';
+                alert("Was not possible to generate the image!")
+                console.error(error);
+            });
+        // images.push({ from: "model", data: mExportImageCanvas.canvas.toDataURL('image/png') });
+
+    });
+
+}
+
+function showNextImage() {
+    index++;
+    if (index >= images.length) {
+        index = 0;
+    }
+    document.getElementById("imageToExport").src = images[index].data;
+}
+
 function buttonExportImageBehavior() {
     const exportImageButton = document.getElementById('exportImage');
 
     exportImageButton.addEventListener('click', () => {
         saveFrames('myCanvas', 'png', 1, 1, () => {
-            let jsonData = getLayerColors();
-            const dataURL = drawingContext.canvas.toDataURL('image/png');
+            for (img of images) {
 
-            const formData = new FormData();
-            formData.append('image', dataURL);
-            formData.append('json', JSON.stringify(jsonData))
+                // handle the JSON response here
+                const downloadLink = document.createElement('a');
+                downloadLink.href = img.data;
+                downloadLink.download = img.from + '.png';
 
-            fetch("http://127.0.0.1:5000/process_image", {
-                method: "POST",
-                body: formData
-            }).then(response => response.json())  // parse response as JSON
-                .then(data => {
-                    // handle the JSON response here
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = 'data:image/png;base64,' + data.image;
-                    downloadLink.download = 'network.png';
-                    downloadLink.textContent = 'Network image';
+                downloadLink.click();
 
-                    downloadLink.click();
-                })
-                .catch(error => {
-                    loader.style.display = 'none';
-                    alert("Was not possible to generate the image!")
-                    console.error(error);
-                });
+            }
+
         });
     })
+}
+
+function buttonCancelExportImageButtonBehavior() {
+    const cancelExportImageButton = document.getElementById('cancelExportImage');
+    const exportImagePreviewImages = document.getElementById('exportImagePreviewImages');
+
+    cancelExportImageButton.addEventListener('click', () => {
+        exportImagePreviewImages.style.display = 'none';
+    });
 }
 
 function fileInputFieldBehavior() {
@@ -159,6 +197,8 @@ function buttonsBehaviour() {
     buttonSaveBlockBehavior();
     buttonOpenSettingsBehavior();
     buttonExportImageBehavior();
+    buttonExportImagePreviewBehavior();
+    buttonCancelExportImageButtonBehavior();
     fileInputFieldBehavior();
     settingsFileInputFieldBehavior();
 

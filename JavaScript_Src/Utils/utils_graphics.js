@@ -61,7 +61,7 @@ function mResizeCanvas() {
 function mCamera() {
     camera(...[...arguments]);
     mPage.camera(...[...arguments]);
-    // mExportImageCanvas.camera(...[...arguments]);
+    mExportImageCanvas.camera(getMaxXPosition() / 2, -500, 500, getMaxXPosition() / 2, 0, 0, 0, 1, 0);
     mExportImageCanvas.ortho();
 }
 
