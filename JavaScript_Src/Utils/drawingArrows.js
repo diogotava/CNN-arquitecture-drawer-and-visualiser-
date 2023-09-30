@@ -1,96 +1,95 @@
 recursiveLayerTypes = ["LSTM", "GRU", "SimpleRNN", "TimeDistributed", "Bidirectional", "ConvLSTM1D", "ConvLSTM2D", "ConvLSTM3D", "BaseRNN"];
 
 function drawArrow(halfShape, height) {
-    translate(halfShape + (height / 2) - dynamicValues.arrowHeight / 2, 0, 0);
+    mTranslateWithoutMPage(halfShape + (height / 2) - dynamicValues.arrowHeight / 2, 0, 0);
 
-    push();
-    angleMode(DEGREES);
-    rotateZ(90);
-    fill(0);
-    cylinder(dynamicValues.arrowWidth, height - dynamicValues.arrowHeight);
-    pop();
+    mPush(mPageApply = false);
+    mAngleModeDegrees();
+    mRotateZ(90);
+    mTexture(0);
+    mCylinder(dynamicValues.arrowWidth, height - dynamicValues.arrowHeight);
+    mPop(mPageApply = false);
 
-    translate((height / 2), 0, 0);
+    mTranslateWithoutMPage((height / 2), 0, 0);
 
-    rotateZ(-90);
-    fill(0);
-    cone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
+    mRotateZ(-90);
+    mTexture(0);
+    mCone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
 }
 
 function drawFirstPartOfArrowMultiple(layer, xPosition) {
-    translate((layer.getShape()[0] / 2) + (xPosition / 4), 0, 0);
+    mTranslateWithoutMPage((layer.getShape()[0] / 2) + (xPosition / 4), 0, 0);
 
-    push();
-    angleMode(DEGREES);
-    rotateZ(90);
-    fill(0);
-    cylinder(dynamicValues.arrowWidth, xPosition / 2);
-    pop();
+    mPush(mPageApply = false);
+    mAngleModeDegrees();
+    mRotateZ(90);
+    mTexture(0);
+    mCylinder(dynamicValues.arrowWidth, xPosition / 2);
+    mPop(mPageApply = false);
 }
 
 function drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, xPosition, yPosition) {
     drawFirstPartOfArrowMultiple(layer, xPosition);
 
-    translate((xPosition / 4), 0, yPosition / 2);
+    mTranslateWithoutMPage((xPosition / 4), 0, yPosition / 2);
 
-    push();
-    rotateZ(90);
-    rotateX(90);
-    fill(0);
-    cylinder(dynamicValues.arrowWidth, yPosition);
-    pop();
+    mPush(mPageApply = false);
+    mRotateZ(90);
+    mRotateX(90);
+    mTexture(0);
+    mCylinder(dynamicValues.arrowWidth, yPosition);
+    mPop(mPageApply = false);
 
-    translate((dynamicValues.spaceBetweenLayers / 4) - (dynamicValues.arrowHeight / 2), 0, yPosition / 2);
+    mTranslateWithoutMPage((dynamicValues.spaceBetweenLayers / 4) - (dynamicValues.arrowHeight / 2), 0, yPosition / 2);
 
-    push();
-    rotateZ(90);
-    fill(0);
-    cylinder(dynamicValues.arrowWidth, dynamicValues.spaceBetweenLayers / 2 - dynamicValues.arrowHeight);
-    pop();
-    translate((dynamicValues.spaceBetweenLayers / 4), 0, 0);
-    rotateZ(-90);
-    fill(0);
-    cone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
+    mPush(mPageApply = false);
+    mRotateZ(90);
+    mTexture(0);
+    mCylinder(dynamicValues.arrowWidth, dynamicValues.spaceBetweenLayers / 2 - dynamicValues.arrowHeight);
+    mPop(mPageApply = false);
+    mTranslateWithoutMPage((dynamicValues.spaceBetweenLayers / 4), 0, 0);
+    mRotateZ(-90);
+    mTexture(0);
+    mCone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
 }
 
 function drawArrowMultipleNextLayers(layer, xPosition) {
     drawFirstPartOfArrowMultiple(layer, xPosition);
 
     for (let nextLayerIndex of layer.nextLayers) {
-        push();
+        mPush(mPageApply = false);
         let nextLayer = layers[nextLayerIndex];
 
         let nextLayerYPosition = (nextLayer.centerPosition[2]) - (layer.centerPosition[2]);
         let nextLayerXPosition = (nextLayer.centerPosition[0] - nextLayer.getShape()[0] / 2) - (layer.centerPosition[0] + layer.getShape()[0] / 2);
 
-        translate((nextLayerXPosition / 4), 0, nextLayerYPosition / 2);
+        mTranslateWithoutMPage((nextLayerXPosition / 4), 0, nextLayerYPosition / 2);
 
-        push();
-        rotateZ(90);
-        rotateX(90);
-        fill(0);
-        cylinder(dynamicValues.arrowWidth, nextLayerYPosition);
-        pop();
+        mPush(mPageApply = false);
+        mRotateZ(90);
+        mRotateX(90);
+        mTexture(0);
+        mCylinder(dynamicValues.arrowWidth, nextLayerYPosition);
+        mPop(mPageApply = false);
 
-        translate((nextLayerXPosition / 4) - dynamicValues.arrowHeight / 2 + 0.1, 0, nextLayerYPosition / 2);
+        mTranslateWithoutMPage((nextLayerXPosition / 4) - dynamicValues.arrowHeight / 2 + 0.1, 0, nextLayerYPosition / 2);
 
-        push();
-        rotateZ(90);
-        fill(0);
+        mPush(mPageApply = false);
+        mRotateZ(90);
+        mTexture(0);
         if (nextLayerXPosition > dynamicValues.spaceBetweenLayers)
-            cylinder(dynamicValues.arrowWidth, nextLayerXPosition - dynamicValues.spaceBetweenLayers / 2 - dynamicValues.arrowHeight / 2);
+            mCylinder(dynamicValues.arrowWidth, nextLayerXPosition - dynamicValues.spaceBetweenLayers / 2 - dynamicValues.arrowHeight / 2);
         else
-            cylinder(dynamicValues.arrowWidth, nextLayerXPosition / 2 - dynamicValues.arrowHeight);
-        pop();
+            mCylinder(dynamicValues.arrowWidth, nextLayerXPosition / 2 - dynamicValues.arrowHeight);
+        mPop(mPageApply = false);
         if (nextLayerXPosition <= dynamicValues.spaceBetweenLayers) {
-            translate((nextLayerXPosition / 4) - 0.1, 0, 0);
-            rotateZ(-90);
-            fill(0);
-            cone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
+            mTranslateWithoutMPage((nextLayerXPosition / 4) - 0.1, 0, 0);
+            mRotateZ(-90);
+            mTexture(0);
+            mCone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
         }
-        pop();
+        mPop(mPageApply = false);
     }
-    pop();
 }
 
 function drawArrowForArrow(layer, array) {
@@ -102,27 +101,27 @@ function drawArrowForArrow(layer, array) {
     if (layer.nextLayers.length === 1) {
         let nextLayer = array[layer.nextLayers[0]];
         if (nextLayer.prevLayers.length <= 1) {
-            push();
+            mPush(mPageApply = false);
             let height = (nextLayer.centerPosition[0] - nextLayer.getShape()[0] / 2) - (layer.centerPosition[0] + layer.getShape()[0] / 2);
             let halfShape = layer.getShape()[0] / 2;
             drawArrow(halfShape, height);
-            pop();
+            mPop(mPageApply = false);
         } else if (nextLayer.prevLayers.length > 1) {
-            push();
+            mPush(mPageApply = false);
             let positionX = (nextLayer.centerPosition[0] - nextLayer.getShape()[0] / 2) - (layer.centerPosition[0] + layer.getShape()[0] / 2) +
                 ((nextLayer.centerPosition[0] - dynamicValues.spaceBetweenLayers - nextLayer.getShape()[0] / 2) -
                     (layer.centerPosition[0] + layer.getShape()[0] / 2));
             let positionY = (nextLayer.centerPosition[2]) - (layer.centerPosition[2]);
 
             drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, positionX, positionY);
-            pop();
+            mPop(mPageApply = false);
         }
     } else if (layer.nextLayers.length > 1) {
-        push();
+        mPush(mPageApply = false);
         smooth();
         let positionX = (array[layer.nextLayers[0]].centerPosition[0] - array[layer.nextLayers[0]].getShape()[0] / 2) - (layer.centerPosition[0] + layer.getShape()[0] / 2);
         drawArrowMultipleNextLayers(layer, positionX);
-
+        mPop(mPageApply = false);
     }
 }
 
@@ -132,55 +131,55 @@ function drawArrowRecursiveLayer(layer) {
     }
     let color = [...dynamicValues.colors[layer.type]];
 
-    push();
+    mPush(mPageApply = false);
 
-    translate((layer.getShape()[0] / 2 + (dynamicValues.spaceBetweenLayers - 0.5) / 4), 0, 1);
-    push();
-    angleMode(DEGREES);
-    rotateZ(90);
-    fill(color);
-    cylinder(dynamicValues.arrowWidth, (dynamicValues.spaceBetweenLayers - 0.5) / 2);
-    pop();
+    mTranslateWithoutMPage((layer.getShape()[0] / 2 + (dynamicValues.spaceBetweenLayers - 0.5) / 4), 0, 1);
+    mPush(mPageApply = false);
+    mAngleModeDegrees();
+    mRotateZ(90);
+    mTexture(color);
+    mCylinder(dynamicValues.arrowWidth, (dynamicValues.spaceBetweenLayers - 0.5) / 2);
+    mPop(mPageApply = false);
 
-    translate((dynamicValues.spaceBetweenLayers - 0.5) / 4, 0, (layer.getShape()[2] / 2 + 1) / 2);
+    mTranslateWithoutMPage((dynamicValues.spaceBetweenLayers - 0.5) / 4, 0, (layer.getShape()[2] / 2 + 1) / 2);
 
-    push();
-    rotateZ(90);
-    rotateX(90);
-    fill(color);
-    cylinder(dynamicValues.arrowWidth, layer.getShape()[2] / 2 + 1);
-    pop();
+    mPush(mPageApply = false);
+    mRotateZ(90);
+    mRotateX(90);
+    mTexture(color);
+    mCylinder(dynamicValues.arrowWidth, layer.getShape()[2] / 2 + 1);
+    mPop(mPageApply = false);
 
-    translate(-((dynamicValues.spaceBetweenLayers - 0.5) + layer.getShape()[0]) / 2, 0, (layer.getShape()[2] / 2 + 1) / 2);
+    mTranslateWithoutMPage(-((dynamicValues.spaceBetweenLayers - 0.5) + layer.getShape()[0]) / 2, 0, (layer.getShape()[2] / 2 + 1) / 2);
 
-    push();
-    rotateZ(90);
-    fill(color);
-    cylinder(dynamicValues.arrowWidth, (dynamicValues.spaceBetweenLayers - 0.5) + layer.getShape()[0]);
-    pop();
+    mPush(mPageApply = false);
+    mRotateZ(90);
+    mTexture(color);
+    mCylinder(dynamicValues.arrowWidth, (dynamicValues.spaceBetweenLayers - 0.5) + layer.getShape()[0]);
+    mPop(mPageApply = false);
 
-    translate(-((dynamicValues.spaceBetweenLayers - 0.5) + layer.getShape()[0]) / 2, 0, -(layer.getShape()[2] / 2 + 1) / 2);
+    mTranslateWithoutMPage(-((dynamicValues.spaceBetweenLayers - 0.5) + layer.getShape()[0]) / 2, 0, -(layer.getShape()[2] / 2 + 1) / 2);
 
-    push();
-    rotateZ(90);
-    rotateX(90);
-    fill(color);
-    cylinder(dynamicValues.arrowWidth, layer.getShape()[2] / 2 + 1);
-    pop();
+    mPush(mPageApply = false);
+    mRotateZ(90);
+    mRotateX(90);
+    mTexture(color);
+    mCylinder(dynamicValues.arrowWidth, layer.getShape()[2] / 2 + 1);
+    mPop(mPageApply = false);
 
-    translate((dynamicValues.spaceBetweenLayers - 0.5) / 4 - 0.5, 0, -(layer.getShape()[2] / 2 + 1) / 2);
+    mTranslateWithoutMPage((dynamicValues.spaceBetweenLayers - 0.5) / 4 - 0.5, 0, -(layer.getShape()[2] / 2 + 1) / 2);
 
-    push();
-    angleMode(DEGREES);
-    rotateZ(90);
-    fill(color);
-    cylinder(dynamicValues.arrowWidth, (dynamicValues.spaceBetweenLayers - 0.5) / 2 - 0.7);
-    pop();
+    mPush(mPageApply = false);
+    mAngleModeDegrees();
+    mRotateZ(90);
+    mTexture(color);
+    mCylinder(dynamicValues.arrowWidth, (dynamicValues.spaceBetweenLayers - 0.5) / 2 - 0.7);
+    mPop(mPageApply = false);
 
-    translate(((dynamicValues.spaceBetweenLayers + 0.5) / 4) - dynamicValues.arrowHeight / 2 + 0.25, 0, 0);
+    mTranslateWithoutMPage(((dynamicValues.spaceBetweenLayers + 0.5) / 4) - dynamicValues.arrowHeight / 2 + 0.25, 0, 0);
 
-    rotateZ(-90);
-    fill(color);
-    cone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
-    pop();
+    mRotateZ(-90);
+    mTexture(color);
+    mCone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
+    mPop(mPageApply = false);
 }

@@ -14,6 +14,8 @@ function mBox(id, shapeX, shapeY, shapeZ) {
     smooth();
     strokeWeight(dynamicValues.strokeWeight);
     box(shapeX, shapeY, shapeZ);
+    mExportImageCanvas.smooth();
+    mExportImageCanvas.strokeWeight(dynamicValues.strokeWeight);
     mExportImageCanvas.box(shapeX, shapeY, shapeZ);
 
     mPage.fill((id >> 16) & 0xFF, (id >> 8) & 0xF, id & 0xFF);
@@ -36,10 +38,15 @@ function mBlock(id, shapeX, shapeY, shapeZ, blockColor) {
     strokeWeight(dynamicValues.strokeWeight);
 }
 
-function mTranslate() {
+function mTranslate(...arguments) {
     translate(...[...arguments]);
     mExportImageCanvas.translate(...[...arguments]);
     mPage.translate(...[...arguments]);
+}
+
+function mTranslateWithoutMPage(...arguments) {
+    translate(...[...arguments]);
+    mExportImageCanvas.translate(...[...arguments]);
 }
 
 function mResizeCanvas() {
@@ -54,27 +61,58 @@ function mResizeCanvas() {
 function mCamera() {
     camera(...[...arguments]);
     mPage.camera(...[...arguments]);
+    // mExportImageCanvas.camera(...[...arguments]);
     mExportImageCanvas.ortho();
-    // mExportImageCanvas.camera(largestXPosition / 2 != 0 ? largestXPosition / 2 : 0, -500, 400);
 }
 
-function mPush() {
+function mPush(mPageApply = true) {
     push();
-    mPage.push();
+    mExportImageCanvas.push();
+    if (mPageApply)
+        mPage.push();
 }
 
-function mPop() {
+function mPop(mPageApply = true) {
     pop();
-    mPage.pop();
+    mExportImageCanvas.pop();
+    if (mPageApply)
+        mPage.pop();
 }
 
 function mBackground() {
     background(...[...arguments]);
+    mExportImageCanvas.background(...[...arguments]);
     mPage.background(0);
 }
 
 function mTexture() {
     fill(...[...arguments]);
+    mExportImageCanvas.fill(...[...arguments]);
+}
+
+function mAngleModeDegrees() {
+    angleMode(DEGREES);
+    mExportImageCanvas.angleMode(DEGREES);
+}
+
+function mRotateX(angle) {
+    rotateX(angle);
+    mExportImageCanvas.rotateX(angle);
+}
+
+function mRotateZ(angle) {
+    rotateZ(angle);
+    mExportImageCanvas.rotateZ(angle);
+}
+
+function mCylinder() {
+    cylinder(...[...arguments]);
+    mExportImageCanvas.cylinder(...[...arguments]);
+}
+
+function mCone() {
+    cone(...[...arguments]);
+    mExportImageCanvas.cone(...[...arguments]);
 }
 
 function mOrbitControl(sensitivityX = 1, sensitivityY = 1, sensitivityZ = 0.01) {
