@@ -12,16 +12,19 @@ class Layer {
 
         if (copy) {
             this.selected = layer.selected;
-            this.centerPosition = layer.centerPosition;
+            this.centerPosition = [...layer.centerPosition];
             this.shape = [...layer.shape];
-            this.prevLayers = layer.prevLayers;
-            this.nextLayers = layer.nextLayers;
+            this.prevLayers = [...layer.prevLayers];
+            this.nextLayers = [...layer.nextLayers];
             this.activation = layer.activation;
-            this.inputShape = layer.inputShape;
-            this.outputShape = layer.outputShape;
+            this.inputShape = [...layer.inputShape];
+            this.outputShape = [...layer.outputShape];
             this.previousYPosition = layer.previousYPosition;
             this.batchNormalization = layer.batchNormalization;
-            this.layers = layer.layers;
+            if (layer.layers !== null)
+                this.layers = [...layer.layers];
+            else
+                this.layers = layer.layers;
 
         } else {
             this.selected = false;

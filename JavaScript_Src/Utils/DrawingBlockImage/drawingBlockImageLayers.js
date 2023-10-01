@@ -1,11 +1,11 @@
-function drawLayer(layer, i, array) {
+function drawLayerBlockImage(layer, array) {
     if (layer.shouldBeDrawn || layer.shouldBeBlock) {
         let centerPosition = [...layer.centerPosition]
 
         let shape = layer.getShape();
 
-        mPush();
-        mTranslate(centerPosition[0], centerPosition[1], centerPosition[2]);
+        mBlockImage.push();
+        mBlockImage.translate(centerPosition[0], centerPosition[1], centerPosition[2]);
 
         if (layer.shouldBeDrawn) {
             let id = layer.id + 1;
@@ -32,21 +32,24 @@ function drawLayer(layer, i, array) {
 
                     let translationLength = (length / 2) - ((shape[0] / 2) + dynamicValues.spaceBetweenLayers / 2);
                     block.centerX = centerPosition[0] + translationLength;
-                    mPush();
-                    mTranslate(translationLength, 0, 0);
-                    noFill();
+                    mBlockImage.push();
+                    mBlockImage.translate(translationLength, 0, 0);
+                    mBlockImage.noFill();
                     blockColor = getBlockColor(layer.id);
-                    mBlock(layer.id + dynamicValues.initialBlockId + 1, length, width, width, blockColor);
-                    mPop();
+                    mBlockImage.smooth();
+                    mBlockImage.strokeWeight(dynamicValues.strokeWeight);
+                    mBlockImage.stroke(blockColor[0], blockColor[1], blockColor[2])
+                    mBlockImage.box(length, width, width);
+                    mBlockImage.pop();
                 } else {
                     id = endBlockLayer !== undefined ? layer.id + dynamicValues.initialBlockId + 1 : -1;
                     color = getBlockColor(layer.id);
                 }
             }
-            mTexture(color[0], color[1], color[2]);
-            mBox(id, shape[0], shape[1], shape[2]);
-            drawArrowForArrow(layer, array);
+            mBlockImage.fill(color[0], color[1], color[2]);
+            mBlockImage.box(shape[0], shape[1], shape[2]);
+            drawArrowForArrowBlockImage(layer, array);
         }
-        mPop();
+        mBlockImage.pop();
     }
 }

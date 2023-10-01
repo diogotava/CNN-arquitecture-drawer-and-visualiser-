@@ -1,5 +1,27 @@
 let block = [];
 
+function findCommonElement(array1, array2) {
+    let resultArray = [];
+    // Loop for array1
+    for (let i = 0; i < array1.length; i++) {
+
+        // Loop for array2
+        for (let j = 0; j < array2.length; j++) {
+
+            // Compare the element of each and
+            // every element from both of the
+            // arrays
+            if (array1[i] === array2[j]) {
+
+                // add if common element found
+                resultArray.push(array1[i]);
+            }
+        }
+    }
+
+    return resultArray;
+}
+
 function isLayerPossibleToBeInBlock(layerId, otherLayerId = -1, beginningLayer = true) {
     if (layerId === -1) return false;
 
@@ -44,6 +66,8 @@ function selectBlock() {
     }
 
     if (dynamicValues.bPressed) {
+        if (layerId >= dynamicValues.initialBlockId && otherLayerId !== -1)
+            layerId = getBlock(layerId).initialLayer;
         if (isLayerPossibleToBeInBlock(layerId, block[0], false)) {
             block = new Block(block[0], layerId);
 
@@ -59,6 +83,8 @@ function selectBlock() {
         }
         dynamicValues.bPressed = false;
     } else {
+        if (layerId >= dynamicValues.initialBlockId)
+            layerId = getBlock(layerId).endLayer;
         if (isLayerPossibleToBeInBlock(layerId)) {
             block[0] = layerId;
             alert('Begin of block selected!');
@@ -133,11 +159,14 @@ function keyPressed() {
     if (keyIsDown(67)) { // C
         selectLayer();
     } else if (keyIsDown(66)) { //b
-        selectBlock();
+        if (document.getElementById('blockPopup').style.display !== "block")
+            selectBlock();
     } else if (keyIsDown(82)) { //r
-        removeBlock();
+        if (document.getElementById('blockPopup').style.display !== "block")
+            removeBlock();
     } else if (keyIsDown(86)) { //v
-        openBlock();
+        if (document.getElementById('blockPopup').style.display !== "block")
+            openBlock();
     }
 }
 
@@ -371,12 +400,14 @@ function model_inside_model(layers) {
     }
 }
 
-function getLayerColors(layersToVerify) {
+function getLayerColors(layersToVerify = layers) {
     let colors = {};
     for (layer of layersToVerify)
         if (!colors.hasOwnProperty(layer.type) && !(layer.isInsideBlock || layer.shouldBeBlock))
             colors[layer.type] = dynamicValues.colors[layer.type] ? dynamicValues.colors[layer.type] : dynamicValues.colors["Default"];
 
+    if (layersToVerify != layers)
+        return colors;
     for (block of dynamicValues.blocks) {
         if (!color.hasOwnProperty(block.name))
             colors[block.name] = block.color;
@@ -385,12 +416,20 @@ function getLayerColors(layersToVerify) {
     return colors;
 }
 
-function getMaxXPosition() {
-    if (layers.length == 0)
+function getMaxXPosition(layersToVerify = layers) {
+    if (layersToVerify.length == 0)
         return 0;
-    let layer = layers[layers.length - 1];
+    let layer = layersToVerify[layersToVerify.length - 1];
 
-    return layer.centerPosition[0] + layer.shape[0];
+    return layer.centerPosition[0] + layer.getShape()[0];
+}
+
+function getMinXPosition(layersToVerify = layers) {
+    if (layersToVerify.length == 0)
+        return 0;
+    let layer = layersToVerify[0];
+
+    return layer.centerPosition[0] - layer.getShape()[0];
 }
 
 function componentToHex(c) {

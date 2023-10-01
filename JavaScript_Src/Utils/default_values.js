@@ -1,3 +1,4 @@
+recursiveLayerTypes = ["LSTM", "GRU", "SimpleRNN", "TimeDistributed", "Bidirectional", "ConvLSTM1D", "ConvLSTM2D", "ConvLSTM3D", "BaseRNN"];
 let dynamicValues;
 let defaultColors = {
     "Conv1D": [10, 255, 0],

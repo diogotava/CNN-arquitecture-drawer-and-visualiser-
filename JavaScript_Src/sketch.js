@@ -40,7 +40,7 @@ function draw() {
             layersChanged = false;
             selectedText();
         }
-        layers.forEach(drawLayer);
+        layers.forEach((layer) => drawLayer(layer, layers));
     }
 }
 

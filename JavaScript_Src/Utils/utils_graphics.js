@@ -1,6 +1,7 @@
 let mPage;
 let mExportImageCanvas;
 let canvas;
+let mBlockImage;
 
 function mCreateCanvas(windowWidth, windowHeight) {
     canvas = createCanvas(windowWidth, windowHeight, WEBGL);
@@ -8,6 +9,7 @@ function mCreateCanvas(windowWidth, windowHeight) {
     mPage = createGraphics(width, height, WEBGL);
     mPage.parent('column2');
     mExportImageCanvas = createGraphics(width, height, WEBGL);
+    mBlockImage = createGraphics(width, height, WEBGL);
 }
 
 function mBox(id, shapeX, shapeY, shapeZ) {
@@ -61,8 +63,9 @@ function mResizeCanvas() {
 function mCamera() {
     camera(...[...arguments]);
     mPage.camera(...[...arguments]);
-    mExportImageCanvas.camera(getMaxXPosition() / 2, -500, 500, getMaxXPosition() / 2, 0, 0, 0, 1, 0);
-    mExportImageCanvas.ortho();
+    mExportImageCanvas.camera(0, -500, 500, 0, 0, 0, 0, 1, 0);
+    mExportImageCanvas.resizeCanvas(getMaxXPosition() * 2, height)
+    mExportImageCanvas.ortho(0, getMaxXPosition(), -100, 100, 10, 5000);
 }
 
 function mPush(mPageApply = true) {

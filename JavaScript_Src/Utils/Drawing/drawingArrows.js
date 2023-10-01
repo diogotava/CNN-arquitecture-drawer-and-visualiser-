@@ -1,5 +1,3 @@
-recursiveLayerTypes = ["LSTM", "GRU", "SimpleRNN", "TimeDistributed", "Bidirectional", "ConvLSTM1D", "ConvLSTM2D", "ConvLSTM3D", "BaseRNN"];
-
 function drawArrow(halfShape, height) {
     mTranslateWithoutMPage(halfShape + (height / 2) - dynamicValues.arrowHeight / 2, 0, 0);
 

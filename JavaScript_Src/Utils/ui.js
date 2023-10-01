@@ -33,11 +33,13 @@ function buttonUploadModelBehavior() {
 
                     layers.push(layer)
                 }
-                layers_backup = layers.map(obj => obj.copy());
 
                 model_inside_model(layers);
 
-                layersChanged = true;
+                getLayersPosition(layers);
+                layers_backup = layers.map(obj => obj.copy());
+
+                // layersChanged = true;
                 loader.style.display = 'none';
             })
             .catch(error => {
@@ -108,7 +110,8 @@ function buttonExportImagePreviewBehavior() {
     exportImagePreviewButton.addEventListener('click', () => {
         images = [];
         exportImagePreview.style.display = 'block';
-        let jsonData = getLayerColors(layers);
+        let jsonData = getLayerColors();
+        // images.push({ from: "model", data: mExportImageCanvas.canvas.toDataURL('image/png') });
         const dataURL = mExportImageCanvas.canvas.toDataURL('image/png');
         const formData = new FormData();
         formData.append('image', dataURL);
@@ -128,7 +131,54 @@ function buttonExportImagePreviewBehavior() {
                 alert("Was not possible to generate the image!")
                 console.error(error);
             });
-        // images.push({ from: "model", data: mExportImageCanvas.canvas.toDataURL('image/png') });
+
+        for (block of dynamicValues.blocks) {
+            mBlockImage.background(255);
+            mBlockImage.camera(0, -100, 100, 0, 0, 0, 0, 1, 0)
+            let blockLayers = [];
+            blockLayers = layers.map(obj => obj.copy()).slice(block.initialLayer, block.endLayer + 1);
+            let initialId = blockLayers[0].id;
+            blockLayers.forEach((layer) => {
+                layer.nextLayers = [...layers_backup[layer.id].nextLayers];
+                layer.prevLayers = [...layers_backup[layer.id].prevLayers];
+                layer.centerPosition = [0, 0, 0];
+                layer.shape = [...layers_backup[layer.id].shape];
+                layer.shouldBeDrawn = true;
+                layer.shouldBeBlock = false;
+                layer.id = layer.id - initialId;
+                layer.nextLayers = layer.nextLayers.map(function (v, i) { return (v - initialId); });
+                layer.prevLayers = layer.prevLayers.map(function (v, i) { return (v - initialId); });
+            });
+            blockLayers[blockLayers.length - 1].nextLayers = [];
+            blockLayers[0].prevLayers = [];
+
+            getLayersPosition(blockLayers, false);
+
+            mBlockImage.ortho(0, getMaxXPosition(blockLayers), -80, 80, 10, 500);
+
+            blockLayers.forEach((layer) => { drawLayerBlockImage(layer, blockLayers); });
+
+            let jsonData = getLayerColors(blockLayers);
+            // images.push({ from: "model", data: mExportImageCanvas.canvas.toDataURL('image/png') });
+            const dataURL = mBlockImage.canvas.toDataURL('image/png');
+            const formData = new FormData();
+            formData.append('image', dataURL);
+            formData.append('json', JSON.stringify(jsonData))
+
+            fetch("http://127.0.0.1:5000/process_image", {
+                method: "POST",
+                body: formData
+            }).then(response => response.json())  // parse response as JSON
+                .then(data => {
+                    // handle the JSON response here
+                    images.push({ from: block.name, data: 'data:image/png;base64,' + data.image });
+                })
+                .catch(error => {
+                    loader.style.display = 'none';
+                    alert("Was not possible to generate the image!")
+                    console.error(error);
+                });
+        }
 
     });
 
