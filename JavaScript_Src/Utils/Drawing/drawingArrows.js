@@ -4,14 +4,14 @@ function drawArrow(halfShape, height) {
     mPush(mPageApply = false);
     mAngleModeDegrees();
     mRotateZ(90);
-    mTexture(0);
+    mTexture(dynamicValues.colors.Arrow);
     mCylinder(dynamicValues.arrowWidth, height - dynamicValues.arrowHeight);
     mPop(mPageApply = false);
 
     mTranslateWithoutMPage((height / 2), 0, 0);
 
     mRotateZ(-90);
-    mTexture(0);
+    mTexture(dynamicValues.colors.Arrow);
     mCone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
 }
 
@@ -21,7 +21,7 @@ function drawFirstPartOfArrowMultiple(layer, xPosition) {
     mPush(mPageApply = false);
     mAngleModeDegrees();
     mRotateZ(90);
-    mTexture(0);
+    mTexture(dynamicValues.colors.Arrow);
     mCylinder(dynamicValues.arrowWidth, xPosition / 2);
     mPop(mPageApply = false);
 }
@@ -34,7 +34,7 @@ function drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, xPosition,
     mPush(mPageApply = false);
     mRotateZ(90);
     mRotateX(90);
-    mTexture(0);
+    mTexture(dynamicValues.colors.Arrow);
     mCylinder(dynamicValues.arrowWidth, yPosition);
     mPop(mPageApply = false);
 
@@ -42,12 +42,12 @@ function drawArrowMultiplePreviousLayersOfNextLayer(layer, nextLayer, xPosition,
 
     mPush(mPageApply = false);
     mRotateZ(90);
-    mTexture(0);
+    mTexture(dynamicValues.colors.Arrow);
     mCylinder(dynamicValues.arrowWidth, dynamicValues.spaceBetweenLayers / 2 - dynamicValues.arrowHeight);
     mPop(mPageApply = false);
     mTranslateWithoutMPage((dynamicValues.spaceBetweenLayers / 4), 0, 0);
     mRotateZ(-90);
-    mTexture(0);
+    mTexture(dynamicValues.colors.Arrow);
     mCone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
 }
 
@@ -66,7 +66,7 @@ function drawArrowMultipleNextLayers(layer, xPosition) {
         mPush(mPageApply = false);
         mRotateZ(90);
         mRotateX(90);
-        mTexture(0);
+        mTexture(dynamicValues.colors.Arrow);
         mCylinder(dynamicValues.arrowWidth, nextLayerYPosition);
         mPop(mPageApply = false);
 
@@ -74,7 +74,7 @@ function drawArrowMultipleNextLayers(layer, xPosition) {
 
         mPush(mPageApply = false);
         mRotateZ(90);
-        mTexture(0);
+        mTexture(dynamicValues.colors.Arrow);
         if (nextLayerXPosition > dynamicValues.spaceBetweenLayers)
             mCylinder(dynamicValues.arrowWidth, nextLayerXPosition - dynamicValues.spaceBetweenLayers / 2 - dynamicValues.arrowHeight / 2);
         else
@@ -83,7 +83,7 @@ function drawArrowMultipleNextLayers(layer, xPosition) {
         if (nextLayerXPosition <= dynamicValues.spaceBetweenLayers) {
             mTranslateWithoutMPage((nextLayerXPosition / 4) - 0.1, 0, 0);
             mRotateZ(-90);
-            mTexture(0);
+            mTexture(dynamicValues.colors.Arrow);
             mCone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
         }
         mPop(mPageApply = false);

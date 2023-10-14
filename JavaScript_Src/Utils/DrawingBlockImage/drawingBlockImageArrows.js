@@ -6,14 +6,14 @@ function drawArrowBlockImage(halfShape, height) {
     mBlockImage.push();
     mBlockImage.angleMode(DEGREES);
     mBlockImage.rotateZ(90);
-    mBlockImage.fill(0);
+    mBlockImage.fill(dynamicValues.colors.Arrow);
     mBlockImage.cylinder(dynamicValues.arrowWidth, height - dynamicValues.arrowHeight);
     mBlockImage.pop(mPageApply = false);
 
     mBlockImage.translate((height / 2), 0, 0);
 
     mBlockImage.rotateZ(-90);
-    mBlockImage.fill(0);
+    mBlockImage.fill(dynamicValues.colors.Arrow);
     mBlockImage.cone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
 }
 
@@ -23,7 +23,7 @@ function drawFirstPartOfArrowMultipleBlockImage(layer, xPosition) {
     mBlockImage.push();
     mBlockImage.angleMode(DEGREES);
     mBlockImage.rotateZ(90);
-    mBlockImage.fill(0);
+    mBlockImage.fill(dynamicValues.colors.Arrow);
     mBlockImage.cylinder(dynamicValues.arrowWidth, xPosition / 2);
     mBlockImage.pop(mPageApply = false);
 }
@@ -36,7 +36,7 @@ function drawArrowMultiplePreviousLayersOfNextLayerBlockImage(layer, nextLayer, 
     mBlockImage.push();
     mBlockImage.rotateZ(90);
     mBlockImage.rotateX(90);
-    mBlockImage.fill(0);
+    mBlockImage.fill(dynamicValues.colors.Arrow);
     mBlockImage.cylinder(dynamicValues.arrowWidth, yPosition);
     mBlockImage.pop(mPageApply = false);
 
@@ -44,12 +44,12 @@ function drawArrowMultiplePreviousLayersOfNextLayerBlockImage(layer, nextLayer, 
 
     mBlockImage.push();
     mBlockImage.rotateZ(90);
-    mBlockImage.fill(0);
+    mBlockImage.fill(dynamicValues.colors.Arrow);
     mBlockImage.cylinder(dynamicValues.arrowWidth, dynamicValues.spaceBetweenLayers / 2 - dynamicValues.arrowHeight);
     mBlockImage.pop(mPageApply = false);
     mBlockImage.translate((dynamicValues.spaceBetweenLayers / 4), 0, 0);
     mBlockImage.rotateZ(-90);
-    mBlockImage.fill(0);
+    mBlockImage.fill(dynamicValues.colors.Arrow);
     mBlockImage.cone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
 }
 
@@ -68,7 +68,7 @@ function drawArrowMultipleNextLayersBlockImage(layer, xPosition, layersToUse) {
         mBlockImage.push();
         mBlockImage.rotateZ(90);
         mBlockImage.rotateX(90);
-        mBlockImage.fill(0);
+        mBlockImage.fill(dynamicValues.colors.Arrow);
         mBlockImage.cylinder(dynamicValues.arrowWidth, nextLayerYPosition);
         mBlockImage.pop(mPageApply = false);
 
@@ -76,7 +76,7 @@ function drawArrowMultipleNextLayersBlockImage(layer, xPosition, layersToUse) {
 
         mBlockImage.push();
         mBlockImage.rotateZ(90);
-        mBlockImage.fill(0);
+        mBlockImage.fill(dynamicValues.colors.Arrow);
         if (nextLayerXPosition > dynamicValues.spaceBetweenLayers)
             mBlockImage.cylinder(dynamicValues.arrowWidth, nextLayerXPosition - dynamicValues.spaceBetweenLayers / 2 - dynamicValues.arrowHeight / 2);
         else
@@ -85,7 +85,7 @@ function drawArrowMultipleNextLayersBlockImage(layer, xPosition, layersToUse) {
         if (nextLayerXPosition <= dynamicValues.spaceBetweenLayers) {
             mBlockImage.translate((nextLayerXPosition / 4) - 0.1, 0, 0);
             mBlockImage.rotateZ(-90);
-            mBlockImage.fill(0);
+            mBlockImage.fill(dynamicValues.colors.Arrow);
             mBlockImage.cone(dynamicValues.arrowPointRadius, dynamicValues.arrowHeight);
         }
         mBlockImage.pop(mPageApply = false);

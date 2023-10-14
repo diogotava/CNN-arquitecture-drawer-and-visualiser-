@@ -51,7 +51,6 @@ function updateColorsShownValues() {
                 color = rgbToHex(defaultColors[key][0], defaultColors[key][1], defaultColors[key][2]);
                 previousColors[key] = [parseInt(color.substring(1, 3), 16), parseInt(color.substring(3, 5), 16), parseInt(color.substring(5, 7), 16)];
                 colorInput.value = color;
-                dynamicValues.colors[key] = [parseInt(color.substring(1, 3), 16), parseInt(color.substring(3, 5), 16), parseInt(color.substring(5, 7), 16)];
             }
         })
 

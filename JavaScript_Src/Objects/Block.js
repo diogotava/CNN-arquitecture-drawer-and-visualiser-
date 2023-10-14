@@ -9,6 +9,7 @@ class Block {
         }
 
         this.name = "";
+        this.type = "";
         this.color = dynamicValues.colors.Block;
         this.drawInterior = false;
         this.centerX = 0;

@@ -70,14 +70,46 @@ function buttonUploadSettingsFileBehavior() {
     });
 }
 
+function checkTypeOption(value) {
+    // Get the types element
+    var types = document.getElementById("types");
+
+    // Loop through the options
+    for (var i = 0; i < types.options.length; i++) {
+        // Get the current option value
+        var option = types.options[i].value;
+
+        // Compare with the desired value
+        if (option === value) {
+            // Return true if found
+            return true;
+        }
+    }
+
+    // Return false if not found
+    return false;
+}
+
 function buttonSaveBlockBehavior() {
     const saveBlockButton = document.getElementById('saveBlock');
     const blockPopup = document.getElementById('blockPopup');
+    const typeInput = document.getElementById('select-type');
+    const types = document.getElementById('types');
 
     saveBlockButton.addEventListener('click', () => {
         block.setName(document.getElementById('blockName').value);
         let color = document.getElementById('blockColor').value;
         block.setColor([parseInt(color.substring(1, 3), 16), parseInt(color.substring(3, 5), 16), parseInt(color.substring(5, 7), 16)]);
+        block.type = typeInput.value;
+        if (!checkTypeOption(typeInput.value)) {
+            var option = document.createElement("option");
+            option.value = typeInput.value;
+            option.text = typeInput.value;
+
+            // Append the option element to the datalist element
+            types.appendChild(option);
+        }
+        typeInput.value = "";
         dynamicValues.blocks.push(block);
         layersChanged = true;
         block = [];
@@ -109,6 +141,7 @@ function buttonExportImagePreviewBehavior() {
     const exportImagePreview = document.getElementById('exportImagePreviewImages');
     exportImagePreviewButton.addEventListener('click', () => {
         images = [];
+        document.getElementById("imageToExport").src = "";
         exportImagePreview.style.display = 'block';
         let jsonData = getLayerColors();
         // images.push({ from: "model", data: mExportImageCanvas.canvas.toDataURL('image/png') });
@@ -133,8 +166,7 @@ function buttonExportImagePreviewBehavior() {
             });
 
         for (block of dynamicValues.blocks) {
-            mBlockImage.background(255);
-            mBlockImage.camera(0, -100, 100, 0, 0, 0, 0, 1, 0)
+            mBlockImage.background(dynamicValues.colors.Background);
             let blockLayers = [];
             blockLayers = layers.map(obj => obj.copy()).slice(block.initialLayer, block.endLayer + 1);
             let initialId = blockLayers[0].id;
@@ -154,7 +186,8 @@ function buttonExportImagePreviewBehavior() {
 
             getLayersPosition(blockLayers, false);
 
-            mBlockImage.ortho(0, getMaxXPosition(blockLayers), -80, 80, 10, 500);
+            mBlockImage.camera(getMaxXPosition(blockLayers) / 2 + 100, getMaxXPosition(blockLayers) + 50, getMaxXPosition(blockLayers) + 20, getMaxXPosition(blockLayers) / 2, 0, 0, 0, 1, 0)
+            mBlockImage.ortho(-getMaxXPosition(blockLayers) / 2, getMaxXPosition(blockLayers) / 2, -100, 100, 10, 5000);
 
             blockLayers.forEach((layer) => { drawLayerBlockImage(layer, blockLayers); });
 
@@ -164,14 +197,16 @@ function buttonExportImagePreviewBehavior() {
             const formData = new FormData();
             formData.append('image', dataURL);
             formData.append('json', JSON.stringify(jsonData))
-
+            let blockType = block.type;
+            let blockName = block.name;
+            formData.append('block', JSON.stringify({ 'blockType': blockType, 'blockName': blockName }));
             fetch("http://127.0.0.1:5000/process_image", {
                 method: "POST",
                 body: formData
             }).then(response => response.json())  // parse response as JSON
                 .then(data => {
                     // handle the JSON response here
-                    images.push({ from: block.name, data: 'data:image/png;base64,' + data.image });
+                    images.push({ from: blockName, data: 'data:image/png;base64,' + data.image });
                 })
                 .catch(error => {
                     loader.style.display = 'none';
@@ -245,6 +280,7 @@ function buttonsBehaviour() {
     buttonUploadModelBehavior();
     buttonUploadSettingsFileBehavior();
     buttonSaveBlockBehavior();
+    buttonCancelBlockButtonBehavior();
     buttonOpenSettingsBehavior();
     buttonExportImageBehavior();
     buttonExportImagePreviewBehavior();

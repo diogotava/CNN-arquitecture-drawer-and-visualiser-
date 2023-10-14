@@ -55,6 +55,7 @@
             <p id="input_shape" hidden><b>Input shape: </b></p>
             <p id="output_shape" hidden><b>Output shape: </b></p>
             <p id="activation" hidden><b>Activation: </b></p>
+            <p id="kernel_size" hidden><b>Kernel size: </b></p>
             <p hidden id="batchNormalization"><b>Batch normalization: </b></p>
         </div>
 
@@ -242,10 +243,21 @@
             <h2>Settings</h2>
             <div id="blockDiv">
                 <form id="blockForm">
-                    <label for="blockName">Block name:</label>
-                    <input type="text" id="blockName" name="blockName">
-                    <label for="blockColor">Block color:</label>
-                    <input type="color" id="blockColor" name="blockColor" value="#000000">
+                    <form>
+                        <label for="blockName">Block name:</label>
+                        <input class="blockFormInput" type="text" id="blockName" name="blockName">
+                    </form>
+                    <form>
+                        <label for="blockColor">Block color:</label>
+                        <input class="blockFormInput" type="color" id="blockColor" name="blockColor" value="#000000">
+                    </form>
+                    <form>
+                        <label for="select-type">Block type:</label>
+                        <input class="blockFormInput" type="text" id="select-type" placeholder="Select a type"
+                            autocomplete="on" list="types">
+                        <datalist id="types">
+                        </datalist>
+                    </form>
                 </form>
             </div>
             <button class="button-12" type="submit" id="saveBlock">Save</button>

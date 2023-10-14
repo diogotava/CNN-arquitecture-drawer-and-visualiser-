@@ -9,6 +9,7 @@ class Layer {
         this.lastPositiveYPosition = 0;
         this.model_inside_model = layer.model_inside_model;
         this.model_name = layer.model_name;
+        this.kernel_size = layer.kernel_size;
 
         if (copy) {
             this.selected = layer.selected;

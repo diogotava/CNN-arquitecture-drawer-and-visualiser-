@@ -14,7 +14,7 @@ function setup() {
 }
 
 function draw() {
-    mBackground(255);
+    mBackground(dynamicValues.colors.Background);
     mCamera(dynamicValues.camX, dynamicValues.camY, dynamicValues.camZ, dynamicValues.lookX, dynamicValues.lookY, dynamicValues.lookZ, 0, 1, 0);
     const settingsPopup = document.getElementById('settingsPopup');
     if (settingsPopup.style.display === 'none' || settingsPopup.style.display === '')
@@ -46,4 +46,15 @@ function draw() {
 
 function windowResized() {
     mResizeCanvas();
+}
+
+
+function updateValue() {
+    // Get the selected option value
+    var select = document.getElementById("select-options");
+    var value = select.options[select.selectedIndex].value;
+
+    // Update the input value
+    var input = document.getElementById("select-value");
+    input.value = value;
 }

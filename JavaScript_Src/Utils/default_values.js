@@ -1,13 +1,15 @@
 recursiveLayerTypes = ["LSTM", "GRU", "SimpleRNN", "TimeDistributed", "Bidirectional", "ConvLSTM1D", "ConvLSTM2D", "ConvLSTM3D", "BaseRNN"];
 let dynamicValues;
 let defaultColors = {
+    "Background": [0, 0, 0],
+    "Arrow": [255, 255, 255],
     "Conv1D": [10, 255, 0],
     "Conv2D": [0, 255, 0],
     "Conv3D": [0, 255, 0],
     "Dense": [255, 0, 0],
     "Flatten": [255, 0, 255],
     "Dropout": [0, 255, 255],
-    "InputLayer": [255, 255, 0],
+    "InputLayer": [255, 200, 0],
     "Concatenate": [128, 255, 255],
     "Add": [170, 200, 255],
     "LSTM": [255, 0, 150],

@@ -156,17 +156,16 @@ function openBlock() {
 }
 
 function keyPressed() {
+    if (document.getElementById('blockPopup').style.display === "block")
+        return
     if (keyIsDown(67)) { // C
         selectLayer();
     } else if (keyIsDown(66)) { //b
-        if (document.getElementById('blockPopup').style.display !== "block")
-            selectBlock();
+        selectBlock();
     } else if (keyIsDown(82)) { //r
-        if (document.getElementById('blockPopup').style.display !== "block")
-            removeBlock();
+        removeBlock();
     } else if (keyIsDown(86)) { //v
-        if (document.getElementById('blockPopup').style.display !== "block")
-            openBlock();
+        openBlock();
     }
 }
 
@@ -197,6 +196,7 @@ function selectedText() {
     let typeP = select('#type');
     let inputShape = select('#input_shape');
     let outputShape = select('#output_shape');
+    let kernelSize = select('#kernel_size');
     let activation = select('#activation');
     let batchNormalization = select('#batchNormalization');
 
@@ -206,6 +206,7 @@ function selectedText() {
     typeP.elt.hidden = true;
     inputShape.elt.hidden = true;
     outputShape.elt.hidden = true;
+    kernelSize.elt.hidden = true;
     activation.elt.hidden = true;
     batchNormalization.elt.hidden = true;
 
@@ -249,7 +250,11 @@ function selectedText() {
 
         outputShape.html("<b>Output shape:</b> " + outputText);
 
-        if (selectedLayer.activation != null) {
+        if (selectedLayer.kernel_size !== null) {
+            kernelSize.elt.hidden = false;
+            kernelSize.html("<b>Kernel size:</b> " + getShapeText(selectedLayer.kernel_size));
+        }
+        if (selectedLayer.activation !== null) {
             activation.elt.hidden = false;
             activation.html("<b>Activation:</b> " + selectedLayer.activation);
         }
@@ -409,8 +414,8 @@ function getLayerColors(layersToVerify = layers) {
     if (layersToVerify != layers)
         return colors;
     for (block of dynamicValues.blocks) {
-        if (!color.hasOwnProperty(block.name))
-            colors[block.name] = block.color;
+        if (!color.hasOwnProperty(block.type))
+            colors[block.type] = block.color;
     }
 
     return colors;
@@ -465,6 +470,7 @@ function parseSettingsJson(data) {
             }
             let blockName = blockData.name;
             let blockColor = blockData.color;
+            let blockType = blockData.type;
 
             if (!isLayerPossibleToBeInBlock(initialLayer.id) || !isLayerPossibleToBeInBlock(endLayer.id, initialLayer.id, false)) {
                 continue;
@@ -473,6 +479,7 @@ function parseSettingsJson(data) {
             let block = new Block(initialLayer.id, endLayer.id);
             block.setName(blockName);
             block.setColor(blockColor);
+            block.type = blockType;
 
             if (!dynamicValues.blocks.some(obj => obj.isEqual(block))) {
                 dynamicValues.blocks.push(block);

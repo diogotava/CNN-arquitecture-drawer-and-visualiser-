@@ -85,14 +85,23 @@ def process_image():
     image_data = re.sub('^data:image/.+;base64,', '', request.form['image'])
     image = Image.open(BytesIO(base64.b64decode(image_data)))
     data = json.loads(request.form['json'])
-    background_color = (255, 255, 255, 255)  # Background color with transparency
+    blockData = None
+    if 'block' in request.form:
+        blockData = json.loads(request.form['block'])
+    background_color = (0, 0, 0, 255)  # Background color with transparency
 
     # Create a drawing object
     draw = ImageDraw.Draw(image)
 
+    # Define text color
+    text_color = (255, 255, 255)  # black
+
     # Choose a font and size
     font = ImageFont.truetype("arial.ttf", int((10 * image.width) ** (1 / 3)))
-
+    if blockData != None:
+        text = f"Block: {blockData['blockName']}, Block Type: {blockData['blockType']}";
+        _, _, title_width, title_height = draw.textbbox((0, 0), text, font=font)
+        draw.text((image.width/2 - title_width /2, 5), text, font=font, fill=text_color)
     spacing = 20
     padding = 10
 
@@ -128,9 +137,6 @@ def process_image():
         square_size = max_height
         draw.rectangle([x_position - square_size, y_position, x_position, y_position + square_size], fill=tuple(data[layer]),
                        outline="black")
-
-        # Define text color
-        text_color = (0, 0, 0)  # White
 
         # Add text to the image
         draw.text((x_position + 5, y_position), layer, font=font, fill=text_color)

@@ -60,6 +60,7 @@ class Layer:
         self.previous_layers = []
         self.next_layers = []
         self.activation = None
+        self.kernel_size = layer.kernel_size if 'kernel_size' in layer.__dict__ else None
         self.type = layer.__class__.__name__
         self.input_shape = get_shapes(layer, True, True)
         self.output_shape = get_shapes(layer, False, True)
