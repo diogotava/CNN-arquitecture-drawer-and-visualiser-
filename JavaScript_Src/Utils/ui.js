@@ -150,8 +150,8 @@ function buttonExportImagePreviewBehavior() {
         const dataURL = mExportImageCanvas.canvas.toDataURL('image/png');
         const formData = new FormData();
         formData.append('image', dataURL);
-        formData.append('json', JSON.stringify(jsonData));
-        formData.append('layerInfo', JSON.stringify(layerInfo));
+        formData.append('json', JSON.stringify(jsonData, null, 2));
+        formData.append('layerInfo', JSON.stringify(layerInfo, null, 2));
 
         fetch("http://127.0.0.1:5000/process_image", {
             method: "POST",
@@ -161,7 +161,7 @@ function buttonExportImagePreviewBehavior() {
                 // handle the JSON response here
                 images.push({ from: "model", data: 'data:image/png;base64,' + data.image });
                 document.getElementById("imageToExport").src = images[0].data;
-                const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(data.layerInfo);
+                const dataUri = data.layerInfo;
                 files.push({ from: "model", data: dataUri });
             })
             .catch(error => {
@@ -199,20 +199,20 @@ function buttonExportImagePreviewBehavior() {
             let jsonData = getLayerColors(blockLayers);
             blockLayers.forEach((layer) => {
                 layer.id = layer.id + initialId;
-                layer.nextLayers = layer.nextLayers.map(function (v, i) { return (v + initialId); });
-                layer.prevLayers = layer.prevLayers.map(function (v, i) { return (v + initialId); });
+                layer.prevLayers = [...layers_backup[layer.id].prevLayers];
+                layer.nextLayers = [...layers_backup[layer.id].nextLayers];
             });
             let layerInfo = getLayerInformations(blockLayers);
             // images.push({ from: "model", data: mExportImageCanvas.canvas.toDataURL('image/png') });
             const dataURL = mBlockImage.canvas.toDataURL('image/png');
             const formData = new FormData();
             formData.append('image', dataURL);
-            formData.append('json', JSON.stringify(jsonData));
-            formData.append('layerInfo', JSON.stringify(layerInfo));
+            formData.append('json', JSON.stringify(jsonData, null, 2));
+            formData.append('layerInfo', JSON.stringify(layerInfo, null, 2));
 
             let blockType = block.type;
             let blockName = block.name;
-            formData.append('block', JSON.stringify({ 'blockType': blockType, 'blockName': blockName }));
+            formData.append('block', JSON.stringify({ 'blockType': blockType, 'blockName': blockName }, null, 2));
             fetch("http://127.0.0.1:5000/process_image", {
                 method: "POST",
                 body: formData
@@ -220,7 +220,7 @@ function buttonExportImagePreviewBehavior() {
                 .then(data => {
                     // handle the JSON response here
                     images.push({ from: blockName, data: 'data:image/png;base64,' + data.image });
-                    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(data.layerInfo);
+                    const dataUri = data.layerInfo;
                     files.push({ from: blockName, data: dataUri });
                 })
                 .catch(error => {
@@ -246,25 +246,79 @@ function buttonExportImageBehavior() {
     const exportImageButton = document.getElementById('exportImage');
 
     exportImageButton.addEventListener('click', () => {
-        saveFrames('myCanvas', 'png', 1, 1, () => {
+        let exportSetting = document.getElementById('exportSetting').checked;
+        if (exportSetting) {
+            let content = [];
             for (img of images) {
+                content.push({ text: [{ text: "Image of: ", bold: true, italics: true }, img.from], fontSize: 15, color: "#5A5AFF" });
+                content.push("\n");
+                content.push({
+                    image: img.data,
+                    width: 500,
+                    alignment: 'center'
+                });
+                content.push("\n");
+            }
+            files.forEach(file => {
+                content.push({ text: [{ text: "Layer info of: ", bold: true, italics: true }, file.from], fontSize: 15, color: "#FF5A5A" });
+                content.push("\n");
+                let data = JSON.parse(file.data);
+                Object.entries(data).forEach(layer => {
+                    Object.entries(layer[1]).forEach(entry => {
+                        if (Array.isArray(entry[1])) { // If the entry is a list, it is a shape like entry, so handle it correctly
+                            let entryText = "";
+                            for (item of entry[1]) {
+                                entryText = entryText + item + " X ";
+                            }
+                            entryText = entryText.slice(0, -3);
+                            content.push({
+                                columns: [
+                                    { text: entry[0], width: 250, bold: true },
+                                    { text: entryText, width: 250 },
+                                ]
+                            });
+                        } else {
+                            content.push({
+                                columns: [
+                                    { text: entry[0], width: 250, bold: true },
+                                    { text: entry[1], width: 250 },
+                                ]
+                            });
+                        }
+                    });
+                    content.push("\n\n");
+                });
+            });
 
-                // handle the JSON response here
+            var docDefinition = {
+                content: content
+            };
+            const fileInput = document.getElementById("model-file");
+            const file = fileInput.files[0];
+            let pdf = pdfMake.createPdf(docDefinition);
+            pdf.download(file.name.split(".")[0] + ".pdf");
+
+        } else {
+            saveFrames('myCanvas', 'png', 1, 1, () => {
+                for (img of images) {
+
+                    // handle the JSON response here
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = img.data;
+                    downloadLink.download = img.from + '.png';
+
+                    downloadLink.click();
+
+                }
+
+            });
+            for (file of files) {
                 const downloadLink = document.createElement('a');
-                downloadLink.href = img.data;
-                downloadLink.download = img.from + '.png';
+                downloadLink.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(file.data);
+                downloadLink.download = file.from + '.json';
 
                 downloadLink.click();
-
             }
-
-        });
-        for (file of files) {
-            const downloadLink = document.createElement('a');
-            downloadLink.href = file.data;
-            downloadLink.download = file.from + '.json';
-
-            downloadLink.click();
         }
     })
 }

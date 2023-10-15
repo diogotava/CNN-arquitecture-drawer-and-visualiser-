@@ -243,8 +243,8 @@ function selectedText() {
         selectedH2.html("Selected layer: " + selectedLayer.id.toString() + " " + selectedLayer.name);
         typeP.html("<b>Type:</b> " + selectedLayer.type);
 
-        let inputText = getShapeText(selectedLayer.inputShape[0]);
-        let outputText = getShapeText(selectedLayer.outputShape[0]);
+        let inputText = getShapeText(selectedLayer.inputShape);
+        let outputText = getShapeText(selectedLayer.outputShape);
 
         inputShape.html("<b>Input shape:</b> " + inputText);
 

@@ -37,8 +37,8 @@ class Layer {
             }
             this.prevLayers = layer.previous_layers;
             this.nextLayers = layer.next_layers;
-            this.inputShape = layer.input_shape;
-            this.outputShape = layer.output_shape;
+            this.inputShape = layer.input_shape[0];
+            this.outputShape = layer.output_shape[0];
             this.previousYPosition = 0;
             this.batchNormalizationFilters = layer.batchNormalizationFilters;
             this.layers = layer.layers;

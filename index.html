@@ -9,6 +9,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
     <script src="https://kit.fontawesome.com/298fd45b46.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="JavaScript_Src/sketch.js"></script>
     <script src="JavaScript_Src/Utils/default_values.js"></script>
     <script src="JavaScript_Src/Objects/Layer.js"></script>
@@ -65,6 +67,11 @@
             <img id="imageToExport" src=""><br>
             <button class="button-12" onclick="showNextImage()">Next Image</button>
 
+            <div class="checkbox-wrapper-14">
+                <label for="exportSeparate" style="margin-right: 5px;">Export separate files</label>
+                <input id="exportSetting" type="checkbox" class="switch">
+                <label for="exportPDF">Export everything in one PDF file</label>
+            </div>
             <div id="exportImageButtos">
                 <button class="button-12" type="submit" id="exportImage">Export</button>
                 <button class="button-12" id="cancelExportImage">Cancel</button>
