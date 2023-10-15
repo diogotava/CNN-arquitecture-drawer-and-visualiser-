@@ -17,7 +17,9 @@ function mBox(id, shapeX, shapeY, shapeZ) {
     strokeWeight(dynamicValues.strokeWeight);
     box(shapeX, shapeY, shapeZ);
     mExportImageCanvas.smooth();
+    mExportImageCanvas.stroke(0);
     mExportImageCanvas.strokeWeight(dynamicValues.strokeWeight);
+    // mExportImageCanvas.noStroke();
     mExportImageCanvas.box(shapeX, shapeY, shapeZ);
 
     mPage.fill((id >> 16) & 0xFF, (id >> 8) & 0xF, id & 0xFF);
@@ -31,6 +33,8 @@ function mBlock(id, shapeX, shapeY, shapeZ, blockColor) {
     strokeWeight(dynamicValues.strokeWeight);
     stroke(blockColor[0], blockColor[1], blockColor[2])
     box(shapeX, shapeY, shapeZ);
+    mExportImageCanvas.strokeWeight(dynamicValues.strokeWeight);
+    // mExportImageCanvas.noStroke();
     mExportImageCanvas.box(shapeX, shapeY, shapeZ);
 
     mPage.noFill();
@@ -63,9 +67,9 @@ function mResizeCanvas() {
 function mCamera() {
     camera(...[...arguments]);
     mPage.camera(...[...arguments]);
-    mExportImageCanvas.camera(0, -500, 500, 0, 0, 0, 0, 1, 0);
-    mExportImageCanvas.resizeCanvas(getMaxXPosition() * 2, height)
-    mExportImageCanvas.ortho(0, getMaxXPosition(), -100, 100, 10, 5000);
+    mExportImageCanvas.resizeCanvas(getMaxXPosition() * 4 > width / 2 ? getMaxXPosition() * 4 : width / 2, height)
+    mExportImageCanvas.camera(getMaxXPosition() / 2, -200, 200, getMaxXPosition() / 2, 0, 0, 0, 1, 0);
+    mExportImageCanvas.ortho(-getMaxXPosition() / 2, getMaxXPosition() / 2, -100, 100, 1, 50000);
 }
 
 function mPush(mPageApply = true) {
@@ -85,7 +89,7 @@ function mPop(mPageApply = true) {
 function mBackground() {
     background(...[...arguments]);
     mExportImageCanvas.background(...[...arguments]);
-    mPage.background(0);
+    mPage.background(dynamicValues.colors.Background);
 }
 
 function mTexture() {
@@ -110,11 +114,13 @@ function mRotateZ(angle) {
 
 function mCylinder() {
     cylinder(...[...arguments]);
+    mExportImageCanvas.noStroke();
     mExportImageCanvas.cylinder(...[...arguments]);
 }
 
 function mCone() {
     cone(...[...arguments]);
+    mExportImageCanvas.noStroke();
     mExportImageCanvas.cone(...[...arguments]);
 }
 

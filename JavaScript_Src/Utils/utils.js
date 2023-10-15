@@ -259,9 +259,9 @@ function selectedText() {
             activation.html("<b>Activation:</b> " + selectedLayer.activation);
         }
 
-        if (selectedLayer.batchNormalization != null) {
+        if (selectedLayer.batchNormalizationFilters != null) {
             batchNormalization.elt.hidden = false;
-            batchNormalization.html("<b>Batch normalization filters:</b> " + selectedLayer.batchNormalization);
+            batchNormalization.html("<b>Batch normalization filters:</b> " + selectedLayer.batchNormalizationFilters);
         }
 
         layerInfo.style.display = 'block';
@@ -419,6 +419,38 @@ function getLayerColors(layersToVerify = layers) {
     }
 
     return colors;
+}
+
+function getLayerInformations(layersToVerify = layers) {
+    let layersInfo = [];
+    let blocksAdded = [];
+    for (layer of layersToVerify) {
+        if (!(layer.isInsideBlock || layer.shouldBeBlock))
+            layersInfo.push(JSON.parse(JSON.stringify(layer, (key, value) => {
+                if (value === null)
+                    return undefined;
+                if (key === 'invertedShape' || key === 'lastNegativeYPosition' || key === 'lastPositiveYPosition' || key === 'model_inside_model' || key === 'selected' || key === 'centerPosition' || key === 'previousYPosition' || key === 'shouldBeDrawn' || key === 'shape' || key === 'shouldBeBlock')
+                    return undefined;
+                return value;
+            })));
+        else if (layer.isInsideBlock || layer.shouldBeBlock) {
+            for (block of dynamicValues.blocks) {
+                let blockObj = JSON.stringify(block, (key, value) => {
+                    if (value === null)
+                        return undefined;
+                    if (key === 'drawInterior' || key === 'centerX')
+                        return undefined;
+                    return value;
+                });
+                if (block.initialLayer <= layer.id && block.endLayer >= layer.id && !layersInfo.some(e => JSON.stringify(e) === blockObj)) {
+                    layersInfo.push(JSON.parse(blockObj));
+                    blocksAdded.push(block.initialLayer)
+                }
+            }
+        }
+    }
+
+    return layersInfo;
 }
 
 function getMaxXPosition(layersToVerify = layers) {

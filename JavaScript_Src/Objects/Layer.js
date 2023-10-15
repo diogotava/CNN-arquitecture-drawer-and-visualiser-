@@ -21,7 +21,7 @@ class Layer {
             this.inputShape = [...layer.inputShape];
             this.outputShape = [...layer.outputShape];
             this.previousYPosition = layer.previousYPosition;
-            this.batchNormalization = layer.batchNormalization;
+            this.batchNormalizationFilters = layer.batchNormalizationFilters;
             if (layer.layers !== null)
                 this.layers = [...layer.layers];
             else
@@ -40,7 +40,7 @@ class Layer {
             this.inputShape = layer.input_shape;
             this.outputShape = layer.output_shape;
             this.previousYPosition = 0;
-            this.batchNormalization = layer.batch_normalization;
+            this.batchNormalizationFilters = layer.batchNormalizationFilters;
             this.layers = layer.layers;
             this.shouldBeDrawn = true;
             this.shouldBeBlock = false;

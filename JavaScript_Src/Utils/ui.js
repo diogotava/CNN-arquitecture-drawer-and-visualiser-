@@ -141,14 +141,17 @@ function buttonExportImagePreviewBehavior() {
     const exportImagePreview = document.getElementById('exportImagePreviewImages');
     exportImagePreviewButton.addEventListener('click', () => {
         images = [];
+        files = [];
         document.getElementById("imageToExport").src = "";
         exportImagePreview.style.display = 'block';
         let jsonData = getLayerColors();
+        let layerInfo = getLayerInformations();
         // images.push({ from: "model", data: mExportImageCanvas.canvas.toDataURL('image/png') });
         const dataURL = mExportImageCanvas.canvas.toDataURL('image/png');
         const formData = new FormData();
         formData.append('image', dataURL);
-        formData.append('json', JSON.stringify(jsonData))
+        formData.append('json', JSON.stringify(jsonData));
+        formData.append('layerInfo', JSON.stringify(layerInfo));
 
         fetch("http://127.0.0.1:5000/process_image", {
             method: "POST",
@@ -158,10 +161,12 @@ function buttonExportImagePreviewBehavior() {
                 // handle the JSON response here
                 images.push({ from: "model", data: 'data:image/png;base64,' + data.image });
                 document.getElementById("imageToExport").src = images[0].data;
+                const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(data.layerInfo);
+                files.push({ from: "model", data: dataUri });
             })
             .catch(error => {
                 loader.style.display = 'none';
-                alert("Was not possible to generate the image!")
+                alert("Was not possible to generate the image to preview!")
                 console.error(error);
             });
 
@@ -186,17 +191,25 @@ function buttonExportImagePreviewBehavior() {
 
             getLayersPosition(blockLayers, false);
 
-            mBlockImage.camera(getMaxXPosition(blockLayers) / 2 + 100, getMaxXPosition(blockLayers) + 50, getMaxXPosition(blockLayers) + 20, getMaxXPosition(blockLayers) / 2, 0, 0, 0, 1, 0)
+            mBlockImage.camera(getMaxXPosition(blockLayers) / 2, getMaxXPosition(blockLayers) + 50, getMaxXPosition(blockLayers) + 20, getMaxXPosition(blockLayers) / 2, 0, 0, 0, 1, 0)
             mBlockImage.ortho(-getMaxXPosition(blockLayers) / 2, getMaxXPosition(blockLayers) / 2, -100, 100, 10, 5000);
 
             blockLayers.forEach((layer) => { drawLayerBlockImage(layer, blockLayers); });
 
             let jsonData = getLayerColors(blockLayers);
+            blockLayers.forEach((layer) => {
+                layer.id = layer.id + initialId;
+                layer.nextLayers = layer.nextLayers.map(function (v, i) { return (v + initialId); });
+                layer.prevLayers = layer.prevLayers.map(function (v, i) { return (v + initialId); });
+            });
+            let layerInfo = getLayerInformations(blockLayers);
             // images.push({ from: "model", data: mExportImageCanvas.canvas.toDataURL('image/png') });
             const dataURL = mBlockImage.canvas.toDataURL('image/png');
             const formData = new FormData();
             formData.append('image', dataURL);
-            formData.append('json', JSON.stringify(jsonData))
+            formData.append('json', JSON.stringify(jsonData));
+            formData.append('layerInfo', JSON.stringify(layerInfo));
+
             let blockType = block.type;
             let blockName = block.name;
             formData.append('block', JSON.stringify({ 'blockType': blockType, 'blockName': blockName }));
@@ -207,10 +220,12 @@ function buttonExportImagePreviewBehavior() {
                 .then(data => {
                     // handle the JSON response here
                     images.push({ from: blockName, data: 'data:image/png;base64,' + data.image });
+                    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(data.layerInfo);
+                    files.push({ from: blockName, data: dataUri });
                 })
                 .catch(error => {
                     loader.style.display = 'none';
-                    alert("Was not possible to generate the image!")
+                    alert("Was not possible to export the image!")
                     console.error(error);
                 });
         }
@@ -244,6 +259,13 @@ function buttonExportImageBehavior() {
             }
 
         });
+        for (file of files) {
+            const downloadLink = document.createElement('a');
+            downloadLink.href = file.data;
+            downloadLink.download = file.from + '.json';
+
+            downloadLink.click();
+        }
     })
 }
 

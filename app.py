@@ -150,7 +150,8 @@ def process_image():
     image_base64 = base64.b64encode(image_byte_stream.getvalue()).decode('utf-8')
 
     response = {
-        "image": image_base64
+        "image": image_base64,
+        "layerInfo": request.form['layerInfo']
     }
     print('Sent Image!')
     return jsonify(response)
