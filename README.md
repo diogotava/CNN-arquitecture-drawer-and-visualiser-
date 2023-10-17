@@ -8,16 +8,15 @@ Author: Diogo Tavares - pg42826@alunos.uminho.pt - University of Minho
 ## Requirements
 
 Python 3.9
+All the packages needed can be installed with:
+```
+python -m pip install -r ./requirements.txt
+```
 
 ## Install
 Clone the code with:
 ```
 git clone https://github.com/diogotava/Neural-Network-Visualizer.git
-```
-
-And then run the following command to install all the packages needed to run:
-```
-python -m pip install -r ./requirements.txt
 ```
 
 ## Run
