@@ -8,6 +8,7 @@ Author: Diogo Tavares - pg42826@alunos.uminho.pt - University of Minho
 ## Requirements
 
 Python 3.9
+
 All the packages needed can be installed with:
 ```
 python -m pip install -r ./requirements.txt
