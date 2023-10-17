@@ -71,10 +71,8 @@ class Layer:
 
         if hasattr(layer, "data_format"):
             self.data_format = layer.data_format
-        try:
-            self.activation = layer.activation.__name__
-        except AttributeError:
-            self.activation = None
+
+        self.activation = layer.activation.__name__ if hasattr(layer, 'activation') else None
 
     def set_id(self, identifier):
         self.id = identifier

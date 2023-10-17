@@ -271,7 +271,10 @@ function selectedText() {
 }
 
 function updateShownLayerInformation() {
-    let screenCoordinates = convert3DToScreen(dynamicValues.paragraphsWorldCoords);
+    const cameraPosition = [dynamicValues.camX, dynamicValues.camY, dynamicValues.camZ];
+    const target = [dynamicValues.lookX, dynamicValues.lookY, dynamicValues.lookZ];
+    const up = [0, 1, 0];
+    let screenCoordinates = convert3DToScreen(dynamicValues.paragraphsWorldCoords, projectionMatrix(), viewMatrix(cameraPosition, target, up), width, height);
     let layerInfo = document.getElementById("layerInfo");
     layerInfo.style.left = screenCoordinates.x.toString() + 'px';
 
@@ -300,11 +303,17 @@ function projectionMatrix() {
     return projectionMatrix;
 }
 
-function viewMatrix() {
-    const cameraPosition = [dynamicValues.camX, dynamicValues.camY, dynamicValues.camZ];
-    const target = [dynamicValues.lookX, dynamicValues.lookY, dynamicValues.lookZ];
-    const up = [0, 1, 0];
+function projectionMatrixOrtho(left, right, bottom, top, near, far) {
+    // Create a perspective projection matrix for orthographic camera
 
+    const projectionMatrix = mat4.create();
+    mat4.ortho(projectionMatrix, left, right, bottom, top, near, far);
+    // Invert the y-coordinate in the projection matrix because webgl has y upwards and screen has y downwards
+    projectionMatrix[5] *= -1;// Modify the value at index 5 (which corresponds to element [1][1] in the matrix)
+    return projectionMatrix;
+}
+
+function viewMatrix(cameraPosition, target, up) {
     // Create a view matrix
     const viewMatrix = mat4.create();
     mat4.lookAt(viewMatrix, cameraPosition, target, up);
@@ -315,17 +324,17 @@ function convertScreenTo3D(layerIdForPosition) {
     let worldCoords = [0, 0, 0];
     if (layerIdForPosition >= 0)
         worldCoords = layers[layerIdForPosition].centerPosition;
-    return { x: worldCoords[0], y: worldCoords[1], z: worldCoords[2] };
+    return worldCoords;
 }
 
-function convert3DToScreen(worldCoordinates) {
+function convert3DToScreen(worldCoordinates, projectionMatrix, viewMatrix, width, height) {
     // Use the view and projection matrices to project 3D coordinates to NDC
     const worldToClipMatrix = mat4.create();
-    mat4.multiply(worldToClipMatrix, projectionMatrix(), viewMatrix());
+    mat4.multiply(worldToClipMatrix, projectionMatrix, viewMatrix);
     // mat4.multiply(worldToClipMatrix, worldToClipMatrix, modelMatrix);
 
     const clipPoint = vec4.create();
-    vec4.transformMat4(clipPoint, [worldCoordinates.x, worldCoordinates.y, worldCoordinates.z, 1], worldToClipMatrix);
+    vec4.transformMat4(clipPoint, [worldCoordinates[0], worldCoordinates[1], worldCoordinates[2], 1], worldToClipMatrix);
 
     // Convert clip space coordinates to NDC
     const ndcX = clipPoint[0] / clipPoint[3];
@@ -421,7 +430,7 @@ function getLayerColors(layersToVerify = layers) {
     return colors;
 }
 
-function getLayerInformations(layersToVerify = layers) {
+function getLayerInformations(layersToVerify = layers, ortho, cam, width, height) {
     let layersInfo = [];
     let blocksAdded = [];
     for (layer of layersToVerify) {
@@ -429,6 +438,9 @@ function getLayerInformations(layersToVerify = layers) {
             layersInfo.push(JSON.parse(JSON.stringify(layer, (key, value) => {
                 if (value === null)
                     return undefined;
+                if (key === 'centerPosition') {
+                    return convert3DToScreen(value, projectionMatrixOrtho(ortho[0], ortho[1], ortho[2], ortho[3], ortho[4], ortho[5]), viewMatrix(cam[0], cam[1], cam[2]), width, height);
+                }
                 if (key === 'invertedShape' || key === 'lastNegativeYPosition' || key === 'lastPositiveYPosition' || key === 'model_inside_model' || key === 'selected' || key === 'centerPosition' || key === 'previousYPosition' || key === 'shouldBeDrawn' || key === 'shape' || key === 'shouldBeBlock')
                     return undefined;
                 return value;

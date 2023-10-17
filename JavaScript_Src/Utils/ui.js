@@ -145,13 +145,16 @@ function buttonExportImagePreviewBehavior() {
         document.getElementById("imageToExport").src = "";
         exportImagePreview.style.display = 'block';
         let jsonData = getLayerColors();
-        let layerInfo = getLayerInformations();
+
+        let layerInfo = getLayerInformations(layers, mExportCanvasOrtho, mExportCanvasCameraPositioning, mExportImageCanvas.width, mExportImageCanvas.height);
         // images.push({ from: "model", data: mExportImageCanvas.canvas.toDataURL('image/png') });
         const dataURL = mExportImageCanvas.canvas.toDataURL('image/png');
         const formData = new FormData();
         formData.append('image', dataURL);
         formData.append('json', JSON.stringify(jsonData, null, 2));
         formData.append('layerInfo', JSON.stringify(layerInfo, null, 2));
+        let colorsInfo = { background: dynamicValues.colors.Background, text: dynamicValues.colors.text, textId: dynamicValues.colors.textId }
+        formData.append('colors', JSON.stringify(colorsInfo, null, 2));
 
         fetch("http://127.0.0.1:5000/process_image", {
             method: "POST",
@@ -171,7 +174,6 @@ function buttonExportImagePreviewBehavior() {
             });
 
         for (block of dynamicValues.blocks) {
-            mBlockImage.background(dynamicValues.colors.Background);
             let blockLayers = [];
             blockLayers = layers.map(obj => obj.copy()).slice(block.initialLayer, block.endLayer + 1);
             let initialId = blockLayers[0].id;
@@ -191,8 +193,10 @@ function buttonExportImagePreviewBehavior() {
 
             getLayersPosition(blockLayers, false);
 
+            mBlockImage.resizeCanvas(getMaxXPosition(blockLayers) * 4 > width / 2 ? getMaxXPosition(blockLayers) * 4 : width / 2, height / 2)
             mBlockImage.camera(getMaxXPosition(blockLayers) / 2, getMaxXPosition(blockLayers) + 50, getMaxXPosition(blockLayers) + 20, getMaxXPosition(blockLayers) / 2, 0, 0, 0, 1, 0)
             mBlockImage.ortho(-getMaxXPosition(blockLayers) / 2, getMaxXPosition(blockLayers) / 2, -100, 100, 10, 5000);
+            mBlockImage.background(dynamicValues.colors.Background);
 
             blockLayers.forEach((layer) => { drawLayerBlockImage(layer, blockLayers); });
 
@@ -202,13 +206,16 @@ function buttonExportImagePreviewBehavior() {
                 layer.prevLayers = [...layers_backup[layer.id].prevLayers];
                 layer.nextLayers = [...layers_backup[layer.id].nextLayers];
             });
-            let layerInfo = getLayerInformations(blockLayers);
+            let orthoInfo = [-getMaxXPosition(blockLayers) / 2, getMaxXPosition(blockLayers) / 2, -100, 100, 10, 5000];
+            let camInfo = [[getMaxXPosition(blockLayers) / 2, getMaxXPosition(blockLayers) + 50, getMaxXPosition(blockLayers) + 20], [getMaxXPosition(blockLayers) / 2, 0, 0], [0, 1, 0]];
+            let layerInfo = getLayerInformations(blockLayers, orthoInfo, camInfo, mBlockImage.width, mBlockImage.height);
             // images.push({ from: "model", data: mExportImageCanvas.canvas.toDataURL('image/png') });
             const dataURL = mBlockImage.canvas.toDataURL('image/png');
             const formData = new FormData();
             formData.append('image', dataURL);
             formData.append('json', JSON.stringify(jsonData, null, 2));
             formData.append('layerInfo', JSON.stringify(layerInfo, null, 2));
+            formData.append('colors', JSON.stringify(colorsInfo, null, 2));
 
             let blockType = block.type;
             let blockName = block.name;
@@ -277,7 +284,7 @@ function buttonExportImageBehavior() {
                                     { text: entryText, width: 250 },
                                 ]
                             });
-                        } else {
+                        } else if (entry[0] != 'centerPosition') {
                             content.push({
                                 columns: [
                                     { text: entry[0], width: 250, bold: true },

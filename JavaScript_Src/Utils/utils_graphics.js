@@ -2,6 +2,9 @@ let mPage;
 let mExportImageCanvas;
 let canvas;
 let mBlockImage;
+let mExportCanvasCameraPositioning = [];
+let mExportCanvasOrtho = [0, 0, -100, 100, 1, 50000];
+
 
 function mCreateCanvas(windowWidth, windowHeight) {
     canvas = createCanvas(windowWidth, windowHeight, WEBGL);
@@ -67,9 +70,19 @@ function mResizeCanvas() {
 function mCamera() {
     camera(...[...arguments]);
     mPage.camera(...[...arguments]);
-    mExportImageCanvas.resizeCanvas(getMaxXPosition() * 4 > width / 2 ? getMaxXPosition() * 4 : width / 2, height)
-    mExportImageCanvas.camera(getMaxXPosition() / 2, -200, 200, getMaxXPosition() / 2, 0, 0, 0, 1, 0);
-    mExportImageCanvas.ortho(-getMaxXPosition() / 2, getMaxXPosition() / 2, -100, 100, 1, 50000);
+    let maxXPosition = getMaxXPosition();
+    mExportImageCanvas.resizeCanvas(maxXPosition * 4 > width / 2 ? maxXPosition * 4 : width / 2, height / 2);
+
+    let camPos = [maxXPosition / 2, -400, 200];
+    let lookatPos = [maxXPosition / 2, 0, 0];
+    let up = [0, 1, 0];
+    mExportCanvasCameraPositioning = [camPos, lookatPos, up];
+
+    mExportImageCanvas.camera(camPos[0], camPos[1], camPos[2], lookatPos[0], lookatPos[1], lookatPos[2], up[0], up[1], up[2]);
+    mExportCanvasOrtho[0] = -maxXPosition / 2;
+    mExportCanvasOrtho[1] = maxXPosition / 2;
+
+    mExportImageCanvas.ortho(mExportCanvasOrtho[0], mExportCanvasOrtho[1], mExportCanvasOrtho[2], mExportCanvasOrtho[3], mExportCanvasOrtho[4], mExportCanvasOrtho[5]);
 }
 
 function mPush(mPageApply = true) {

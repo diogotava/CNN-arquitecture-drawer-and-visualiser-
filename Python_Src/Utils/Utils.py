@@ -109,11 +109,11 @@ def create_previous_layers_of_first_layer(model_previous_layers, index, model_in
 def add_layer_to_layers(layer, index, prev_layer, layer_to_save, models, layers):
     if layer is not None:
         layer.set_id(index)
-        try:
-            if layer_to_save.layers:
-                layer.layers, index = create_layers(layer_to_save, index, prev_layer, True, layer.name, layers, models)
-                models.append(layer)
-        except AttributeError:
+
+        if hasattr(layer_to_save, 'layers') and layer_to_save.layers:
+            layer.layers, index = create_layers(layer_to_save, index, prev_layer, True, layer.name, layers, models)
+            models.append(layer)
+        else:
             layers.append(layer)
             index += 1
             prev_layer = layer

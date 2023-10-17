@@ -85,16 +85,25 @@ def process_image():
     image_data = re.sub('^data:image/.+;base64,', '', request.form['image'])
     image = Image.open(BytesIO(base64.b64decode(image_data)))
     data = json.loads(request.form['json'])
+    layerInfo = json.loads(request.form['layerInfo'])
+    colors = json.loads(request.form['colors'])
+
     blockData = None
     if 'block' in request.form:
         blockData = json.loads(request.form['block'])
-    background_color = (0, 0, 0, 255)  # Background color with transparency
+    background_color = tuple(colors['background'])  # Background color with transparency
 
     # Create a drawing object
     draw = ImageDraw.Draw(image)
 
     # Define text color
-    text_color = (255, 255, 255)  # black
+    text_color = tuple(colors['text'])  # black
+    textId_color = tuple(colors['textId'])  # black
+    fontID = ImageFont.truetype("arialbd.ttf", int((10 * image.width) ** (1 / 3)))
+    for layer in layerInfo:
+        if 'id' in layer:
+            _, _, title_width, title_height = draw.textbbox((0, 0), str(layer['id']), font=fontID)
+            draw.text((layer['centerPosition']['x']-title_width/2, layer['centerPosition']['y']-title_height/2), str(layer['id']), font=fontID, fill=textId_color)
 
     # Choose a font and size
     font = ImageFont.truetype("arial.ttf", int((10 * image.width) ** (1 / 3)))

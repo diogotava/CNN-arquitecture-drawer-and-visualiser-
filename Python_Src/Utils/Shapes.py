@@ -12,7 +12,7 @@ def should_shape_be_inverted(layer, shape, layers):
         if layers is None:
             return False
         else:
-            return should_shape_be_inverted(layers[layer.previous_layers[0]].original_model_layer, layers[layer.previous_layers[0]].shape,
+            return should_shape_be_inverted(layers[layer.previous_layers[0]], layers[layer.previous_layers[0]].shape,
                                             layers)
 
     return True

@@ -1,7 +1,10 @@
-recursiveLayerTypes = ["LSTM", "GRU", "SimpleRNN", "TimeDistributed", "Bidirectional", "ConvLSTM1D", "ConvLSTM2D", "ConvLSTM3D", "BaseRNN"];
+let recursiveLayerTypes = ["LSTM", "GRU", "SimpleRNN", "TimeDistributed", "Bidirectional", "ConvLSTM1D", "ConvLSTM2D", "ConvLSTM3D", "BaseRNN"];
+
 let dynamicValues;
 let defaultColors = {
     "Background": [0, 0, 0],
+    "text": [255, 255, 255],
+    "textId": [255, 255, 255],
     "Arrow": [255, 255, 255],
     "Conv1D": [10, 255, 0],
     "Conv2D": [0, 255, 0],
@@ -66,7 +69,7 @@ function resetDynamicValues() {
         "maxWidth": Number(document.getElementById('maxWidth').defaultValue),
         "strokeWeight": Number(document.getElementById('strokeWeight').defaultValue),
         "minWindowSize": 400,
-        "paragraphsWorldCoords": { x: 0, y: 0, z: 0 },
+        "paragraphsWorldCoords": [0, 0, 0],
         "blocks": [],
         "spaceBetweenLayers": Number(document.getElementById('spaceBetweenLayers').defaultValue),
         "lateralSpaceBetweenLayers": Number(document.getElementById('lateralSpaceBetweenLayers').defaultValue),
