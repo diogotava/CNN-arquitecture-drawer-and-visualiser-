@@ -39,7 +39,7 @@ function isLayerPossibleToBeInBlock(layerId, otherLayerId = -1, beginningLayer =
 
 function selectLayer() {
     let id = getLayerId();
-    if (id !== -1) {
+    if (id !== -1 && id < dynamicValues.endBlockId) {
         if (dynamicValues.selectedLayerID !== -1 && dynamicValues.selectedLayerID < dynamicValues.initialBlockId)
             layers[dynamicValues.selectedLayerID].selected = false;
         if (id < dynamicValues.initialBlockId)
@@ -67,7 +67,7 @@ function selectBlock() {
 
     if (dynamicValues.bPressed) {
         if (layerId >= dynamicValues.initialBlockId && otherLayerId !== -1)
-            layerId = getBlock(layerId).initialLayer;
+            layerId = getBlock(layerId - dynamicValues.initialBlockId).initialLayer;
         if (isLayerPossibleToBeInBlock(layerId, block[0], false)) {
             block = new Block(block[0], layerId);
 
@@ -103,8 +103,11 @@ function removeBlock() {
 
     let isEndBlock = isTheEndOfBlock(layerId);
     let isBeginBlock = isTheBeginningOfBlock(layerId);
+    let isBlock = layerId >= dynamicValues.initialBlockId;
     let indexOfBlock = -1;
-    if (isEndBlock) {
+    if (isBlock) {
+        indexOfBlock = layerId - dynamicValues.initialBlockId;
+    } else if (isEndBlock) {
         indexOfBlock = dynamicValues.blocks.findIndex(block => block.endLayer === layerId);
 
     } else if (isBeginBlock) {
@@ -132,13 +135,16 @@ function openBlock() {
 
     let isEndBlock = isTheEndOfBlock(layerId);
     let isBeginBlock = isTheBeginningOfBlock(layerId);
+    let isBlock = layerId >= dynamicValues.initialBlockId;
     let indexOfBlock;
     if (isEndBlock && isBeginBlock) {
         alert("ERROR: Layer selected is in 2 blocks select the block pretended!")
         return
     }
 
-    if (isEndBlock) {
+    if (isBlock) {
+        indexOfBlock = layerId - dynamicValues.initialBlockId;
+    } else if (isEndBlock) {
         indexOfBlock = dynamicValues.blocks.findIndex(block => block.endLayer === layerId);
 
     } else if (isBeginBlock) {
@@ -155,6 +161,46 @@ function openBlock() {
     layersChanged = true;
 }
 
+function editBlock() {
+    let layerId = getLayerId();
+
+    if (layerId === -1) return
+
+    let isEndBlock = isTheEndOfBlock(layerId);
+    let isBeginBlock = isTheBeginningOfBlock(layerId);
+    let isBlock = layerId >= dynamicValues.initialBlockId;
+    let indexOfBlock;
+    if (isEndBlock && isBeginBlock) {
+        alert("ERROR: Layer selected is in 2 blocks select the block pretended!")
+        return
+    }
+
+    if (isBlock) {
+        indexOfBlock = layerId - dynamicValues.initialBlockId;
+    } else if (isEndBlock) {
+        indexOfBlock = dynamicValues.blocks.findIndex(block => block.endLayer === layerId);
+
+    } else if (isBeginBlock) {
+        indexOfBlock = dynamicValues.blocks.findIndex(block => block.initialLayer === layerId);
+
+    } else if (layerId >= dynamicValues.initialBlockId) {
+        indexOfBlock = dynamicValues.blocks.findIndex(block => block.initialLayer === layerId - dynamicValues.initialBlockId);
+
+    } else {
+        alert("ERROR: Layer selected is not a block!")
+    }
+
+    block = dynamicValues.blocks[indexOfBlock];
+
+    let blockPopup = document.getElementById("blockPopup");
+    blockPopup.style.display = 'block';
+    document.getElementById('select-type').value = block.type;
+    document.getElementById('blockName').value = block.name;
+    document.getElementById('blockColor').value = rgbToHex(block.color[0], block.color[1], block.color[2]);
+    document.getElementById('saveBlock').hidden = true;
+    document.getElementById('updateBlock').hidden = false;
+}
+
 function keyPressed() {
     if (document.getElementById('blockPopup').style.display === "block")
         return
@@ -166,6 +212,8 @@ function keyPressed() {
         removeBlock();
     } else if (keyIsDown(86)) { //v
         openBlock();
+    } else if (keyIsDown(69)) { //e
+        editBlock();
     }
 }
 
@@ -213,9 +261,7 @@ function selectedText() {
     let isSelectedLayerBlock = dynamicValues.selectedLayerID >= dynamicValues.initialBlockId;
 
     if (isSelectedLayerBlock) {
-        let selectedLayer = layers[dynamicValues.selectedLayerID - dynamicValues.initialBlockId];
-
-        let block = dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.initialLayer === selectedLayer.id)];
+        let block = dynamicValues.blocks[dynamicValues.selectedLayerID - dynamicValues.initialBlockId];
         let initialBlockLayer = layers[block.initialLayer];
         nothingSelectedH2.elt.hidden = true;
 
@@ -224,7 +270,7 @@ function selectedText() {
         // TODO: remove id
         let blockName = block.getName();
         blockName = blockName === "" ? "(Block without name.)" : blockName;
-        selectedH2.html("Selected block: " + selectedLayer.id.toString() + " " + blockName);
+        selectedH2.html("Selected block: " + initialBlockLayer.id.toString() + " " + blockName);
         typeP.html("<b>Type:</b> Block");
 
         layerInfo.style.display = 'block';
@@ -401,9 +447,19 @@ function model_inside_model(layers) {
             if (layers[i].model_name !== layer.model_name || i === layers.length - 1) {
                 let block = new Block(layer.id, layers[i].id);
                 block.setName(layer.model_name);
+                block.type = layer.model_name;
+                const types = document.getElementById('types');
+                if (!checkTypeOption(block.type)) {
+                    var option = document.createElement("option");
+                    option.value = block.type;
+                    option.text = block.type;
+
+                    // Append the option element to the datalist element
+                    types.appendChild(option);
+                }
 
                 if (!dynamicValues.blocks.some(obj => obj.isEqual(block))) {
-                    dynamicValues.blocks.push(block);
+                    dynamicValues.blocks[block.id] = block;
                 }
                 break;
             } else {
@@ -441,7 +497,7 @@ function getLayerInformations(layersToVerify = layers, ortho, cam, width, height
                 if (key === 'centerPosition') {
                     return convert3DToScreen(value, projectionMatrixOrtho(ortho[0], ortho[1], ortho[2], ortho[3], ortho[4], ortho[5]), viewMatrix(cam[0], cam[1], cam[2]), width, height);
                 }
-                if (key === 'invertedShape' || key === 'lastNegativeYPosition' || key === 'lastPositiveYPosition' || key === 'model_inside_model' || key === 'selected' || key === 'centerPosition' || key === 'previousYPosition' || key === 'shouldBeDrawn' || key === 'shape' || key === 'shouldBeBlock')
+                if (key === 'invertedShape' || key === 'lastNegativeYPosition' || key === 'lastPositiveYPosition' || key === 'model_inside_model' || key === 'selected' || key === 'centerPosition' || key === 'previousYPosition' || key === 'shouldBeDrawn' || key === 'shape' || key === 'shouldBeBlock', key === 'isInsideBlock')
                     return undefined;
                 return value;
             })));
@@ -526,7 +582,7 @@ function parseSettingsJson(data) {
             block.type = blockType;
 
             if (!dynamicValues.blocks.some(obj => obj.isEqual(block))) {
-                dynamicValues.blocks.push(block);
+                dynamicValues.blocks[block.id] = block;
             }
 
             layersChanged = true;
@@ -535,4 +591,24 @@ function parseSettingsJson(data) {
     } catch (e) {
         alert("ERROR! Settings File does not have the correct format.")
     }
+}
+
+function iDToColor(id) {
+    //make sure our hexadecimal number is padded out
+    colorText = ('00000' + (id | 0).toString(16));
+    color = '#' + colorText.substring(colorText.length - 6);
+
+    return color;
+}
+
+function colorToId(color) {
+
+    if (typeof color === 'number') {
+        return (color | 0); //chop off decimal
+    }
+    if (typeof color === 'string' && color[0] === '#') {
+        color = color.slice(1);
+    }
+    return window.parseInt(color, 16);
+
 }

@@ -1,4 +1,5 @@
 let indexX = 0;
+let indexZ = 1;
 let indexY = 2;
 let largestXPosition = 0;
 
@@ -10,16 +11,12 @@ function isTheEndOfBlock(layerId) {
     return dynamicValues.blocks.some((block) => block.endLayer === layerId);
 }
 
-function getBlockColor(layerId) {
-    if (isTheBeginningOfBlock(layerId))
-        return dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.initialLayer === layerId)].getColor();
-    else
-        return undefined;
+function getBlockColor(blockId) {
+    return dynamicValues.blocks[blockId].getColor();
 }
 
 function getBlock(blockId) {
-
-    return dynamicValues.blocks[dynamicValues.blocks.findIndex(block => block.initialLayer === blockId - dynamicValues.initialBlockId)];
+    return dynamicValues.blocks[blockId];
 }
 
 function getEndBlockLayer(layers, layerId) {
@@ -88,6 +85,48 @@ function getMaxWidth(layer, layers, endLayerId = null) {
     }
 
     return maxWidth;
+}
+
+function getMaxHeight(layer, layers, endLayerId = null) {
+    let layersSeen = []
+    let next_layers = [...layer.nextLayers];
+    let maxHeight = layer.getShape()[indexZ];
+
+    while (next_layers.length !== 0) {
+        let nextLayerIndex = next_layers.shift();
+        layersSeen.push(nextLayerIndex);
+        let nextLayer = layers[nextLayerIndex];
+
+        if (nextLayer.prevLayers.length === 1 && nextLayer.nextLayers.length > 1) {
+            let height = 0;
+            for (let n_layer of nextLayer.nextLayers) {
+                height += getMaxHeight(layers[n_layer], layers) + dynamicValues.lateralSpaceBetweenLayers;
+            }
+            if (nextLayer.getShape()[indexZ] > maxHeight) {
+                maxHeight = nextLayer.getShape()[indexZ];
+            }
+            if (height > maxHeight) {
+                maxHeight = height;
+            }
+        } else if (nextLayer.prevLayers.length > 1) {
+            if (next_layers.length > 0 && nextLayer.prevLayers.some(elem => next_layers.includes(elem)) && nextLayer.prevLayers.some(elem => !layersSeen.includes(elem))) {
+                layersSeen.pop();
+                if (!layersSeen.includes(layer.id) && !next_layers.includes(layer.id))
+                    next_layers.push(layer.id);
+            } else
+                return maxHeight;
+        } else if (nextLayer.getShape()[indexZ] > maxHeight) {
+            maxHeight = nextLayer.getShape()[indexZ];
+        }
+        if (endLayerId === nextLayer.id)
+            continue;
+        for (let n_layer of nextLayer.nextLayers) {
+            if (!layersSeen.includes(n_layer) && !next_layers.includes(n_layer))
+                next_layers.push(n_layer);
+        }
+    }
+
+    return maxHeight;
 }
 
 function getPositionEndLayerBlock(layer, layers, xPosition = null) {

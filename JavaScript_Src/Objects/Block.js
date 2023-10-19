@@ -8,6 +8,8 @@ class Block {
             this.endLayer = initialLayer;
         }
 
+        dynamicValues.currentBlockId = dynamicValues.currentBlockId + 1;
+        this.id = dynamicValues.currentBlockId;
         this.name = "";
         this.type = "";
         this.color = dynamicValues.colors.Block;

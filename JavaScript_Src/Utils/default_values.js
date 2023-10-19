@@ -2,10 +2,10 @@ let recursiveLayerTypes = ["LSTM", "GRU", "SimpleRNN", "TimeDistributed", "Bidir
 
 let dynamicValues;
 let defaultColors = {
-    "Background": [0, 0, 0],
+    "Background": [255, 255, 255],
     "text": [255, 255, 255],
     "textId": [255, 255, 255],
-    "Arrow": [255, 255, 255],
+    "Arrow": [0, 0, 0],
     "Conv1D": [10, 255, 0],
     "Conv2D": [0, 255, 0],
     "Conv3D": [0, 255, 0],
@@ -49,6 +49,8 @@ let defaultColors = {
 };
 
 function resetDynamicValues() {
+    initialBlockId = 150000;
+    endBlockId = initialBlockId + 50000;
     dynamicValues = {
         "camX": Number(document.getElementById('camX').defaultValue),
         "camY": Number(document.getElementById('camY').defaultValue),
@@ -76,7 +78,9 @@ function resetDynamicValues() {
         "blockSize": Number(document.getElementById('blockSize').defaultValue),
         "selectedLayerID": -1,
         "bPressed": false,
-        "initialBlockId": 510
+        "initialBlockId": initialBlockId,
+        "currentBlockId": -1,
+        "endBlockId": endBlockId,
     };
     resetValues();
 }
