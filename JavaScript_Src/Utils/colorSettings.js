@@ -52,7 +52,7 @@ function updateColorsShownValues() {
                 previousColors[key] = [parseInt(color.substring(1, 3), 16), parseInt(color.substring(3, 5), 16), parseInt(color.substring(5, 7), 16)];
                 colorInput.value = color;
             }
-        })
+        });
 
         // Append the label and input field to the list item
         listItem.appendChild(nameLabel);
@@ -62,6 +62,40 @@ function updateColorsShownValues() {
         // Append the list item to the color list
         colorList.appendChild(listItem);
     });
+    const listItem = document.createElement("li");
+    const input = document.createElement("input");
+    input.className = 'colorLabel';
+    input.type = "text";
+    input.style.width = "220px";
+    input.style.marginRight = "20px";
+    input.style.color = 'black'
+    const colorInput = document.createElement("input");
+    colorInput.type = "color";
+    colorInput.value = rgbToHex(dynamicValues.colors['Default'][0], dynamicValues.colors['Default'][1], dynamicValues.colors['Default'][2]);
+
+    const addColor = document.createElement("button");
+    addColor.className = "button-12";
+    addColor.innerHTML = "Add";
+    addColor.style.width = "66px";
+
+    // Add event listener to reset the color
+    addColor.addEventListener("click", event => {
+        event.preventDefault();
+        let color = colorInput.value;
+        color = [parseInt(color.substring(1, 3), 16), parseInt(color.substring(3, 5), 16), parseInt(color.substring(5, 7), 16)];
+        dynamicValues.colors[input.value] = color;
+        updateColorsShownValues();
+        input.value = "";
+        colorInput.value = rgbToHex(dynamicValues.colors['Default'][0], dynamicValues.colors['Default'][1], dynamicValues.colors['Default'][2]);
+    });
+
+    // Append the label and input field to the list item
+    listItem.appendChild(input);
+    listItem.appendChild(colorInput);
+    listItem.appendChild(addColor);
+
+    // Append the list item to the color list
+    colorList.appendChild(listItem);
 }
 
 //-------------------------------------------------------- UPDATE --------------------------------------------------------//

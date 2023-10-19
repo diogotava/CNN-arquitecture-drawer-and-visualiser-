@@ -30,3 +30,32 @@ Then access the following url:
 ```
 https://diogotava.github.io/Neural-Network-Visualizer/
 ```
+
+## How to use
+### Button 'C'
+
+When hovering a layer or block and this button is clicked shows the respective information
+
+### Button 'B'
+
+When hovering a layer and this button is clicked, is started the creation of a new block, selecting the initial layer.
+If the initial layer is already selected the click action selects the end layer and shows the UI to define the parameters of the block. This parameters are:
+
+- Name
+- Color
+- Type
+
+The type field is a selection field or an input field if the type that is wanted isn't yet defined.
+
+### Button 'V'
+
+When hovering a block and this button is clicked, is expanded the block to see the layers inside it.
+If you want to collapse it again just hover the initial or end layer or the border of the block that shows up and click the button.
+
+### Button 'R'
+
+When hovering a block and this button is clicked, the block is removed and all of the its layers are shown again.
+
+### Button 'E'
+
+When hovering a block and this button is clicked, the block edit menu shows up and lets the user change the settings of the block.

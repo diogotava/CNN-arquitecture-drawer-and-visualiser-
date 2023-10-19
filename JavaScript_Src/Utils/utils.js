@@ -187,7 +187,8 @@ function editBlock() {
         indexOfBlock = dynamicValues.blocks.findIndex(block => block.initialLayer === layerId - dynamicValues.initialBlockId);
 
     } else {
-        alert("ERROR: Layer selected is not a block!")
+        alert("ERROR: Selection is not a block!")
+        return;
     }
 
     block = dynamicValues.blocks[indexOfBlock];
@@ -206,7 +207,10 @@ function keyPressed() {
         return
     if (keyIsDown(67)) { // C
         selectLayer();
-    } else if (keyIsDown(66)) { //b
+    }
+    if (document.getElementById('settingsPopup').style.display === "block" || document.getElementById('settingsColorsPopup').style.display === "block")
+        return
+    if (keyIsDown(66)) { //b
         selectBlock();
     } else if (keyIsDown(82)) { //r
         removeBlock();
