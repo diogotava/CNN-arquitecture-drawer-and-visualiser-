@@ -33,11 +33,11 @@ function buttonUploadModelBehavior() {
 
                     layers.push(layer)
                 }
-
+                dynamicValues.currentBlockId = -1;
                 model_inside_model(layers);
 
-                getLayersPosition(layers);
                 layers_backup = layers.map(obj => obj.copy());
+                getLayersPosition(layers);
 
                 // layersChanged = true;
                 loader.style.display = 'none';
@@ -92,6 +92,7 @@ function checkTypeOption(value) {
 
 function buttonSaveBlockBehavior() {
     const saveBlockButton = document.getElementById('saveBlock');
+    const updateBlockButton = document.getElementById('updateBlock');
     const blockPopup = document.getElementById('blockPopup');
     const typeInput = document.getElementById('select-type');
     const types = document.getElementById('types');
@@ -110,10 +111,30 @@ function buttonSaveBlockBehavior() {
             types.appendChild(option);
         }
         typeInput.value = "";
-        dynamicValues.blocks.push(block);
+        dynamicValues.blocks[block.id] = block;
         layersChanged = true;
         block = [];
         blockPopup.style.display = 'none';
+    });
+
+    updateBlockButton.addEventListener('click', () => {
+        block.setName(document.getElementById('blockName').value);
+        let color = document.getElementById('blockColor').value;
+        block.setColor([parseInt(color.substring(1, 3), 16), parseInt(color.substring(3, 5), 16), parseInt(color.substring(5, 7), 16)]);
+        block.type = typeInput.value;
+        if (!checkTypeOption(typeInput.value)) {
+            var option = document.createElement("option");
+            option.value = typeInput.value;
+            option.text = typeInput.value;
+
+            // Append the option element to the datalist element
+            types.appendChild(option);
+        }
+        typeInput.value = "";
+        block = [];
+        blockPopup.style.display = 'none';
+        saveBlockButton.hidden = false;
+        updateBlockButton.hidden = true;
     });
 }
 

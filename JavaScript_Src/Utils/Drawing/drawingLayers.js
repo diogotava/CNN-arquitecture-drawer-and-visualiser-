@@ -25,6 +25,7 @@ function drawLayer(layer, array) {
                 let block = dynamicValues.blocks[indexOfBlock];
                 if (block.drawInterior) {
                     let width = getMaxWidth(layer, layers, endBlockLayer.id) + 5;
+                    let height = getMaxHeight(layer, layers, endBlockLayer.id) + 5;
                     let initialPositionBlock = (centerPosition[0] - (shape[0] / 2) - dynamicValues.spaceBetweenLayers / 2);
                     let endPositionBlock = (endBlockLayer.centerPosition[0] + (endBlockLayer.getShape()[0] / 2) + dynamicValues.spaceBetweenLayers / 2);
 
@@ -35,12 +36,12 @@ function drawLayer(layer, array) {
                     mPush();
                     mTranslate(translationLength, 0, 0);
                     noFill();
-                    blockColor = getBlockColor(layer.id);
-                    mBlock(layer.id + dynamicValues.initialBlockId + 1, length, width, width, blockColor);
+                    blockColor = getBlockColor(block.id);
+                    mBlock(block.id + dynamicValues.initialBlockId + 1, length, height, width, blockColor);
                     mPop();
                 } else {
-                    id = endBlockLayer !== undefined ? layer.id + dynamicValues.initialBlockId + 1 : -1;
-                    color = getBlockColor(layer.id);
+                    id = block.id + dynamicValues.initialBlockId + 1;
+                    color = getBlockColor(block.id);
                 }
             }
             mTexture(color[0], color[1], color[2]);

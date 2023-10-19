@@ -25,7 +25,7 @@ function mBox(id, shapeX, shapeY, shapeZ) {
     // mExportImageCanvas.noStroke();
     mExportImageCanvas.box(shapeX, shapeY, shapeZ);
 
-    mPage.fill((id >> 16) & 0xFF, (id >> 8) & 0xF, id & 0xFF);
+    mPage.fill(iDToColor(id));
     mPage.noStroke();
     mPage.box(shapeX, shapeY, shapeZ);
     strokeWeight(dynamicValues.strokeWeight);
@@ -42,7 +42,7 @@ function mBlock(id, shapeX, shapeY, shapeZ, blockColor) {
 
     mPage.noFill();
     mPage.strokeWeight(4);
-    mPage.stroke((id >> 16) & 0xFF, (id >> 8) & 0xFF, id & 0xFF);
+    mPage.stroke(iDToColor(id));
     mPage.box(shapeX, shapeY, shapeZ);
     strokeWeight(dynamicValues.strokeWeight);
 }
@@ -145,11 +145,5 @@ function mOrbitControl(sensitivityX = 1, sensitivityY = 1, sensitivityZ = 0.01) 
 function getLayerId() {
     let pixels = mPage.get(mouseX, mouseY);
 
-    return (pixels[0] << 16 | pixels[1] << 8 | pixels[2]) - 1;
-}
-
-function getBlockId() {
-    let pixels = mPage.get(mouseX, mouseY);
-
-    return (pixels[0] << 16 | pixels[1] << 8 | pixels[2]) - 1;
+    return colorToId(rgbToHex(pixels[0], pixels[1], pixels[2])) - 1;
 }
