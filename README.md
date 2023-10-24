@@ -1,4 +1,4 @@
-# Neural Network Visualizer
+# Neural Network Explorer
 
 This project consists in a visualizer of neural networks architectures, currently only networks developed in keras.
 This can be used to visualize the architecture of a neural network, and/or export an image and information about it.

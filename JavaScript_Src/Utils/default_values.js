@@ -3,7 +3,7 @@ let recursiveLayerTypes = ["LSTM", "GRU", "SimpleRNN", "TimeDistributed", "Bidir
 let dynamicValues;
 let defaultColors = {
     "Background": [255, 255, 255],
-    "text": [255, 255, 255],
+    "text": [0, 0, 0],
     "textId": [255, 255, 255],
     "Arrow": [0, 0, 0],
     "Conv1D": [10, 255, 0],
