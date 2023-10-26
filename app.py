@@ -102,8 +102,10 @@ def process_image():
     fontID = ImageFont.truetype("arialbd.ttf", int((10 * image.width) ** (1 / 3)))
     for layer in layerInfo:
         if 'id' in layer:
-            _, _, title_width, title_height = draw.textbbox((0, 0), str(layer['id']), font=fontID)
-            draw.text((layer['centerPosition']['x']-title_width/2, layer['centerPosition']['y']-title_height/2), str(layer['id']), font=fontID, fill=textId_color)
+            layerText = f'B{str(layer["id"])}' if 'initialLayer' in layer else str(layer['id'])
+
+            _, _, title_width, title_height = draw.textbbox((0, 0), layerText, font=fontID)
+            draw.text((layer['centerPosition']['x']-title_width/2, layer['centerPosition']['y']-title_height/2), layerText, font=fontID, fill=textId_color)
 
     # Choose a font and size
     font = ImageFont.truetype("arial.ttf", int((10 * image.width) ** (1 / 3)))

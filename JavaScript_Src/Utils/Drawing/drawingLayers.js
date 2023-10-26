@@ -32,7 +32,7 @@ function drawLayer(layer, array) {
                     let length = endPositionBlock - initialPositionBlock;
 
                     let translationLength = (length / 2) - ((shape[0] / 2) + dynamicValues.spaceBetweenLayers / 2);
-                    block.centerX = centerPosition[0] + translationLength;
+                    block.centerPosition = [centerPosition[0] + translationLength, 0, 0];
                     mPush();
                     mTranslate(translationLength, 0, 0);
                     noFill();
@@ -40,6 +40,7 @@ function drawLayer(layer, array) {
                     mBlock(block.id + dynamicValues.initialBlockId + 1, length, height, width, blockColor);
                     mPop();
                 } else {
+                    block.centerPosition = [centerPosition[0], 0, 0];
                     id = block.id + dynamicValues.initialBlockId + 1;
                     color = getBlockColor(block.id);
                 }

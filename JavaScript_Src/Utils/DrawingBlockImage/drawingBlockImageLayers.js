@@ -31,7 +31,7 @@ function drawLayerBlockImage(layer, array) {
                     let length = endPositionBlock - initialPositionBlock;
 
                     let translationLength = (length / 2) - ((shape[0] / 2) + dynamicValues.spaceBetweenLayers / 2);
-                    block.centerX = centerPosition[0] + translationLength;
+                    block.centerPosition = [centerPosition[0] + translationLength, 0, 0];
                     mBlockImage.push();
                     mBlockImage.translate(translationLength, 0, 0);
                     mBlockImage.noFill();
