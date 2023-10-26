@@ -14,7 +14,7 @@ class Block {
         this.type = "";
         this.color = dynamicValues.colors.Block;
         this.drawInterior = false;
-        this.centerX = 0;
+        this.centerPosition = [0, 0, 0];
     }
 
     setColor(color) {

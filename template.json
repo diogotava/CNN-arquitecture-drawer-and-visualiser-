@@ -58,6 +58,7 @@
     "blocks": [
         {
             "name": "Test",
+            "type": "Type 1",
             "initialLayerName": "max_pooling2d_1",
             "endLayerName": "mixed0",
             "color": [255, 255, 255]

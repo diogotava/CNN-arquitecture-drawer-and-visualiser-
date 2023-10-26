@@ -66,7 +66,7 @@ function selectBlock() {
     }
 
     if (dynamicValues.bPressed) {
-        if (layerId >= dynamicValues.initialBlockId && otherLayerId !== -1)
+        if (layerId >= dynamicValues.initialBlockId)
             layerId = getBlock(layerId - dynamicValues.initialBlockId).initialLayer;
         if (isLayerPossibleToBeInBlock(layerId, block[0], false)) {
             block = new Block(block[0], layerId);
@@ -83,8 +83,10 @@ function selectBlock() {
         }
         dynamicValues.bPressed = false;
     } else {
-        if (layerId >= dynamicValues.initialBlockId)
-            layerId = getBlock(layerId).endLayer;
+        if (layerId >= dynamicValues.initialBlockId) {
+            id = layerId - dynamicValues.initialBlockId;
+            layerId = getBlock(id).endLayer;
+        }
         if (isLayerPossibleToBeInBlock(layerId)) {
             block[0] = layerId;
             alert('Begin of block selected!');
@@ -278,7 +280,7 @@ function selectedText() {
 
         layerInfo.style.display = 'block';
 
-        dynamicValues.paragraphsWorldCoords = isSelectedLayerBlock && block.drawInterior ? { x: block.centerX, y: 0, z: 0 } : convertScreenTo3D(initialBlockLayer.id);
+        dynamicValues.paragraphsWorldCoords = isSelectedLayerBlock && block.drawInterior ? { x: block.centerPosition[0], y: 0, z: 0 } : convertScreenTo3D(initialBlockLayer.id);
 
     } else if (dynamicValues.selectedLayerID !== -1) {
         let selectedLayer = layers[dynamicValues.selectedLayerID];
@@ -508,7 +510,10 @@ function getLayerInformations(layersToVerify = layers, ortho, cam, width, height
                 let blockObj = JSON.stringify(block, (key, value) => {
                     if (value === null)
                         return undefined;
-                    if (key === 'drawInterior' || key === 'centerX')
+                    if (key === 'centerPosition') {
+                        return convert3DToScreen(value, projectionMatrixOrtho(ortho[0], ortho[1], ortho[2], ortho[3], ortho[4], ortho[5]), viewMatrix(cam[0], cam[1], cam[2]), width, height);
+                    }
+                    if (key === 'drawInterior')
                         return undefined;
                     return value;
                 });
@@ -560,7 +565,8 @@ function parseSettingsJson(data) {
         dynamicValues = { ...newValues };
 
         updateShownValues();
-        dynamicValues.blocks = []
+        dynamicValues.blocks = [];
+        dynamicValues.currentBlockId = -1;
         layers = layers_backup.map(obj => obj.copy());
 
         for (let i = 0; i < newValues.blocks.length; i++) {
