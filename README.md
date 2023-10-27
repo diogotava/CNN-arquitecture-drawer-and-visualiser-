@@ -27,9 +27,9 @@ python app.py
 ```
 
 Then access the following url:
-```
-https://diogotava.github.io/Neural-Network-Visualizer/
-```
+
+[https://diogotava.github.io/Neural-Network-Visualizer/](https://diogotava.github.io/Neural-Network-Explorer/)
+
 
 ## How to use
 ### Button 'C'
