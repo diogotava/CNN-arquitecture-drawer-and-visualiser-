@@ -276,7 +276,7 @@ function selectedText() {
         let blockName = block.getName();
         blockName = blockName === "" ? "(Block without name.)" : blockName;
         selectedH2.html("Selected block: " + blockName);
-        typeP.html("<b>Type:</b> Block");
+        typeP.html("<b>Type:</b> " + block.type);
 
         layerInfo.style.display = 'block';
 

@@ -87,7 +87,45 @@ function getMaxWidth(layer, layers, endLayerId = null) {
     return maxWidth;
 }
 
-function getMaxHeight(layer, layers, endLayerId = null) {
+function getWidth(layer, layers, endLayerId = null, min = false) {
+    let layersSeen = []
+    let next_layers = [...layer.nextLayers];
+    let maxWidth = layer.centerPosition[indexY] + layer.getShape()[indexY] / 2;
+    let minWidth = 0;
+
+    while (next_layers.length !== 0) {
+        let nextLayerIndex = next_layers.shift();
+        layersSeen.push(nextLayerIndex);
+        let nextLayer = layers[nextLayerIndex];
+
+        let width = 0;
+        if (nextLayer.centerPosition[indexY] < 0) {
+            width = nextLayer.centerPosition[indexY] - nextLayer.getShape()[indexY] / 2;
+
+            if (width < minWidth) {
+                minWidth = width
+            }
+        } else {
+            width = nextLayer.centerPosition[indexY] + nextLayer.getShape()[indexY] / 2;
+            if (width > maxWidth) {
+                maxWidth = width;
+            }
+        }
+        if (endLayerId === nextLayer.id)
+            continue;
+        for (let n_layer of nextLayer.nextLayers) {
+            if (!layersSeen.includes(n_layer) && !next_layers.includes(n_layer))
+                next_layers.push(n_layer);
+        }
+    }
+
+    if (min) {
+        return Math.abs(minWidth);
+    }
+    return maxWidth + Math.abs(minWidth);
+}
+
+function getMaxHeight(layer, layers) {
     let layersSeen = []
     let next_layers = [...layer.nextLayers];
     let maxHeight = layer.getShape()[indexZ];
@@ -97,29 +135,9 @@ function getMaxHeight(layer, layers, endLayerId = null) {
         layersSeen.push(nextLayerIndex);
         let nextLayer = layers[nextLayerIndex];
 
-        if (nextLayer.prevLayers.length === 1 && nextLayer.nextLayers.length > 1) {
-            let height = 0;
-            for (let n_layer of nextLayer.nextLayers) {
-                height += getMaxHeight(layers[n_layer], layers) + dynamicValues.lateralSpaceBetweenLayers;
-            }
-            if (nextLayer.getShape()[indexZ] > maxHeight) {
-                maxHeight = nextLayer.getShape()[indexZ];
-            }
-            if (height > maxHeight) {
-                maxHeight = height;
-            }
-        } else if (nextLayer.prevLayers.length > 1) {
-            if (next_layers.length > 0 && nextLayer.prevLayers.some(elem => next_layers.includes(elem)) && nextLayer.prevLayers.some(elem => !layersSeen.includes(elem))) {
-                layersSeen.pop();
-                if (!layersSeen.includes(layer.id) && !next_layers.includes(layer.id))
-                    next_layers.push(layer.id);
-            } else
-                return maxHeight;
-        } else if (nextLayer.getShape()[indexZ] > maxHeight) {
+        if (nextLayer.getShape()[indexZ] > maxHeight) {
             maxHeight = nextLayer.getShape()[indexZ];
         }
-        if (endLayerId === nextLayer.id)
-            continue;
         for (let n_layer of nextLayer.nextLayers) {
             if (!layersSeen.includes(n_layer) && !next_layers.includes(n_layer))
                 next_layers.push(n_layer);

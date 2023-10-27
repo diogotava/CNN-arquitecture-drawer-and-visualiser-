@@ -24,8 +24,9 @@ function drawLayer(layer, array) {
                 let indexOfBlock = dynamicValues.blocks.findIndex(block => block.initialLayer === layer.id);
                 let block = dynamicValues.blocks[indexOfBlock];
                 if (block.drawInterior) {
-                    let width = getMaxWidth(layer, layers, endBlockLayer.id) + 5;
-                    let height = getMaxHeight(layer, layers, endBlockLayer.id) + 5;
+                    let width = getWidth(layer, layers, endBlockLayer.id) + 5;
+                    let minWidth = getWidth(layer, layers, endBlockLayer.id, true) + 5;
+                    let height = getMaxHeight(layer, layers) + 5;
                     let initialPositionBlock = (centerPosition[0] - (shape[0] / 2) - dynamicValues.spaceBetweenLayers / 2);
                     let endPositionBlock = (endBlockLayer.centerPosition[0] + (endBlockLayer.getShape()[0] / 2) + dynamicValues.spaceBetweenLayers / 2);
 
@@ -34,7 +35,7 @@ function drawLayer(layer, array) {
                     let translationLength = (length / 2) - ((shape[0] / 2) + dynamicValues.spaceBetweenLayers / 2);
                     block.centerPosition = [centerPosition[0] + translationLength, 0, 0];
                     mPush();
-                    mTranslate(translationLength, 0, 0);
+                    mTranslate(translationLength, 0, width / 2 - minWidth + 5 / 2);
                     noFill();
                     blockColor = getBlockColor(block.id);
                     mBlock(block.id + dynamicValues.initialBlockId + 1, length, height, width, blockColor);
