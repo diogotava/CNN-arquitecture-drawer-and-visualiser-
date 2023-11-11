@@ -38,7 +38,6 @@ let defaultColors = {
     "GlobalAveragePooling3D": [50, 50, 150],
     "MultiHeadAttention": [200, 0, 0],
     "LayerNormalization": [200, 0, 200],
-    "TFOpLambda": [150, 150, 200],
     "Reshape": [250, 128, 0],
     "Default": [128, 128, 128],
     "Block": [0, 0, 0],
