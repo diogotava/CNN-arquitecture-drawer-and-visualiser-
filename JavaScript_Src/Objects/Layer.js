@@ -112,6 +112,10 @@ class Layer {
             layerShape[2] = dynamicValues.minWidth;
         }
 
+        if (this.shouldBeBlock) {
+            layerShape = [dynamicValues.blockSize, dynamicValues.blockSize, dynamicValues.blockSize];
+        }
+
         layerShape[0] = Math.min(Math.max(layerShape[0], dynamicValues.minLength), dynamicValues.maxLength);
         layerShape[1] = Math.min(Math.max(layerShape[1], dynamicValues.minWidth), dynamicValues.maxWidth);
         layerShape[2] = Math.min(Math.max(layerShape[2], dynamicValues.minWidth), dynamicValues.maxWidth);
